@@ -24,7 +24,8 @@ CREATE TABLE Students(
  CurrentPeriodOfStudy CHAR(1),
  AwardedClass ENUM(‘1st’, ‘2.1’,‘2.2’,‘3rd’,‘fail’,‘merit’,‘distinction’,
 ‘pass’, ‘pass(non-honours)’)
- FOREIGN KEY (DegreeCode) REFERENCES ModuleAssignment);
+ FOREIGN KEY (DegreeCode) REFERENCES ModuleAssignment,
+ FOREIGN KEY (RegistrationNo) REFERENCES Users(ID));
  
 CREATE TABLE ModuleTaken(
  PosRegCode INT(10) NOT NULL,
@@ -60,3 +61,9 @@ CREATE TABLE Modules(
 CREATE TABLE Departments(
  DepartmentCode CHAR(3) NOT NULL PRIMARY KEY,
  DepartmentName VARCHAR(30));
+
+CREATE TABLE Users(
+ ID INT(9) NOT NULL PRIMARY KEY,
+ Username VARCHAR(10),
+ Password VARCHAR(30),
+ Authorisation ENUM(‘Admin’, ‘Registrars’, ‘Teachers’, ‘Students’));
