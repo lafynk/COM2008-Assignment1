@@ -66,4 +66,5 @@ CREATE TABLE Users(
  ID INT(9) NOT NULL PRIMARY KEY,
  Username VARCHAR(10),
  Password VARCHAR(30),
- Authorisation ENUM(‘Admin’, ‘Registrars’, ‘Teachers’, ‘Students’));
+ Authorisation ENUM(‘Admin’, ‘Registrars’, ‘Teachers’, ‘Students’),
+ LoggedIn TINYINT(1));
