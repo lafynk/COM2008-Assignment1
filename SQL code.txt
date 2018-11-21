@@ -25,7 +25,7 @@ CREATE TABLE Students(
  AwardedClass ENUM(‘1st’, ‘2.1’,‘2.2’,‘3rd’,‘fail’,‘merit’,‘distinction’,
 ‘pass’, ‘pass(non-honours)’)
  FOREIGN KEY (DegreeCode) REFERENCES ModuleAssignment,
- FOREIGN KEY (RegistrationNo) REFERENCES Users(ID));
+ FOREIGN KEY (RegistrationNo) REFERENCES Users(ID)) ENGINE=InnoDB;
  
 CREATE TABLE ModuleTaken(
  PosRegCode INT(10) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE ModuleTaken(
  Grade FLOAT(4,2),
  ResitGrade FLOAT(4,2),
  PRIMARY KEY (PosRegCode,ModuleCode),
- FOREIGN KEY (ModuleCode) REFERENCES ModuleAssignment);
+ FOREIGN KEY (ModuleCode) REFERENCES ModuleAssignment) ENGINE=InnoDB;
 
 CREATE TABLE ModuleAssignment(
  DegreeCode CHAR(6) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE ModuleAssignment(
  LevelTaughtAt ENUM('1','2','3','4','P'),
  PRIMARY KEY (DegreeCode,ModuleCode),
  FOREIGN KEY (DegreeCode) REFERENCES Degrees,
- FOREIGN KEY (ModuleCode) REFERENCES Modules);
+ FOREIGN KEY (ModuleCode) REFERENCES Modules) ENGINE=InnoDB;
  
 CREATE TABLE Degrees(
  DegreeCode CHAR(6) NOT NULL PRIMARY KEY,
@@ -51,20 +51,20 @@ CREATE TABLE Degrees(
  DepartmentCode CHAR(3),
  MaxLevelOfStudy ENUM('1','2','3','4'),
  Placement TINYINT(1),
- FOREIGN KEY (DepartmentCode) REFERENCES Departments);
+ FOREIGN KEY (DepartmentCode) REFERENCES Departments) ENGINE=InnoDB;
 
 CREATE TABLE Modules(
  ModuleCode CHAR(7) NOT NULL PRIMARY KEY,
  ModuleName VARCHAR(30),
- WhenTaught ENUM(‘Autumn’, ‘Spring’,‘Summer’,‘Year’));
+ WhenTaught ENUM(‘Autumn’, ‘Spring’,‘Summer’,‘Year’)) ENGINE=InnoDB;
 
 CREATE TABLE Departments(
  DepartmentCode CHAR(3) NOT NULL PRIMARY KEY,
- DepartmentName VARCHAR(30));
+ DepartmentName VARCHAR(30)) ENGINE=InnoDB;
 
 CREATE TABLE Users(
  ID INT(9) NOT NULL PRIMARY KEY,
  Username VARCHAR(10),
  Password VARCHAR(30),
  Authorisation ENUM(‘Admin’, ‘Registrars’, ‘Teachers’, ‘Students’),
- LoggedIn TINYINT(1));
+ LoggedIn TINYINT(1)) ENGINE=InnoDB;
