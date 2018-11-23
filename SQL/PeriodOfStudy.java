@@ -3,6 +3,7 @@ package classPkg;
 import java.util.Date;
 
 public class PeriodOfStudy {
+	private int PoSReg;
 	private int RegNo;
 	private char PoS;
 	private Date startDate;
@@ -11,7 +12,8 @@ public class PeriodOfStudy {
 	private double grade;
 	private boolean progress;
 
-	public PeriodOfStudy(int r, char p, Date s, Date e, char l, double g, boolean pr) {
+	public PeriodOfStudy(int pr, int r, char p, Date s, Date e, char l, double g, boolean pr) {
+		PoSReg = pr;
 		RegNo = r;
 		PoS = p;
 		startDate = s;
@@ -19,6 +21,10 @@ public class PeriodOfStudy {
 		level = l;
 		grade = g;
 		progress = pr;
+	}
+
+	public int getPosRegCode() {
+		return PoSReg;
 	}
 
 	public int getRegNo() {
