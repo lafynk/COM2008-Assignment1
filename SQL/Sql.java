@@ -5,7 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
+import classPkg.Module;
+import classPkg.PeriodOfStudy;
 import classPkg.StuInfo;
 import classPkg.UserInfo;
 
@@ -16,9 +19,10 @@ public class Sql {
 		int ID = 0;
 		String pass = "";
 		String perm = "";
-		boolean logIn;
+		boolean logIn = false;
+		PreparedStatement pstmt = null;
 		try {
-			PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Users WHERE Username = ?");
+			pstmt = con.prepareStatement("SELECT * FROM Users WHERE Username = ?");
 			pstmt.setString(1, usr);
 			ResultSet res = pstmt.executeQuery();
 			while (res.next()) {
@@ -30,10 +34,13 @@ public class Sql {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			System.out.print("No access");
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
 		}
 		if (con != null)
 			con.close();
-		if ((pw == pass) && (logIn = false)) {
+		if ((pw == pass) && (logIn == false)) {
 			return new UserInfo(ID, perm);
 		} else
 			return null;
@@ -42,41 +49,118 @@ public class Sql {
 	// find student info from regNo
 	public StuInfo getStudentInfo(int reg) throws SQLException {
 		Connection con = setUpConnection();
-		String title = "";
-		String sur = "";
-		String fore = "";
-		String email = "";
-		String tutor = "";
-		String degree = "";
-		char p;
-		String awClass = "";
 		StuInfo student = null;
+		PreparedStatement pstmt = null;
 		try {
-			PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Students WHERE RegNo = ?");
+			pstmt = con.prepareStatement("SELECT * FROM Students WHERE RegNo = ?");
 			pstmt.setInt(1, reg);
 			ResultSet res = pstmt.executeQuery();
 			while (res.next()) {
-				title = res.getString(2);
-				sur = res.getString(3);
-				fore = res.getString(4);
-				email = res.getString(5);
-				tutor = res.getString(6);
-				degree = res.getString(7);
-				p = res.getString(7).charAt(0);
+				String title = res.getString(2);
+				String sur = res.getString(3);
+				String fore = res.getString(4);
+				String email = res.getString(5);
+				String tutor = res.getString(6);
+				String degree = res.getString(7);
+				char p = res.getString(7).charAt(0);
+				String awClass = res.getString(8);
 				student = new StuInfo(reg, title, sur, fore, email, tutor, degree, p, awClass);
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			System.out.print("No access");
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
 		}
+		if (con != null)
+			con.close();
 		return student;
 	}
 
-	// find/show fns still to do
+	// returns array of modules taken this PoS
+	public Module[] getModules(PeriodOfStudy p, StuInfo s) throws SQLException {
+		Module[] modArray = new Module[10];
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		PreparedStatement pstmt3 = null;
+		boolean ob = false;
+		int credit = 0;
+		char level = 'A';// default first value
+		String taught = "";
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM ModuleTaken WHERE PosRegCode = ?");
+			pstmt2 = con.prepareStatement("SELECT * FROM ModuleAssignment WHERE ModuleCode = ? AND DegreeCode = ?");
+			pstmt3 = con.prepareStatement("SELECT WhenTaught FROM Modules WHERE ModuleCode = ?");
+			pstmt.setInt(1, p.getPosRegCode());
+			ResultSet r1 = pstmt.executeQuery();
+			while (r1.next()) {
+				String mod = r1.getString(2);
+				double grade = r1.getDouble(3);
+				double resit = r1.getDouble(4);
+				pstmt3.setString(1, mod);
+				ResultSet r3 = pstmt3.executeQuery();
+				while (r3.next()) {
+					taught = r3.getString(1);
+				}
+				pstmt2.setString(1, mod);
+				pstmt2.setString(2, s.getDegree());
+				ResultSet r2 = pstmt2.executeQuery();
+				while (r2.next()) {
+					ob = r2.getBoolean(3);
+					credit = r2.getInt(4);
+					level = r2.getString(5).charAt(0);
+				}
+				modArray[modArray.length] = new Module(mod, s.getDegree(), ob, credit, level, taught, grade, resit);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.out.print("No access");
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (pstmt2 != null)
+				pstmt2.close();
+			if (pstmt3 != null)
+				pstmt3.close();
+		}
+		if (con != null)
+			con.close();
+		return modArray;
+	}
 
-	// find modules from posRegNo, returns list of module classes
-	// find PoSG, return Grade as double (or make PoS class)
-	// show student progress (return all PoS's)
+	public PeriodOfStudy[] getPeriodsOfStudy(int reg) throws SQLException {
+		Connection con = setUpConnection();
+		PeriodOfStudy[] posArray = new PeriodOfStudy[6];// can take 5 PoS's if taking masters with placement and can
+														// only retake on PoS so 6 is max
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM PeriodsOfStudy WHERE RegistrationNo = ?");
+			pstmt.setInt(1, reg);
+			ResultSet res = pstmt.executeQuery();
+			while (res.next()) {
+				int prcode = res.getInt(1);
+				char pos = res.getString(3).charAt(0);
+				Date start = res.getDate(4);
+				Date end = res.getDate(5);
+				char level = res.getString(6).charAt(0);
+				double grade = res.getDouble(7);
+				boolean progress = res.getBoolean(8);
+
+				posArray[posArray.length] = new PeriodOfStudy(prcode, reg, pos, start, end, level, grade, progress);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.print("No access");
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		if (con != null)
+			con.close();
+		return posArray;
+	}
 
 	// add fns
 	// add new User
