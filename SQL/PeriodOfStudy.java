@@ -12,8 +12,8 @@ public class PeriodOfStudy {
 	private double grade;
 	private boolean progress;
 
-	public PeriodOfStudy(int pr, int r, char p, Date s, Date e, char l, double g, boolean pr) {
-		PoSReg = pr;
+	public PeriodOfStudy(int posr, int r, char p, Date s, Date e, char l, double g, boolean pr) {
+		PoSReg = posr;
 		RegNo = r;
 		PoS = p;
 		startDate = s;
