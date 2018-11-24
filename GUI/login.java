@@ -1,9 +1,12 @@
-
+package GUI;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
-import SQLCode.*;
+
+import SQLcode.Sql;
+import classPkg.UserInfo;
 
 
 public class login extends JFrame {
@@ -14,7 +17,7 @@ public class login extends JFrame {
 		 }
 
 public login() throws HeadlessException {
-	Sql2 s = new Sql2();
+	Sql s = new Sql();
 	JFrame window = new JFrame("Systems Design & Security: Team Project");
 	 window.setLayout(new FlowLayout());
 	 window.setSize(1000,1000);
@@ -45,20 +48,29 @@ public login() throws HeadlessException {
         //window.exit();
 
 
-				UserInfo u = s.checkLogIn(username.getText(), password.getText());
+			//	UserInfo u = null;
+			
+				UserInfo u=null;
+				try {
+					u = s.checkLogIn(username.getText(), password.getText());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		
 
 			if (u != null){
 				window.dispose();
 				if (u.getPermission() == "Students"){
 					new studentpage();
 				}
-				else if (true){
+				else if (u.getPermission() == "Teachers"){
 					new teacherpage();
 				}
-				else if (true){
+				else if (u.getPermission() == "Admin"){
 					new adminpage();
 				}
-				else if (true){
+				else if (u.getPermission() == "Registrars"){
 					new registrarpage();
 				}
 			}
