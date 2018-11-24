@@ -116,9 +116,9 @@ public registrarpage() throws HeadlessException {
 	 JTextField module = new JTextField("Type module code to add/drop here");
 	 module.setBounds(10,400,300,50);
 	 window.add(module);
-	 JTextField modulefordegree = new JTextField("Type student ID to assign module to");
-	 modulefordegree.setBounds(10,450,300,50);
-	 window.add(modulefordegree);
+	 JTextField idformodule = new JTextField("Type student ID to assign module to");
+	 idformodule.setBounds(10,450,300,50);
+	 window.add(idformodule);
 	 
 	 
 	 JButton addmodulebutton = new JButton("Add module");
@@ -130,6 +130,15 @@ public registrarpage() throws HeadlessException {
     public void actionPerformed(ActionEvent e) {
         //your actions
         // add module function call
+    	try {
+			s.addTakenModule(Integer.parseInt(idformodule.getText()), module.getText(), 0, 0);
+		} catch (NumberFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
     });
      	 JButton deletemodulebutton = new JButton("Drop module");
@@ -141,6 +150,15 @@ public registrarpage() throws HeadlessException {
     public void actionPerformed(ActionEvent e) {
         //your actions
         // delte moudule function call
+    	try {
+			s.removeTakenMod(Integer.parseInt(idformodule.getText()), module.getText());
+		} catch (NumberFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
      });
      // create an empty combo box with items of type String
