@@ -1,0 +1,70 @@
+//SQL for creating DB tables
+//1:17:00 is useful to understand how to type up using JDBC
+
+CREATE TABLE PeriodsOfStudy(
+ PosResCode INT(10) NOT NULL PRIMARY KEY,
+ RegistrationNo INT(9),
+ PeriodOfStudy CHAR(1),
+ StartDate DATE,
+ EndDate DATE,
+ CurrentLevel ENUM('1','2','3','4','P'),
+ Grade FLOAT(4,2),
+ Progress TINYINT(1),
+ FOREIGN KEY (PosRegCode) REFERENCES ModuleTaken(PosRegCode),
+ FOREIGN KEY (RegistrationNo) REFERENCES Students(RegistrationNo));
+ 
+CREATE TABLE Students(
+ RegistrationNo INT(9) NOT NULL PRIMARY KEY,
+ Title ENUM('Mr','Ms'),
+ Surname VARCHAR(30),
+ Forename VARCHAR(30),
+ Email VARCHAR(30),
+ Tutor VARCHAR(30),
+ DegreeCode CHAR(6),
+ CurrentPeriodOfStudy CHAR(1),
+ AwardedClass ENUM(‘1st’, ‘2.1’,‘2.2’,‘3rd’,‘fail’,‘merit’,‘distinction’,
+‘pass’, ‘pass(non-honours)’)
+ FOREIGN KEY (DegreeCode) REFERENCES ModuleAssignment(DegreeCode),
+ FOREIGN KEY (RegistrationNo) REFERENCES Users(ID)) ENGINE=InnoDB;
+ 
+CREATE TABLE ModuleTaken(
+ PosRegCode INT(10) NOT NULL,
+ ModuleCode CHAR(7) NOT NULL,
+ Grade FLOAT(4,2),
+ ResitGrade FLOAT(4,2),
+ PRIMARY KEY (PosRegCode,ModuleCode),
+ FOREIGN KEY (ModuleCode) REFERENCES ModuleAssignment(ModuleCode)) ENGINE=InnoDB;
+
+CREATE TABLE ModuleAssignment(
+ DegreeCode CHAR(6) NOT NULL,
+ ModuleCode CHAR(7) NOT NULL,
+ Obligatory TINYINT(1),
+ CreditValue INT,
+ LevelTaughtAt ENUM('1','2','3','4','P'),
+ PRIMARY KEY (DegreeCode,ModuleCode),
+ FOREIGN KEY (DegreeCode) REFERENCES Degrees(DegreeCode),
+ FOREIGN KEY (ModuleCode) REFERENCES Modules(ModuleCode)) ENGINE=InnoDB;
+ 
+CREATE TABLE Degrees(
+ DegreeCode CHAR(6) NOT NULL PRIMARY KEY,
+ DegreeName VARCHAR(30),
+ DepartmentCode CHAR(3),
+ MaxLevelOfStudy ENUM('1','2','3','4'),
+ Placement TINYINT(1),
+ FOREIGN KEY (DepartmentCode) REFERENCES Departments(DepartmentCode)) ENGINE=InnoDB;
+
+CREATE TABLE Modules(
+ ModuleCode CHAR(7) NOT NULL PRIMARY KEY,
+ ModuleName VARCHAR(30),
+ WhenTaught ENUM(‘Autumn’, ‘Spring’,‘Summer’,‘Year’)) ENGINE=InnoDB;
+
+CREATE TABLE Departments(
+ DepartmentCode CHAR(3) NOT NULL PRIMARY KEY,
+ DepartmentName VARCHAR(30)) ENGINE=InnoDB;
+
+CREATE TABLE Users(
+ ID INT(9) NOT NULL PRIMARY KEY,
+ Username VARCHAR(10),
+ Password VARCHAR(30),
+ Authorisation ENUM(‘Admin’, ‘Registrars’, ‘Teachers’, ‘Students’),
+ LoggedIn TINYINT(1)) ENGINE=InnoDB;
