@@ -1,6 +1,9 @@
 package GUI;
 import java.awt.*;
 import javax.swing.*;
+
+import SQLcode.Sql;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -12,6 +15,7 @@ public class studentpage extends JFrame {
 		 }
 	 
 public studentpage() throws HeadlessException {
+	Sql s = new Sql();
 	JFrame window = new JFrame("Systems Design & Security: Team Project");
 	 window.setVisible(true);
 	 window.setSize(1000,1000);
@@ -30,12 +34,6 @@ public studentpage() throws HeadlessException {
 	 welcomeLabel.setBounds(290,20,380,50);
 	 panel.add(welcomeLabel);
 	 
-	 //adds label for account management button
-	 JLabel accountManagement = new JLabel("Press for Account Management");
-	 accountManagement.setFont(new Font("Serif", Font.BOLD, 20));
-	 accountManagement.setBounds(260,310,380,50);
-	 panel.add(accountManagement);
-	 
 	 //adds label for current status button
 	 JLabel currentStatus = new JLabel("Press for Current Status");
 	 currentStatus.setFont(new Font("Serif", Font.BOLD, 20));
@@ -48,17 +46,6 @@ public studentpage() throws HeadlessException {
 	 previousStatus.setBounds(260,510,380,50);
 	 panel.add(previousStatus);
 	 
-	 //adds account management button
-	 JButton accountButton = new JButton("GO");
-	 accountButton.setBounds(550,300,160,75);
-	 panel.add(accountButton);
-	 //action for account management
-	 accountButton.addActionListener(new ActionListener() {
-		 public void actionPerformed(ActionEvent e) {
-			  window.dispose();
-		 }
-	 });
-	 
 	 //adds current status button
 	 JButton cStatusButton = new JButton("GO");
 	 cStatusButton.setBounds(550,400,160,75);
@@ -67,6 +54,7 @@ public studentpage() throws HeadlessException {
 	 cStatusButton.addActionListener(new ActionListener() {
 		 public void actionPerformed(ActionEvent e) {
 			 window.dispose();
+			 new currentStatus();
 		 }
 	 });
 	 
@@ -78,6 +66,7 @@ public studentpage() throws HeadlessException {
 	 pStatusButton.addActionListener(new ActionListener() {
 		 public void actionPerformed(ActionEvent e) {
 			 window.dispose();
+			 new previousStatus();
 		 }
 	 });
 	
