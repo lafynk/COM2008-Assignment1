@@ -1,4 +1,4 @@
-//SQL for creating DB tables
+﻿//SQL for creating DB tables
 //1:17:00 is useful to understand how to type up using JDBC
 
 CREATE TABLE PeriodsOfStudy(
