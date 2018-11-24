@@ -12,7 +12,7 @@ import classPkg.PeriodOfStudy;
 import classPkg.StuInfo;
 import classPkg.UserInfo;
 
-public class Sql2 {
+public class Sql {
 	// find user
 	public UserInfo checkLogIn(String usr, String pw) throws SQLException {
 		Connection con = setUpConnection();
