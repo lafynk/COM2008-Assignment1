@@ -164,6 +164,26 @@ public class Sql {
 
 	// add fns
 	// add new User
+	public void addUser(int id, String usr, String pw, String perm) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO Users VALUES (?,?,?,?,0)");
+			pstmt.setInt(1, id);
+			pstmt.setString(2, usr);
+			pstmt.setString(3, pw);
+			pstmt.setString(4, perm);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.out.print("No access");
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		if (con != null)
+			con.close();
+	}
 	// add new department
 	// add course
 	// add module
