@@ -21,6 +21,7 @@ public class Sql {
 		String perm = "";
 		boolean logIn = false;
 		PreparedStatement pstmt = null;
+		UserInfo u = null;
 		try {
 			pstmt = con.prepareStatement("SELECT * FROM Users WHERE Username = ?");
 			pstmt.setString(1, usr);
@@ -33,17 +34,18 @@ public class Sql {
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
 		}
 		if (con != null)
 			con.close();
+		System.out.println("xxxx" + pass + "xxxxx");
 		if ((pw == pass) && (logIn == false)) {
-			return new UserInfo(ID, perm);
-		} else
-			return null;
+			u = new UserInfo(ID, perm);
+			System.out.println("2");//change log in to true
+		}
+		return u;
 	}
 
 	// find student info from regNo
@@ -68,7 +70,6 @@ public class Sql {
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -116,7 +117,6 @@ public class Sql {
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -152,7 +152,6 @@ public class Sql {
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -176,7 +175,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -196,7 +194,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -219,7 +216,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -240,7 +236,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -267,7 +262,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -288,7 +282,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -309,7 +302,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -328,7 +320,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -346,7 +337,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -365,7 +355,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -384,7 +373,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -404,7 +392,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -425,7 +412,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -444,7 +430,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -464,7 +449,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -484,7 +468,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -503,7 +486,6 @@ public class Sql {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
@@ -527,7 +509,6 @@ public class Sql {
 			con = DriverManager.getConnection("jdbc:mysql://stusql.dcs.shef.ac.uk/team035", "team035", "b7af5f37");
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		}
 		return con;
 	}
