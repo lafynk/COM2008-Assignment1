@@ -184,8 +184,49 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
+
 	// add new department
+	public void addDep(String code, String name) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO Departments VALUES (?,?)");
+			pstmt.setString(1, code);
+			pstmt.setString(2, name);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.out.print("No access");
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		if (con != null)
+			con.close();
+	}
+
 	// add course
+	public void addCourse(String code, String name, String dep, String level, boolean pl) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,0)");
+			pstmt.setString(1, code);
+			pstmt.setString(2, name);
+			pstmt.setString(3, dep);
+			pstmt.setString(4, level);
+			pstmt.setBoolean(5, pl);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.out.print("No access");
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		if (con != null)
+			con.close();
+	}
 	// add module
 	// add student
 	// add taken module
