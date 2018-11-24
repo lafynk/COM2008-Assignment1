@@ -37,7 +37,6 @@ public adminpage() throws HeadlessException {
 	 JComboBox<String> accttype = new JComboBox<String>();
 	 
 	// add items to the combo box
-	 accttype.addItem("Student");
 	 accttype.addItem("Admin");
 	 accttype.addItem("Teacher");
 	 accttype.addItem("Registrar");
@@ -70,12 +69,16 @@ public adminpage() throws HeadlessException {
      
      /////////////////////////////////
      
-	 JTextField department = new JTextField("Type department to add/delete here");
-	 department.setBounds(10,200,300,50);
+	 JTextField department = new JTextField("Type department to add here");
+	 department.setBounds(10,200,250,50);
 	 window.add(department);
+	 
+	 JTextField departmentcode = new JTextField("Type department code to add/delete here");
+	 departmentcode.setBounds(270,200,250,50);
+	 window.add(departmentcode);
 
 	 JButton adddeptbutton = new JButton("Add dept");
-	 adddeptbutton.setBounds(350,200,200,50);
+	 adddeptbutton.setBounds(540,200,200,50);
 	 window.add(adddeptbutton);
 	 adddeptbutton.addActionListener(new ActionListener() {
 
@@ -86,7 +89,7 @@ public adminpage() throws HeadlessException {
     }
     });
      	 JButton deletedeptbutton = new JButton("Delete dept");
-	 deletedeptbutton.setBounds(600,200,200,50);
+	 deletedeptbutton.setBounds(750,200,200,50);
 	 window.add(deletedeptbutton);
 	 deletedeptbutton.addActionListener(new ActionListener() {
 
@@ -99,10 +102,10 @@ public adminpage() throws HeadlessException {
     
     ///////////////////
      
-	 JTextField degree = new JTextField("Type course to add here");
+	 JTextField degree = new JTextField("Type course to add/delete here");
 	 degree.setBounds(10,300,300,50);
 	 window.add(degree);
-	 JTextField deptfordegree = new JTextField("Type department to add course to");
+	 JTextField deptfordegree = new JTextField("Type department code to add course to");
 	 deptfordegree.setBounds(10,350,300,50);
 	 window.add(deptfordegree);
 	 
@@ -133,10 +136,10 @@ public adminpage() throws HeadlessException {
     
     ///////////////////
      
-	 JTextField module = new JTextField("Type module to add here");
+	 JTextField module = new JTextField("Type module to add/delete here");
 	 module.setBounds(10,450,300,50);
 	 window.add(module);
-	 JTextField modulefordegree = new JTextField("Type degree to add module to");
+	 JTextField modulefordegree = new JTextField("Type degree code to add module to");
 	 modulefordegree.setBounds(10,500,300,50);
 	 window.add(modulefordegree);
 	 

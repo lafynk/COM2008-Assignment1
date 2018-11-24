@@ -116,7 +116,7 @@ JComboBox<String> period = new JComboBox<String>();
 //add items to the combo box
 period.addItem("autumn semester");
 period.addItem("spring semester");
-period.addItem("all year babeh");
+period.addItem("all year");
 
 period.setBounds(460,260,140,50);
 window.add(period);
