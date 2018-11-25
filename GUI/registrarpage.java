@@ -50,10 +50,16 @@ public registrarpage() throws HeadlessException {
      studentemail.setBounds(10,300,250,50);
 	 window.add(studentemail);
 	 
-	 JTextField studenttitle = new JTextField("Type student title (if creating acct)");
-     studenttitle.setBounds(360,250,250,50);
-	 window.add(studenttitle);
+
+	 JComboBox<String> studenttitle = new JComboBox<String>();
 	 
+		// add items to the combo box
+	 studenttitle.addItem("Mr");
+	 studenttitle.addItem("Ms");
+	
+		 studenttitle.setBounds(360,250,250,50);
+		window.add(studenttitle);
+		
 	 JTextField studenttutor = new JTextField("Type student tutor (if creating acct)");
      studenttutor.setBounds(360,200,250,50);
 	 window.add(studenttutor);
@@ -103,7 +109,7 @@ public registrarpage() throws HeadlessException {
     	String makeemail =( studentfname.getText().substring(0, 1)) + studentsname.getText() + "2"+"@sheffield.ac.uk";
 		try {
 			Random rand = new Random();
-			s.addStudent(100000000 + rand.nextInt(900000000), studenttitle.getText(), studentsname.getText(),studentfname.getText(), makeemail, studenttutor.getText(), studentdegree.getText(), lvl.getSelectedItem().toString().charAt(0), "");
+			s.addStudent(100000000 + rand.nextInt(900000000), studenttitle.getSelectedItem().toString(), studentsname.getText(),studentfname.getText(), makeemail, studenttutor.getText(), studentdegree.getText(), lvl.getSelectedItem().toString().charAt(0), " ");
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
