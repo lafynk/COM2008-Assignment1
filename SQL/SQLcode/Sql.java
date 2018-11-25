@@ -42,10 +42,10 @@ public class Sql {
 			con.close();
 		// decryption of pass
 		if ((pw.contentEquals(pass)) && (logIn == false)) {
-			u = new UserInfo(ID, perm);
 			System.out.println("test");// change log in to true
-		}
-		return u;
+			return new UserInfo(ID, perm);
+		} else
+			return null;
 	}
 
 	// find student info from regNo
