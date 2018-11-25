@@ -40,10 +40,10 @@ public class Sql {
 		}
 		if (con != null)
 			con.close();
-		System.out.println("xxxx" + pass + "xxxxx");
-		if ((pw == pass) && (logIn == false)) {
+		// decryption of pass
+		if ((pw.contentEquals(pass)) && (logIn == false)) {
 			u = new UserInfo(ID, perm);
-			System.out.println("2");//change log in to true
+			System.out.println("test");// change log in to true
 		}
 		return u;
 	}
@@ -166,6 +166,8 @@ public class Sql {
 	public void addUser(int id, String usr, String pw, String perm) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
+		// encrypt pw
+		// generate id
 		try {
 			pstmt = con.prepareStatement("INSERT INTO Users VALUES (?,?,?,?,0)");
 			pstmt.setInt(1, id);
@@ -223,7 +225,7 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
-	
+
 	// add module
 	public void addModule(String modCode, String modName, String whenTaught) throws SQLException {
 		Connection con = setUpConnection();
@@ -243,9 +245,10 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
-	
+
 	// add student
-	public void addStudent(int regNo, String title, String surname,String forename, String email, String tutor, String degCode, char periodOfStudy, String awardedClass) throws SQLException {
+	public void addStudent(int regNo, String title, String surname, String forename, String email, String tutor,
+			String degCode, char periodOfStudy, String awardedClass) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
@@ -269,6 +272,7 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
+
 	// add taken module
 	public void addTakenModule(int regCode, String modCode, double g, double r) throws SQLException {
 		Connection con = setUpConnection();
@@ -291,7 +295,7 @@ public class Sql {
 	}
 
 	// remove fns
-	
+
 	// delete user
 	public void removeUser(int id) throws SQLException {
 		Connection con = setUpConnection();
@@ -310,7 +314,7 @@ public class Sql {
 			con.close();
 	}
 	// delete department
-	
+
 	public void removeDeps(String dep) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
@@ -327,6 +331,7 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
+
 	// delete course
 	public void removeCourse(String deg) throws SQLException {
 		Connection con = setUpConnection();
@@ -344,7 +349,7 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
-	
+
 	// delete module
 	public void removeMod(String mod) throws SQLException {
 		Connection con = setUpConnection();
@@ -363,7 +368,7 @@ public class Sql {
 			con.close();
 	}
 	// delete student
-	
+
 	public void removeStudent(int reg) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
@@ -380,7 +385,7 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
-	
+
 	// drop taken module
 	public void removeTakenMod(int regCode, String modCode) throws SQLException {
 		Connection con = setUpConnection();
@@ -419,6 +424,7 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
+
 	// update grade (ask for grade type in param, norm or resit)
 	public void updateGrade(int posRegNo, double grade) throws SQLException {
 		Connection con = setUpConnection();
@@ -437,7 +443,7 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
-	
+
 	public void updateModuleGrade(int posRegNo, String mod, double grade) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
@@ -456,6 +462,7 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
+
 	// add resit grade for module
 	public void updateModuleResit(int posRegNo, String mod, double grade) throws SQLException {
 		Connection con = setUpConnection();
@@ -475,6 +482,7 @@ public class Sql {
 		if (con != null)
 			con.close();
 	}
+
 	// update progress fn
 	public void updateProgress(int posRegNo, boolean b) throws SQLException {
 		Connection con = setUpConnection();
@@ -499,7 +507,8 @@ public class Sql {
 	// check taken module credit total (could leave for josh and tom)
 	// calc weighted mean grade (could leave for tom and josh as no sql involved
 	// other than getting all PoS grades)
-	// pass or fail (same as above, we just need a fn to return PoSmodulesinfo like find module)
+	// pass or fail (same as above, we just need a fn to return PoSmodulesinfo like
+	// find module)
 	// find awarded class in final year (as above)
 
 	// get connection
