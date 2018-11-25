@@ -1,4 +1,4 @@
-﻿//SQL for creating DB tables
+//SQL for creating DB tables
 //1:17:00 is useful to understand how to type up using JDBC
 
 CREATE TABLE PeriodsOfStudy(
@@ -10,7 +10,6 @@ CREATE TABLE PeriodsOfStudy(
  CurrentLevel ENUM('1','2','3','4','P'),
  Grade FLOAT(4,2),
  Progress TINYINT(1),
- FOREIGN KEY (PosRegCode) REFERENCES ModuleTaken,
  FOREIGN KEY (RegistrationNo) REFERENCES Students);
  
 CREATE TABLE Students(
@@ -33,6 +32,7 @@ CREATE TABLE ModuleTaken(
  Grade FLOAT(4,2),
  ResitGrade FLOAT(4,2),
  PRIMARY KEY (PosRegCode,ModuleCode),
+ FOREIGN KEY (PosRegCode) REFERENCES PeriodsOfStudy,
  FOREIGN KEY (ModuleCode) REFERENCES ModuleAssignment) ENGINE=InnoDB;
 
 CREATE TABLE ModuleAssignment(
