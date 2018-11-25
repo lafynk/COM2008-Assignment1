@@ -22,28 +22,31 @@ public class Sql {
 		boolean logIn = false;
 		PreparedStatement pstmt = null;
 		UserInfo u = null;
-		try {
-			pstmt = con.prepareStatement("SELECT * FROM Users WHERE Username = ?");
-			pstmt.setString(1, usr);
-			ResultSet res = pstmt.executeQuery();
-			while (res.next()) {
-				ID = res.getInt(1);
-				pass = res.getString(3);
-				perm = res.getString(4);
-				logIn = res.getBoolean(5);
+		if (pw.length() > 0) {
+			try {
+				pstmt = con.prepareStatement("SELECT * FROM Users WHERE Username = ?");
+				pstmt.setString(1, usr);
+				ResultSet res = pstmt.executeQuery();
+				while (res.next()) {
+					ID = res.getInt(1);
+					pass = res.getString(3);
+					perm = res.getString(4);
+					logIn = res.getBoolean(5);
+				}
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (pstmt != null)
+					pstmt.close();
 			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (pstmt != null)
-				pstmt.close();
-		}
-		if (con != null)
-			con.close();
-		// decryption of pass
-		if ((pw.contentEquals(pass)) && (logIn == false)) {
-			System.out.println("test");// change log in to true
-			return new UserInfo(ID, perm);
+			if (con != null)
+				con.close();
+			// decryption of pass
+			if ((pw.contentEquals(pass)) && (logIn == false)) {
+				// change log in to true
+				return new UserInfo(ID, perm);
+			} else
+				return null;
 		} else
 			return null;
 	}
