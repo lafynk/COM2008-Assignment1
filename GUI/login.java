@@ -46,41 +46,40 @@ public login() throws HeadlessException, SQLException {
     @Override
     public void actionPerformed(ActionEvent e) {
         //your actions
-        //window.exit();
-
-
-			//	UserInfo u = null;
 			
 				UserInfo u=null;
 				try {
 					u = s.checkLogIn(username.getText(), password.getText());
-				} catch (SQLException e1) {
+				} catch (SQLException e2) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					e2.printStackTrace();
 				}
+				
 		
 
 			if (u != null){
 				window.dispose();
-				if (u.getPermission() == "Students"){
+				if (u.getPermission().contentEquals("Students")){
 					new studentpage();
 				}
-				else if (u.getPermission() == "Teachers"){
+				else if (u.getPermission().contentEquals("Teachers")){
 					new teacherpage();
 				}
-				else if (u.getPermission() == "Admin"){
+				else if (u.getPermission().contentEquals("Admin")){
 					new adminpage();
 				}
-				else if (u.getPermission() == "Registrars"){
-					try {
-						new registrarpage();
-					} catch (HeadlessException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+				else if (u.getPermission().contentEquals("Registrars")){
+				
+						try {
+							new registrarpage();
+						} catch (HeadlessException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+				
 				}
 			}
 			else{
