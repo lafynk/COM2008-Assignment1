@@ -1,22 +1,26 @@
 package GUI;
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.util.Random;
 import SQLcode.Sql;
 import classPkg.UserInfo;
 
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 
 
 public class registrarpage extends JFrame {
-	 public static void main(String[] args) {
+	 public static void main(String[] args) throws HeadlessException, SQLException {
 		 // launching code goes in here
 			 new registrarpage();
 		 }
 	 
-public registrarpage() throws HeadlessException {
+public registrarpage() throws HeadlessException, SQLException {
 	Sql s = new Sql();
 	JFrame window = new JFrame("Systems Design & Security: Team Project");
 	 window.setLayout(null);
@@ -46,9 +50,6 @@ public registrarpage() throws HeadlessException {
      studentsname.setBounds(10,250,250,50);
 	 window.add(studentsname);
 	 
-	 JTextField studentemail = new JTextField("Type student email (if creating acct)");
-     studentemail.setBounds(10,300,250,50);
-	 window.add(studentemail);
 	 
 
 	 JComboBox<String> studenttitle = new JComboBox<String>();
@@ -106,7 +107,7 @@ public registrarpage() throws HeadlessException {
         //your actions
         // add acct function call
     	//UserInfo u=null;
-    	String makeemail =( studentfname.getText().substring(0, 1)) + studentsname.getText() + "2"+"@sheffield.ac.uk";
+    	String makeemail =( studentfname.getText().substring(0, 1)) + studentsname.getText() + "1"+"@sheffield.ac.uk";
 		try {
 			Random rand = new Random();
 			s.addStudent(100000000 + rand.nextInt(900000000), studenttitle.getSelectedItem().toString(), studentsname.getText(),studentfname.getText(), makeemail, studenttutor.getText(), studentdegree.getText(), lvl.getSelectedItem().toString().charAt(0), " ");
@@ -182,22 +183,115 @@ window.add(yearofstudy);
 JComboBox<String> period = new JComboBox<String>();
 
 //add items to the combo box
-period.addItem("autumn semester");
-period.addItem("spring semester");
-period.addItem("all year");
-
+period.addItem("Autumn");
+period.addItem("Spring");
+period.addItem("Summer");
+period.addItem("Year");
 period.setBounds(460,460,140,50);
 window.add(period);
   
 
 
 
-JTextArea ta=new JTextArea(200,200);  
+
 JPanel p1=new JPanel();  
-p1.add(ta);  
-JPanel p2=new JPanel();  
+JPanel p2=new JPanel(); 
 JPanel p3=new JPanel();
 JPanel p4=new JPanel();
+/*
+Statement st = null;
+/*
+DefaultTableModel studentmodel = new DefaultTableModel(new String[]{"RegNo", "Title", "Surname", "Forename", "Email","Tutor","Degree Code","Current PoS", "Class Awarded"}, 0);
+//try {
+ResultSet rs = st.executeQuery("SELECT * FROM Students");
+	while(rs.next())
+	{
+	    String d = rs.getString("RegistrationNo");
+	    String e = rs.getString("Title");
+	    String f = rs.getString("Surname");
+	    String g = rs.getString("Forename");
+	    String h = rs.getString("Email");
+	    String i = rs.getString("Tutor");
+	    String j = rs.getString("DegreeCode");
+	    String k = rs.getString("CurrentPeriodOfStudy");
+	    String l = rs.getString("AwardedClass");
+
+	   studentmodel.addRow(new Object[]{d, e, f, g, h, i, j, k, l});
+	    
+	    JTable table = new JTable();
+	    table.setModel(studentmodel);
+	    p2.add(table);
+	}
+/*} catch (NullPointerException e) {
+	JLabel nodata = new JLabel("No Data");
+	p1.add(nodata);
+}
+
+
+DefaultTableModel deptmodel = new DefaultTableModel(new String[]{"Department Code", "Department Name"}, 0);
+try {
+ResultSet rs2 = st.executeQuery("SELECT * FROM Departments");
+	while(rs.next())
+	{
+	    String d = rs2.getString("DepartmentCode");
+	    String e = rs2.getString("DepartmentName");
+
+	    deptmodel.addRow(new Object[]{d, e});
+	    
+	    JTable table = new JTable();
+	    table.setModel(deptmodel);
+	    p2.add(table);
+	}
+} catch (NullPointerException e) {
+	JLabel nodata = new JLabel("No Data");
+	p2.add(nodata);
+}
+
+
+DefaultTableModel degreemodel = new DefaultTableModel(new String[]{"Degree Code", "Degree Name", "Deaprtment Code", "Max Level Of Study","Placement"}, 0);
+try {
+ResultSet rs3 = st.executeQuery("SELECT * FROM Degrees");
+	while(rs3.next())
+	{
+	    String d = rs3.getString("DegreeCode");
+	    String e = rs3.getString("DegreeName");
+	    String f = rs3.getString("DepartmentCode");
+	    String g = rs3.getString("MaxLevelOfStudy");
+	    String h = rs3.getString("Placement");
+
+	    degreemodel.addRow(new Object[]{d, e, f, g, h});
+	    
+	    JTable table = new JTable();
+	    table.setModel(degreemodel);
+	    p3.add(table);
+	}
+} catch (NullPointerException e) {
+	JLabel nodata = new JLabel("No Data");
+	p3.add(nodata);
+}
+
+
+DefaultTableModel modulemodel = new DefaultTableModel(new String[]{"Module Code", "Module Name","When Taught"}, 0);
+try {
+ResultSet rs4 = st.executeQuery("SELECT * FROM Modules");
+	while(rs.next())
+	{
+	    String d = rs4.getString("ModuleCode");
+	    String e = rs4.getString("ModuleName");
+	    String f = rs4.getString("WhenTaught");
+
+	    modulemodel.addRow(new Object[]{d, e, f});
+	    
+	    JTable table = new JTable();
+	    table.setModel(modulemodel);
+	    p3.add(table);
+	}
+} catch (NullPointerException e) {
+	JLabel nodata = new JLabel("No Data");
+	p4.add(nodata);
+}
+*/
+
 JTabbedPane tp=new JTabbedPane();  
 tp.setBounds(25,570,950,380);  
 tp.add("Students",p1);  
@@ -206,7 +300,7 @@ tp.add("Degrees",p3);
 tp.add("Modules",p4);  
 window.add(tp); 
 
-	 window.repaint();
+window.repaint();
 		 
  }
 

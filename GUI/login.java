@@ -12,12 +12,12 @@ import classPkg.UserInfo;
 
 public class login extends JFrame {
 
-	 public static void main(String[] args) {
+	 public static void main(String[] args) throws HeadlessException, SQLException {
 		 // launching code goes in here
 			 new login();
 		 }
 
-public login() throws HeadlessException {
+public login() throws HeadlessException, SQLException {
 	Sql s = new Sql();
 	JFrame window = new JFrame("Systems Design & Security: Team Project");
 	 window.setLayout(new FlowLayout());
@@ -72,7 +72,15 @@ public login() throws HeadlessException {
 					new adminpage();
 				}
 				else if (u.getPermission() == "Registrars"){
-					new registrarpage();
+					try {
+						new registrarpage();
+					} catch (HeadlessException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 			else{
