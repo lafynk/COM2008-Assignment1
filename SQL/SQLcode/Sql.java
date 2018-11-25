@@ -212,7 +212,7 @@ public class Sql {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,0)");
+			pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,?)");
 			pstmt.setString(1, code);
 			pstmt.setString(2, name);
 			pstmt.setString(3, dep);
@@ -234,7 +234,7 @@ public class Sql {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("INSERT INTO Module VALUES (?,?,?)");
+			pstmt = con.prepareStatement("INSERT INTO Modules VALUES (?,?,?)");
 			pstmt.setString(1, modCode);
 			pstmt.setString(2, modName);
 			pstmt.setString(3, whenTaught);
@@ -264,7 +264,10 @@ public class Sql {
 			pstmt.setString(6, tutor);
 			pstmt.setString(7, degCode);
 			pstmt.setString(8, String.valueOf(periodOfStudy));
-			pstmt.setString(9, awardedClass);
+			if (awardedClass == "") {
+				pstmt.setString(9, null);
+			} else
+				pstmt.setString(9, awardedClass);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -286,6 +289,27 @@ public class Sql {
 			pstmt.setString(2, modCode);
 			pstmt.setDouble(3, g);
 			pstmt.setDouble(4, r);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		if (con != null)
+			con.close();
+	}
+
+	public void assingModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO ModuleAssignment VALUES (?,?,?,?,?)");
+			pstmt.setString(1, deg);
+			pstmt.setString(2, mod);
+			pstmt.setBoolean(3, o);
+			pstmt.setInt(4, credit);
+			pstmt.setString(5, lvl);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
