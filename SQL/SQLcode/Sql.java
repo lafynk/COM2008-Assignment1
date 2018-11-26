@@ -344,7 +344,7 @@ public class Sql {
 			con.close();
 	}
 
-	public void assingModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
+	public void assignModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
