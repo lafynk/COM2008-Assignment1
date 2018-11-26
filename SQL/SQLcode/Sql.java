@@ -23,6 +23,7 @@ public class Sql {
 		while (rs.next()) {
 			i++;
 		}
+		pstmt.close();
 		if (i == 0) {
 			return e + "@uni.ac.uk";
 		} else {
@@ -184,19 +185,41 @@ public class Sql {
 		return posArray;
 	}
 
+	public boolean checkUsernameExists(String usr) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM Users WHERE Username = ?");
+			pstmt.setString(1, usr);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;// already exists
+			} else
+				return false;// free to add
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (con != null)
+				con.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return true;
+	}
+
 	// add fns
 	// add new User
-	public void addUser(int id, String usr, String pw, String perm) throws SQLException {
+	public void addUser(String usr, String pw, String perm) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		// encrypt pw
 		// generate id
 		try {
-			pstmt = con.prepareStatement("INSERT INTO Users VALUES (?,?,?,?,0)");
-			pstmt.setInt(1, id);
-			pstmt.setString(2, usr);
-			pstmt.setString(3, pw);
-			pstmt.setString(4, perm);
+			pstmt = con
+					.prepareStatement("INSERT INTO Users (Username,Password,Authorisation,LoggedIn) VALUES (?,?,?,0)");
+			pstmt.setString(1, usr);
+			pstmt.setString(2, pw);
+			pstmt.setString(3, perm);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -321,7 +344,7 @@ public class Sql {
 			con.close();
 	}
 
-	public void assignModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
+	public void assingModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
