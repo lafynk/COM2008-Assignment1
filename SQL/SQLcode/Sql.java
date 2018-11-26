@@ -1,11 +1,11 @@
 package SQLcode;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 
 import classPkg.Module;
 import classPkg.PeriodOfStudy;
@@ -13,6 +13,23 @@ import classPkg.StuInfo;
 import classPkg.UserInfo;
 
 public class Sql {
+	public String createEmail(String fore, String sur, Connection con) throws SQLException {
+		String e = fore.charAt(0) + sur;
+		e = e.toLowerCase();
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Students WHERE Email LIKE ?");
+		pstmt.setString(1, e + "%");
+		ResultSet rs = pstmt.executeQuery();
+		int i = 0;
+		while (rs.next()) {
+			i++;
+		}
+		if (i == 0) {
+			return e + "@uni.ac.uk";
+		} else {
+			return (e + Integer.toString(i + 1) + "@uni.ac.uk");
+		}
+	}
+
 	// find user
 	public UserInfo checkLogIn(String usr, String pw) throws SQLException {
 		Connection con = setUpConnection();
@@ -57,7 +74,7 @@ public class Sql {
 		StuInfo student = null;
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("SELECT * FROM Students WHERE RegNo = ?");
+			pstmt = con.prepareStatement("SELECT * FROM Students WHERE RegistrationNo = ?");
 			pstmt.setInt(1, reg);
 			ResultSet res = pstmt.executeQuery();
 			while (res.next()) {
@@ -99,6 +116,7 @@ public class Sql {
 			pstmt3 = con.prepareStatement("SELECT WhenTaught FROM Modules WHERE ModuleCode = ?");
 			pstmt.setInt(1, p.getPosRegCode());
 			ResultSet r1 = pstmt.executeQuery();
+			int i = 0; // for adding to array
 			while (r1.next()) {
 				String mod = r1.getString(2);
 				double grade = r1.getDouble(3);
@@ -116,7 +134,8 @@ public class Sql {
 					credit = r2.getInt(4);
 					level = r2.getString(5).charAt(0);
 				}
-				modArray[modArray.length] = new Module(mod, s.getDegree(), ob, credit, level, taught, grade, resit);
+				modArray[i] = new Module(mod, s.getDegree(), ob, credit, level, taught, grade, resit);
+				i++;
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -142,6 +161,7 @@ public class Sql {
 			pstmt = con.prepareStatement("SELECT * FROM PeriodsOfStudy WHERE RegistrationNo = ?");
 			pstmt.setInt(1, reg);
 			ResultSet res = pstmt.executeQuery();
+			int i = 0; // for adding to array
 			while (res.next()) {
 				int prcode = res.getInt(1);
 				char pos = res.getString(3).charAt(0);
@@ -150,8 +170,8 @@ public class Sql {
 				char level = res.getString(6).charAt(0);
 				double grade = res.getDouble(7);
 				boolean progress = res.getBoolean(8);
-
-				posArray[posArray.length] = new PeriodOfStudy(prcode, reg, pos, start, end, level, grade, progress);
+				posArray[i] = new PeriodOfStudy(prcode, reg, pos, start, end, level, grade, progress);
+				i++;
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -250,8 +270,8 @@ public class Sql {
 	}
 
 	// add student
-	public void addStudent(int regNo, String title, String surname, String forename, String email, String tutor,
-			String degCode, char periodOfStudy, String awardedClass) throws SQLException {
+	public void addStudent(int regNo, String title, String surname, String forename, String tutor, String degCode,
+			char periodOfStudy, String awardedClass) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
@@ -260,6 +280,7 @@ public class Sql {
 			pstmt.setString(2, title);
 			pstmt.setString(3, surname);
 			pstmt.setString(4, forename);
+			String email = createEmail(forename, surname, con);
 			pstmt.setString(5, email);
 			pstmt.setString(6, tutor);
 			pstmt.setString(7, degCode);
@@ -321,6 +342,27 @@ public class Sql {
 			con.close();
 	}
 
+	public void addPoS(int posReg, int reg, char pos, String start, String end, char lvl) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO PeriodsOfStudy VALUES (?,?,?,?,?,?,0.00,0)");
+			pstmt.setInt(1, posReg);
+			pstmt.setInt(2, reg);
+			pstmt.setString(3, String.valueOf(pos));
+			pstmt.setString(4, start);
+			pstmt.setString(5, end);
+			pstmt.setString(6, String.valueOf(lvl));
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		if (con != null)
+			con.close();
+	}
 	// remove fns
 
 	// delete user
@@ -421,6 +463,23 @@ public class Sql {
 			pstmt = con.prepareStatement("DELETE FROM ModuleTaken WHERE PosRegCode = ? AND ModuleCode = ?");
 			pstmt.setInt(1, regCode);
 			pstmt.setString(2, modCode);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		if (con != null)
+			con.close();
+	}
+
+	public void removePoS(int regCode) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM PeriodsOfStudy WHERE PosRegCode = ?");
+			pstmt.setInt(1, regCode);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
