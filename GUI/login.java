@@ -1,52 +1,93 @@
 package GUI;
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.awt.event.ActionEvent;
-import java.sql.*;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import java.awt.HeadlessException;
+
+import javax.swing.JTextField;
 
 import SQLcode.Sql;
 import classPkg.UserInfo;
 
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.awt.event.ActionEvent;
 
-public class login extends JFrame {
+public class login {
 
-	 public static void main(String[] args) throws HeadlessException, SQLException {
-		 // launching code goes in here
-			 new login();
-		 }
+	JFrame frmSystemsDesign;
+	private JTextField username;
+	private JTextField password;
 
-public login() throws HeadlessException, SQLException {
-	Sql s = new Sql();
-	JFrame window = new JFrame("Systems Design & Security: Team Project");
-	 window.setLayout(new FlowLayout());
-	 window.setSize(1000,1000);
-	 window.setVisible(true);
-	 window.setResizable(false);
-	 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					login window = new login();
+					window.frmSystemsDesign.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
+	/**
+	 * Create the application.
+	 */
+	public login() {
+		initialize();
+	}
 
-
-
-	 JTextField username = new JTextField();
-	 username.setBounds(400,400,200,50);
-	 window.add(username);
-	 
-	 JTextField password = new JTextField();
-	 password.setBounds(400,500,200,50);
-	 window.add(password);
-
-
-	 JButton loginbutton = new JButton("Login");
-	 loginbutton.setBounds(400,600,200,50);
-	 window.add(loginbutton);
-	 loginbutton.addActionListener(new ActionListener() {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //your actions
-			
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		Sql s = new Sql();
+		frmSystemsDesign = new JFrame();
+		frmSystemsDesign.setTitle("Systems Design & Security: Team Project");
+		frmSystemsDesign.setResizable(false);
+		frmSystemsDesign.setBounds(100, 100, 1000, 1000);
+		frmSystemsDesign.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmSystemsDesign.getContentPane().setLayout(null);
+		
+		JLabel lblSystemLogin = new JLabel("System Login");
+		lblSystemLogin.setFont(new Font("Tahoma", Font.PLAIN, 50));
+		lblSystemLogin.setBounds(360, 115, 486, 186);
+		frmSystemsDesign.getContentPane().add(lblSystemLogin);
+		
+		JLabel lblUsername = new JLabel("Username:");
+		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		lblUsername.setBounds(386, 348, 164, 42);
+		frmSystemsDesign.getContentPane().add(lblUsername);
+		
+		username = new JTextField();
+		username.setBounds(386, 406, 262, 47);
+		frmSystemsDesign.getContentPane().add(username);
+		username.setColumns(10);
+		
+		JLabel lblPassword = new JLabel("Password:");
+		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		lblPassword.setBounds(386, 516, 164, 42);
+		frmSystemsDesign.getContentPane().add(lblPassword);
+		
+		password = new JTextField();
+		password.setColumns(10);
+		password.setBounds(386, 574, 262, 47);
+		frmSystemsDesign.getContentPane().add(password);
+		
+		JButton btnLogin = new JButton("Login");
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				UserInfo u=null;
 				try {
 					u = s.checkLogIn(username.getText(), password.getText());
@@ -58,7 +99,7 @@ public login() throws HeadlessException, SQLException {
 		
 
 			if (u != null){
-				window.dispose();
+				frmSystemsDesign.dispose();
 				if (u.getPermission().contentEquals("Students")){
 					new studentpage();
 				}
@@ -66,7 +107,8 @@ public login() throws HeadlessException, SQLException {
 					new teacherpage();
 				}
 				else if (u.getPermission().contentEquals("Admin")){
-					new adminpage();
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
 				}
 				else if (u.getPermission().contentEquals("Registrars")){
 				
@@ -87,23 +129,14 @@ public login() throws HeadlessException, SQLException {
 				}
 			}
 			else{
-			
 				JOptionPane.showMessageDialog(null, "Username or password is incorrect","Login Failure!", JOptionPane.ERROR_MESSAGE);
 			}
-    }
-    });
-
-	 JLabel usernamelabel = new JLabel("Username");
-	 usernamelabel.setBounds(400,340,200,50);
-	 window.add(usernamelabel);
-
-	 JLabel pwdlabel = new JLabel("Password");
-	 pwdlabel.setBounds(400,440,200,50);
-	 window.add(pwdlabel);
-
-
-	 window.repaint();
-
- }
+   
+			}
+		});
+		btnLogin.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		btnLogin.setBounds(386, 722, 262, 71);
+		frmSystemsDesign.getContentPane().add(btnLogin);
+	}
 
 }

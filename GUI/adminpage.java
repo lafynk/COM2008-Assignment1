@@ -1,260 +1,471 @@
 package GUI;
-import java.awt.*;
 
-import javax.swing.*;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.BorderLayout;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import javax.swing.JTextField;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.BoxLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
 
 import SQLcode.Sql;
 
+import com.jgoodies.forms.layout.FormSpecs;
+import java.awt.GridLayout;
+import java.awt.HeadlessException;
+
+import net.miginfocom.swing.MigLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JSeparator;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTabbedPane;
+import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.Random;
 import java.awt.event.ActionEvent;
 
+public class adminpage {
 
-public class adminpage extends JFrame {
-	 public static void main(String[] args) {
-		 // launching code goes in here
-			 new adminpage();
-		 }
-	 
-public adminpage() throws HeadlessException {
-	Sql s = new Sql();
-	JFrame window = new JFrame("Systems Design & Security: Team Project");
-	 window.setLayout(null);
-	 window.setSize(1000,1000);
-	 window.setVisible(true);
-	 window.setResizable(false);
-	 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	 
-	 JLabel adminlabel = new JLabel("Admin Dashboard");
-	 adminlabel.setBounds(40,10,300,50);
-	 adminlabel.setFont(new Font("", Font.PLAIN, 30));
-	 window.add(adminlabel);
+	JFrame frmSystemsDesign;
+	private JTextField useraccountid;
+	private JTextField useraccountpwd;
+	private JTextField useraccount;
+	private JTextField departmentcode;
+	private JTextField department;
+	private JTextField degreecode;
+	private JTextField degree;
+	private JTextField modulecode;
+	private JTextField module;
+	private JTextField degreetoaddmodule;
+	private JTextField moduletoadd;
+	private JTextField credits;
+	private JTextField depttoadddegree;
 
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
-	 JTextField useraccount = new JTextField("Type user account to add/delete here");
-	 useraccount.setBounds(10,100,250,50);
-	 window.add(useraccount);
-	 
-     JTextField useraccountpwd = new JTextField("Type user account password (if creating acct)");
-	 useraccountpwd.setBounds(260,100,250,50);
-	 window.add(useraccountpwd);
-	 
-	 JComboBox<String> accttype = new JComboBox<String>();
-	 
-	// add items to the combo box
-	 accttype.addItem("Admin");
-	 accttype.addItem("Teachers");
-	 accttype.addItem("Registrars");
-	 accttype.setBounds(510,100,80,50);
-	window.add(accttype);
-	
-	 
-	 JButton deleteacctbutton = new JButton("Delete Acct");
-	 deleteacctbutton.setBounds(800,100,200,50);
-	 window.add(deleteacctbutton);
-	 deleteacctbutton.addActionListener(new ActionListener() {
+	/**
+	 * Create the application.
+	 */
+	public adminpage() {
+		initialize();
+	}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //your actions
-        // delte acct function call
-    	try {
-			s.removeUser(Integer.parseInt(useraccount.getText()));
-		} catch (NumberFormatException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    }
-    });
-     	 JButton addacctbutton = new JButton("Add Acct");
-	 addacctbutton.setBounds(600,100,200,50);
-	 window.add(addacctbutton);
-	 addacctbutton.addActionListener(new ActionListener() {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //your actions
-        // add acct function call
-    	Random rand = new Random();
-    	try {
-			s.addUser(100000000 + rand.nextInt(900000000), useraccount.getText(), useraccountpwd.getText(), accttype.getSelectedItem().toString());
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    }
-    });
-     
-     /////////////////////////////////
-     
-	 JTextField department = new JTextField("Type department name to add here");
-	 department.setBounds(10,200,250,50);
-	 window.add(department);
-	 
-	 JTextField departmentcode = new JTextField("Type department code to add/delete here");
-	 departmentcode.setBounds(270,200,250,50);
-	 window.add(departmentcode);
-
-	 JButton adddeptbutton = new JButton("Add dept");
-	 adddeptbutton.setBounds(540,200,200,50);
-	 window.add(adddeptbutton);
-	 adddeptbutton.addActionListener(new ActionListener() {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //your actions
-        // ad dept function call
-    	try {
-			s.addDep(departmentcode.getText(), department.getText());
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    }
-    });
-     	 JButton deletedeptbutton = new JButton("Delete dept");
-	 deletedeptbutton.setBounds(750,200,200,50);
-	 window.add(deletedeptbutton);
-	 deletedeptbutton.addActionListener(new ActionListener() {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //your actions
-        // delte dept function call
-    	try {
-			s.removeDeps(departmentcode.getText());
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    }
-     });
-    
-    ///////////////////
-     
-	 JTextField degree = new JTextField("Type course to add/delete here");
-	 degree.setBounds(10,300,300,50);
-	 window.add(degree);
-	 JTextField deptfordegree = new JTextField("Type department code to add course to");
-	 deptfordegree.setBounds(10,350,300,50);
-	 window.add(deptfordegree);
-	 
-	 
-	 JButton adddegreebutton = new JButton("Add degree");
-	 adddegreebutton.setBounds(350,300,200,50);
-	 window.add(adddegreebutton);
-	 adddegreebutton.addActionListener(new ActionListener() {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //your actions
-        // add degree function call
-    	try {
-			s.addCourse("String code", degree.getText(), deptfordegree.getText(), "String level", true);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    }
-    });
-     	 JButton deletedegreebutton = new JButton("Delete degree");
-	 deletedegreebutton.setBounds(600,300,200,50);
-	 window.add(deletedegreebutton);
-	 deletedegreebutton.addActionListener(new ActionListener() {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //your actions
-        // delte degree function call
-    	try {
-			s.removeCourse(degree.getText());
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    }
-     });
-     
-    
-    ///////////////////
-     
-	 JTextField module = new JTextField("Type module to add/delete here");
-	 module.setBounds(10,450,300,50);
-	 window.add(module);
-	 JTextField modulefordegree = new JTextField("Type degree code to add module to");
-	 modulefordegree.setBounds(10,500,300,50);
-	 window.add(modulefordegree);
-	 
-	 
-	 JButton addmodulebutton = new JButton("Add module");
-	 addmodulebutton.setBounds(350,450,200,50);
-	 window.add(addmodulebutton);
-	 addmodulebutton.addActionListener(new ActionListener() {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //your actions
-        // add module function call
-    }
-    });
-     	 JButton deletemodulebutton = new JButton("Delete module");
-	 deletemodulebutton.setBounds(600,450,200,50);
-	 window.add(deletemodulebutton);
-	 deletemodulebutton.addActionListener(new ActionListener() {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //your actions
-        // delte moudule function call
-    }
-     });
-     // create an empty combo box with items of type String
-JComboBox<String> yearofstudy = new JComboBox<String>();
- 
-// add items to the combo box
-yearofstudy.addItem("1");
-yearofstudy.addItem("2");
-yearofstudy.addItem("3");
-yearofstudy.addItem("4");
-yearofstudy.addItem("5");
-yearofstudy.setBounds(350,510,100,50);
-window.add(yearofstudy);
-     
-
-
-
-     // create an empty combo box with items of type String
-JComboBox<String> coreornah = new JComboBox<String>();
- 
-// add items to the combo box
-coreornah.addItem("Core");
-coreornah.addItem("Not Core");
-
-coreornah.setBounds(460,510,100,50);
-window.add(coreornah);
-
-
-
-    JTextArea ta=new JTextArea(200,200);  
-    JPanel p1=new JPanel();  
-    p1.add(ta);  
-    JPanel p2=new JPanel();  
-    JPanel p3=new JPanel();
-    JPanel p4=new JPanel();
-    JTabbedPane tp=new JTabbedPane();  
-    tp.setBounds(25,570,950,380);  
-    tp.add("User accounts",p1);  
-    tp.add("Departments",p2);  
-    tp.add("Degrees",p3); 
-    tp.add("Modules",p4);  
-    window.add(tp);  
-    
-window.repaint();
-		 
- }
-
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		Sql s = new Sql();
+		frmSystemsDesign = new JFrame();
+		//frmSystemsDesign.setLocation(0, -79);
+		frmSystemsDesign.setSize(1000,1000);
+		frmSystemsDesign.setTitle("Systems Design & Security: Team Project");
+		frmSystemsDesign.setResizable(false);
+		frmSystemsDesign.getContentPane().setLayout(null);
+		
+		JLabel lblAdminDashboard = new JLabel("Admin Dashboard");
+		lblAdminDashboard.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		lblAdminDashboard.setBounds(360, 16, 311, 29);
+		frmSystemsDesign.getContentPane().add(lblAdminDashboard);
+		
+		useraccountid = new JTextField();
+		useraccountid.setBounds(292, 164, 146, 26);
+		frmSystemsDesign.getContentPane().add(useraccountid);
+		useraccountid.setColumns(10);
+		
+		useraccountpwd = new JTextField();
+		useraccountpwd.setBounds(292, 97, 146, 26);
+		frmSystemsDesign.getContentPane().add(useraccountpwd);
+		useraccountpwd.setColumns(10);
+		
+		useraccount = new JTextField();
+		useraccount.setBounds(35, 97, 146, 26);
+		frmSystemsDesign.getContentPane().add(useraccount);
+		useraccount.setColumns(10);
+		
+		JComboBox accttype = new JComboBox();
+		accttype.setModel(new DefaultComboBoxModel(new String[] {"Admin", "Teachers", "Registrars"}));
+		accttype.setBounds(546, 97, 150, 26);
+		frmSystemsDesign.getContentPane().add(accttype);
+		
+		JButton btnAddAccount = new JButton("Add Account");
+		btnAddAccount.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Random rand = new Random();
+		    
+				try {
+					s.addUser(100000000 + rand.nextInt(900000000), useraccount.getText(), useraccountpwd.getText(), accttype.getSelectedItem().toString());
+				    frmSystemsDesign.repaint();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					//e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again. \n Hello","Add Account Failed", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		btnAddAccount.setBounds(791, 96, 150, 29);
+		frmSystemsDesign.getContentPane().add(btnAddAccount);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(15, 145, 948, 2);
+		frmSystemsDesign.getContentPane().add(separator);
+		
+		JLabel lblAccountUsername = new JLabel("Account Username");
+		lblAccountUsername.setBounds(35, 61, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblAccountUsername);
+		
+		JLabel lblAccountPassword = new JLabel("Account Password");
+		lblAccountPassword.setBounds(292, 61, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblAccountPassword);
+		
+		JLabel lblAccountId = new JLabel("Account ID");
+		lblAccountId.setBounds(199, 167, 134, 20);
+		frmSystemsDesign.getContentPane().add(lblAccountId);
+		
+		JButton btnDeleteAccount = new JButton("Delete Account");
+		btnDeleteAccount.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					s.removeUser(Integer.parseInt(useraccountid.getText()));
+				} catch (NumberFormatException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnDeleteAccount.setBounds(546, 163, 150, 29);
+		frmSystemsDesign.getContentPane().add(btnDeleteAccount);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setBounds(15, 201, 948, 2);
+		frmSystemsDesign.getContentPane().add(separator_1);
+		
+		departmentcode = new JTextField();
+		departmentcode.setBounds(35, 232, 146, 26);
+		frmSystemsDesign.getContentPane().add(departmentcode);
+		departmentcode.setColumns(10);
+		
+		JLabel lblDegreeCode = new JLabel("Department Code");
+		lblDegreeCode.setBounds(35, 208, 134, 20);
+		frmSystemsDesign.getContentPane().add(lblDegreeCode);
+		
+		department = new JTextField();
+		department.setBounds(292, 232, 146, 26);
+		frmSystemsDesign.getContentPane().add(department);
+		department.setColumns(10);
+		
+		JLabel lblDegreeName = new JLabel("Department Name");
+		lblDegreeName.setBounds(292, 208, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblDegreeName);
+		
+		JButton btnAddDepartment = new JButton("Add Department");
+		btnAddDepartment.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					s.addDep(departmentcode.getText(), department.getText());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnAddDepartment.setBounds(546, 231, 150, 29);
+		frmSystemsDesign.getContentPane().add(btnAddDepartment);
+		
+		JButton btnDeleteDepartment = new JButton("Delete Department");
+		btnDeleteDepartment.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					s.removeDeps(departmentcode.getText());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnDeleteDepartment.setBounds(35, 274, 164, 29);
+		frmSystemsDesign.getContentPane().add(btnDeleteDepartment);
+		
+		JSeparator separator_3 = new JSeparator();
+		separator_3.setBounds(15, 307, 948, 2);
+		frmSystemsDesign.getContentPane().add(separator_3);
+		
+		JLabel lblDegreeCode_1 = new JLabel("Degree Code");
+		lblDegreeCode_1.setBounds(35, 316, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblDegreeCode_1);
+		
+		degreecode = new JTextField();
+		degreecode.setBounds(35, 340, 146, 26);
+		frmSystemsDesign.getContentPane().add(degreecode);
+		degreecode.setColumns(10);
+		
+		JLabel lblDegreeName_1 = new JLabel("Degree Name");
+		lblDegreeName_1.setBounds(292, 316, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblDegreeName_1);
+		
+		degree = new JTextField();
+		degree.setColumns(10);
+		degree.setBounds(292, 340, 146, 26);
+		frmSystemsDesign.getContentPane().add(degree);
+		
+		JLabel lblMaxLevelOf = new JLabel("Max Level Of Study");
+		lblMaxLevelOf.setBounds(550, 316, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblMaxLevelOf);
+		
+		JComboBox degreelvl = new JComboBox();
+		degreelvl.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		degreelvl.setBounds(546, 340, 150, 26);
+		frmSystemsDesign.getContentPane().add(degreelvl);
+		
+		JComboBox placement = new JComboBox();
+		placement.setModel(new DefaultComboBoxModel(new String[] {"Yes", "No"}));
+		placement.setBounds(546, 406, 150, 26);
+		frmSystemsDesign.getContentPane().add(placement);
+		
+		JLabel lblPlacement = new JLabel("Placement?");
+		lblPlacement.setBounds(550, 382, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblPlacement);
+		
+		JButton btnAddDegree = new JButton("Add Degree");
+		btnAddDegree.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Boolean placementgoing;
+					if (placement.getSelectedItem().toString() == "Yes") {
+						placementgoing = true;
+					}
+					else {
+						placementgoing = false;
+					}
+					s.addCourse(degreecode.getText(), degree.getText(), depttoadddegree.getText(), degreelvl.getSelectedItem().toString(), placementgoing);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					//e1.printStackTrace();
+					System.out.print(degreelvl.getSelectedItem().toString());
+				}
+			}
+		});
+		btnAddDegree.setBounds(791, 339, 150, 29);
+		frmSystemsDesign.getContentPane().add(btnAddDegree);
+		
+		JSeparator separator_4 = new JSeparator();
+		separator_4.setOrientation(SwingConstants.VERTICAL);
+		separator_4.setBounds(235, 234, 24, 69);
+		frmSystemsDesign.getContentPane().add(separator_4);
+		
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setOrientation(SwingConstants.VERTICAL);
+		separator_2.setBounds(235, 363, 24, 69);
+		frmSystemsDesign.getContentPane().add(separator_2);
+		
+		JButton btnDeleteDegree = new JButton("Delete Degree");
+		btnDeleteDegree.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					s.removeCourse(degreecode.getText());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnDeleteDegree.setBounds(35, 405, 150, 29);
+		frmSystemsDesign.getContentPane().add(btnDeleteDegree);
+		
+		JSeparator separator_5 = new JSeparator();
+		separator_5.setBounds(15, 440, 948, 2);
+		frmSystemsDesign.getContentPane().add(separator_5);
+		
+		JLabel lblModuleCode = new JLabel("Module Code");
+		lblModuleCode.setBounds(35, 451, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblModuleCode);
+		
+		modulecode = new JTextField();
+		modulecode.setColumns(10);
+		modulecode.setBounds(35, 475, 146, 26);
+		frmSystemsDesign.getContentPane().add(modulecode);
+		
+		JLabel lblModuleName = new JLabel("Module Name");
+		lblModuleName.setBounds(292, 451, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblModuleName);
+		
+		module = new JTextField();
+		module.setColumns(10);
+		module.setBounds(292, 475, 146, 26);
+		frmSystemsDesign.getContentPane().add(module);
+		
+		JLabel lblWhenTaught = new JLabel("When Taught");
+		lblWhenTaught.setBounds(546, 451, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblWhenTaught);
+		
+		JComboBox modulewhentaught = new JComboBox();
+		modulewhentaught.setModel(new DefaultComboBoxModel(new String[] {"Autumn", "Spring", "Summer", "Year"}));
+		modulewhentaught.setBounds(546, 475, 150, 26);
+		frmSystemsDesign.getContentPane().add(modulewhentaught);
+		
+		JButton btnAddModule = new JButton("Add Module");
+		btnAddModule.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					s.addModule(modulecode.getText(), module.getText(), modulewhentaught.getSelectedItem().toString());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnAddModule.setBounds(791, 474, 150, 29);
+		frmSystemsDesign.getContentPane().add(btnAddModule);
+		
+		JSeparator separator_6 = new JSeparator();
+		separator_6.setBounds(15, 544, 948, 2);
+		frmSystemsDesign.getContentPane().add(separator_6);
+		
+		JLabel lblDegreeCode_2 = new JLabel("Degree Code");
+		lblDegreeCode_2.setBounds(35, 552, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblDegreeCode_2);
+		
+		degreetoaddmodule = new JTextField();
+		degreetoaddmodule.setColumns(10);
+		degreetoaddmodule.setBounds(35, 576, 146, 26);
+		frmSystemsDesign.getContentPane().add(degreetoaddmodule);
+		
+		JLabel label_1 = new JLabel("Module Code");
+		label_1.setBounds(292, 552, 146, 20);
+		frmSystemsDesign.getContentPane().add(label_1);
+		
+		moduletoadd = new JTextField();
+		moduletoadd.setColumns(10);
+		moduletoadd.setBounds(292, 576, 146, 26);
+		frmSystemsDesign.getContentPane().add(moduletoadd);
+		
+		JLabel lblCore = new JLabel("Core?");
+		lblCore.setBounds(550, 552, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblCore);
+		
+		JComboBox core = new JComboBox();
+		core.setModel(new DefaultComboBoxModel(new String[] {"Yes", "No"}));
+		core.setBounds(546, 576, 150, 26);
+		frmSystemsDesign.getContentPane().add(core);
+		
+		JLabel lblLevelOfStudy = new JLabel("Level Of Study");
+		lblLevelOfStudy.setBounds(550, 607, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblLevelOfStudy);
+		
+		JComboBox modulelvl = new JComboBox();
+		modulelvl.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "P"}));
+		modulelvl.setBounds(546, 631, 150, 26);
+		frmSystemsDesign.getContentPane().add(modulelvl);
+		
+		JLabel lblCredits = new JLabel("Credits");
+		lblCredits.setBounds(292, 607, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblCredits);
+		
+		credits = new JTextField();
+		credits.setColumns(10);
+		credits.setBounds(292, 631, 146, 26);
+		frmSystemsDesign.getContentPane().add(credits);
+		
+		JButton btnAssignModule = new JButton("<html>Assign module to degree</html>");
+		btnAssignModule.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Boolean coreornot;
+					if (core.getSelectedItem().toString() == "Yes") {
+						coreornot = true;
+					}
+					else {
+						coreornot = false;
+					}
+					s.assignModuleToDegree(degreetoaddmodule.getText(), moduletoadd.getText(), coreornot, Integer.parseInt(credits.getText()), modulelvl.getSelectedItem().toString());
+				} catch (NumberFormatException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnAssignModule.setBounds(791, 575, 150, 82);
+		frmSystemsDesign.getContentPane().add(btnAssignModule);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(0, 673, 994, 287);
+		frmSystemsDesign.getContentPane().add(tabbedPane);
+		
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("User Accounts", null, panel, null);
+		
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("Departments", null, panel_1, null);
+		
+		JPanel panel_3 = new JPanel();
+		tabbedPane.addTab("Degrees", null, panel_3, null);
+		
+		JPanel panel_2 = new JPanel();
+		tabbedPane.addTab("Modules", null, panel_2, null);
+		
+		JButton btnDeleteModule = new JButton("Delete Module");
+		btnDeleteModule.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					s.removeMod(modulecode.getText());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnDeleteModule.setBounds(35, 509, 150, 29);
+		frmSystemsDesign.getContentPane().add(btnDeleteModule);
+		
+		JLabel lblDepartmentToAdd = new JLabel("Department to add degree to");
+		lblDepartmentToAdd.setBounds(292, 382, 220, 20);
+		frmSystemsDesign.getContentPane().add(lblDepartmentToAdd);
+		
+		depttoadddegree = new JTextField();
+		depttoadddegree.setColumns(10);
+		depttoadddegree.setBounds(292, 406, 146, 26);
+		frmSystemsDesign.getContentPane().add(depttoadddegree);
+		
+		JButton btnLogout = new JButton("Logout");
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					frmSystemsDesign.dispose();
+					login window = new login();
+					window.frmSystemsDesign.setVisible(true);
+				} catch (HeadlessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnLogout.setBounds(826, 22, 115, 29);
+		frmSystemsDesign.getContentPane().add(btnLogout);
+	}
 }
