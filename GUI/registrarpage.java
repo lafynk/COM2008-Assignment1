@@ -110,7 +110,9 @@ public registrarpage() throws HeadlessException, SQLException {
     	String makeemail =( studentfname.getText().substring(0, 1)) + studentsname.getText() + "1"+"@sheffield.ac.uk";
 		try {
 			Random rand = new Random();
-			s.addStudent(100000000 + rand.nextInt(900000000), studenttitle.getSelectedItem().toString(), studentsname.getText(),studentfname.getText(), makeemail, studenttutor.getText(), studentdegree.getText(), lvl.getSelectedItem().toString().charAt(0), " ");
+			int randReg = rand.nextInt(900000000);
+			s.addUser(100000000 + randReg, "joshstu", "123", "Students");
+			s.addStudent(100000000 + randReg, studenttitle.getSelectedItem().toString(), studentsname.getText(),studentfname.getText(), makeemail, studenttutor.getText(), studentdegree.getText(), lvl.getSelectedItem().toString().charAt(0), "1st");
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

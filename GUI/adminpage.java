@@ -2,7 +2,12 @@ package GUI;
 import java.awt.*;
 
 import javax.swing.*;
+
+import SQLcode.Sql;
+
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.Random;
 import java.awt.event.ActionEvent;
 
 
@@ -13,6 +18,7 @@ public class adminpage extends JFrame {
 		 }
 	 
 public adminpage() throws HeadlessException {
+	Sql s = new Sql();
 	JFrame window = new JFrame("Systems Design & Security: Team Project");
 	 window.setLayout(null);
 	 window.setSize(1000,1000);
@@ -38,8 +44,8 @@ public adminpage() throws HeadlessException {
 	 
 	// add items to the combo box
 	 accttype.addItem("Admin");
-	 accttype.addItem("Teacher");
-	 accttype.addItem("Registrar");
+	 accttype.addItem("Teachers");
+	 accttype.addItem("Registrars");
 	 accttype.setBounds(510,100,80,50);
 	window.add(accttype);
 	
@@ -53,6 +59,15 @@ public adminpage() throws HeadlessException {
     public void actionPerformed(ActionEvent e) {
         //your actions
         // delte acct function call
+    	try {
+			s.removeUser(Integer.parseInt(useraccount.getText()));
+		} catch (NumberFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
     });
      	 JButton addacctbutton = new JButton("Add Acct");
@@ -64,12 +79,19 @@ public adminpage() throws HeadlessException {
     public void actionPerformed(ActionEvent e) {
         //your actions
         // add acct function call
+    	Random rand = new Random();
+    	try {
+			s.addUser(100000000 + rand.nextInt(900000000), useraccount.getText(), useraccountpwd.getText(), accttype.getSelectedItem().toString());
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
     });
      
      /////////////////////////////////
      
-	 JTextField department = new JTextField("Type department to add here");
+	 JTextField department = new JTextField("Type department name to add here");
 	 department.setBounds(10,200,250,50);
 	 window.add(department);
 	 
@@ -85,7 +107,13 @@ public adminpage() throws HeadlessException {
     @Override
     public void actionPerformed(ActionEvent e) {
         //your actions
-        // delte dept function call
+        // ad dept function call
+    	try {
+			s.addDep(departmentcode.getText(), department.getText());
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
     });
      	 JButton deletedeptbutton = new JButton("Delete dept");
@@ -96,7 +124,13 @@ public adminpage() throws HeadlessException {
     @Override
     public void actionPerformed(ActionEvent e) {
         //your actions
-        // add dept function call
+        // delte dept function call
+    	try {
+			s.removeDeps(departmentcode.getText());
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
      });
     
@@ -119,6 +153,12 @@ public adminpage() throws HeadlessException {
     public void actionPerformed(ActionEvent e) {
         //your actions
         // add degree function call
+    	try {
+			s.addCourse("String code", degree.getText(), deptfordegree.getText(), "String level", true);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
     });
      	 JButton deletedegreebutton = new JButton("Delete degree");
@@ -130,6 +170,12 @@ public adminpage() throws HeadlessException {
     public void actionPerformed(ActionEvent e) {
         //your actions
         // delte degree function call
+    	try {
+			s.removeCourse(degree.getText());
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
      });
      

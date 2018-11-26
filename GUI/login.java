@@ -81,8 +81,13 @@ public login() throws HeadlessException, SQLException {
 						}
 				
 				}
+				else {
+					
+					JOptionPane.showMessageDialog(null, "User permissions could not be determined","Login Failure!", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 			else{
+			
 				JOptionPane.showMessageDialog(null, "Username or password is incorrect","Login Failure!", JOptionPane.ERROR_MESSAGE);
 			}
     }
