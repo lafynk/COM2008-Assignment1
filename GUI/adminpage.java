@@ -82,7 +82,7 @@ public class adminpage {
 	private void initialize() {
 		Sql s = new Sql();
 		frmSystemsDesign = new JFrame();
-		//frmSystemsDesign.setLocation(0, -79);
+		frmSystemsDesign.setLocation(100, 0);
 		frmSystemsDesign.setSize(1000,1000);
 		frmSystemsDesign.setTitle("Systems Design & Security: Team Project");
 		frmSystemsDesign.setResizable(false);
@@ -119,12 +119,13 @@ public class adminpage {
 				Random rand = new Random();
 		    
 				try {
-					s.addUser(100000000 + rand.nextInt(900000000), useraccount.getText(), useraccountpwd.getText(), accttype.getSelectedItem().toString());
-				    frmSystemsDesign.repaint();
+					s.addUser(useraccount.getText(), useraccountpwd.getText(), accttype.getSelectedItem().toString());
+				   // frmSystemsDesign.revalidate();
+				   // frmSystemsDesign.repaint();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again. \n Hello","Add Account Failed", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -154,7 +155,8 @@ public class adminpage {
 					s.removeUser(Integer.parseInt(useraccountid.getText()));
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				//	e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -190,7 +192,8 @@ public class adminpage {
 					s.addDep(departmentcode.getText(), department.getText());
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					///e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -204,7 +207,8 @@ public class adminpage {
 					s.removeDeps(departmentcode.getText());
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					//e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -266,7 +270,7 @@ public class adminpage {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
-					System.out.print(degreelvl.getSelectedItem().toString());
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -290,7 +294,8 @@ public class adminpage {
 					s.removeCourse(degreecode.getText());
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					//e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -335,7 +340,8 @@ public class adminpage {
 					s.addModule(modulecode.getText(), module.getText(), modulewhentaught.getSelectedItem().toString());
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					//e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -405,7 +411,8 @@ public class adminpage {
 					s.assignModuleToDegree(degreetoaddmodule.getText(), moduletoadd.getText(), coreornot, Integer.parseInt(credits.getText()), modulelvl.getSelectedItem().toString());
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					//e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -433,9 +440,10 @@ public class adminpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.removeMod(modulecode.getText());
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					//e1.printStackTrace();
 				}
 			}
 		});
@@ -461,7 +469,7 @@ public class adminpage {
 					window.frmSystemsDesign.setVisible(true);
 				} catch (HeadlessException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					//e1.printStackTrace();
 				}
 			}
 		});

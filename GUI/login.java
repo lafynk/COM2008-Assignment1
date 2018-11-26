@@ -56,7 +56,7 @@ public class login {
 		frmSystemsDesign = new JFrame();
 		frmSystemsDesign.setTitle("Systems Design & Security: Team Project");
 		frmSystemsDesign.setResizable(false);
-		frmSystemsDesign.setBounds(100, 100, 1000, 1000);
+		frmSystemsDesign.setBounds(100, 0, 1000, 1000);
 		frmSystemsDesign.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSystemsDesign.getContentPane().setLayout(null);
 		
@@ -111,16 +111,9 @@ public class login {
 					window.frmSystemsDesign.setVisible(true);
 				}
 				else if (u.getPermission().contentEquals("Registrars")){
-				
-						try {
-							new registrarpage();
-						} catch (HeadlessException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
+					registrarpage window = new registrarpage();
+					window.frmSystemsDesign.setVisible(true);
+						
 				
 				}
 				else {

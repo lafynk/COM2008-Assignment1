@@ -25,7 +25,7 @@ public class Sql {
 		}
 		pstmt.close();
 		if (i == 0) {
-			return e + "@uni.ac.uk";
+			return e + "1@uni.ac.uk";
 		} else {
 			return (e + Integer.toString(i + 1) + "@uni.ac.uk");
 		}
