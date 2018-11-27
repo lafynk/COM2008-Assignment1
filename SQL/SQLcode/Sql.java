@@ -1,5 +1,9 @@
 package SQLcode;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -13,6 +17,37 @@ import classPkg.StuInfo;
 import classPkg.UserInfo;
 
 public class Sql {
+	private String[] getEncPassword(String pw) throws NoSuchAlgorithmException, NoSuchProviderException{
+		String[] pwSalt = new String[2];
+		byte[] salt = getSalt();
+		pwSalt[1] = new String(salt);
+		pwSalt[0] =  getSecurePassword(pw, salt);
+		return pwSalt;
+	}
+	
+	private String getSecurePassword(String passwordToHash, byte[] salt) {
+		String generatedPassword = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(salt);
+			byte[] bytes = md.digest(passwordToHash.getBytes());
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < bytes.length; i++) {
+				sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+			}
+			generatedPassword = sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return generatedPassword;
+	}
+	
+	private static byte[] getSalt() throws NoSuchAlgorithmException, NoSuchProviderException {
+		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "SUN");
+		byte[] salt = new byte[16];
+		sr.nextBytes(salt);
+		return salt;
+	}
 	public int createPosRegCode(int reg, char pos) {
 		String s = "";
 		switch (pos) {
@@ -87,7 +122,7 @@ public class Sql {
 			if (con != null)
 				con.close();
 			// decryption of pass
-			if (pw.contentEquals(pass) {
+			if (pw.contentEquals(pass)) {
 				// change log in to true
 				return new UserInfo(ID, perm);
 			} else
@@ -233,20 +268,21 @@ public class Sql {
 		}
 		return true;
 	}
-
+	
 	// add fns
 	// add new User
-	public void addUser(String usr, String pw, String perm) throws SQLException {
+	public void addUser(String usr, String pw, String perm) throws SQLException,NoSuchAlgorithmException, NoSuchProviderException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		// encrypt pw
 		// generate id
 		try {
 			pstmt = con
-					.prepareStatement("INSERT INTO Users (Username,Password,Authorisation) VALUES (?,?,?)");
+					.prepareStatement("INSERT INTO Users (Username,Password,Salt,Authorisation) VALUES (?,?,?,?)");
 			pstmt.setString(1, usr);
-			pstmt.setString(2, pw);
-			// salt
+			String[] pwSalt = getEncPassword(pw);
+			pstmt.setString(2, pwSalt[0]);
+			pstmt.setString(3, pwSalt[1]);
 			pstmt.setString(4, perm);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
