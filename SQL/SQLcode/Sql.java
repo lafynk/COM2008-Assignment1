@@ -136,6 +136,7 @@ public class Sql {
 		Connection con = setUpConnection();
 		StuInfo student = null;
 		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
 		try {
 			pstmt = con.prepareStatement("SELECT * FROM Students WHERE RegistrationNo = ?");
 			pstmt.setInt(1, reg);
@@ -149,7 +150,14 @@ public class Sql {
 				String degree = res.getString(7);
 				char p = res.getString(7).charAt(0);
 				String awClass = res.getString(8);
-				student = new StuInfo(reg, title, sur, fore, email, tutor, degree, p, awClass);
+				String t = "";
+				pstmt2 = con.prepareStatement("SELECT DegreeType FROM Degrees WHERE DegreeCode = ?");
+				pstmt2.setString(1, degree);
+				ResultSet rs = pstmt2.executeQuery();
+				while (rs.next()) {
+					t = rs.getString(1);
+				}
+				student = new StuInfo(reg, title, sur, fore, email, tutor, degree, p, awClass,t);
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -356,16 +364,17 @@ public class Sql {
 	}
 
 	// add course
-	public void addCourse(String code, String name, String dep, String level, boolean pl) throws SQLException {
+	public void addCourse(String code, String name, String dep, String level, boolean pl, String type) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,?)");
+			pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,?,?)");
 			pstmt.setString(1, code);
 			pstmt.setString(2, name);
 			pstmt.setString(3, dep);
 			pstmt.setString(4, level);
 			pstmt.setBoolean(5, pl);
+			pstmt.setString(6, type);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();

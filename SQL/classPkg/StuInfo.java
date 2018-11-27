@@ -10,8 +10,9 @@ public class StuInfo {
 	private String degree;
 	private char PoS;
 	private String awardedclass;
+	private String type;
 
-	public StuInfo(int r, String t, String s, String f, String e, String tu, String d, char p, String c) {
+	public StuInfo(int r, String t, String s, String f, String e, String tu, String d, char p, String c,String ty) {
 		RegNo = r;
 		title = t;
 		surname = s;
@@ -21,6 +22,7 @@ public class StuInfo {
 		degree = d;
 		PoS = p;
 		awardedclass = c;
+		type = ty;
 	}
 
 	public int getRegNo() {
@@ -57,5 +59,9 @@ public class StuInfo {
 
 	public String getAwardedClass() {
 		return awardedclass;
+	}
+	
+	public String getType() {
+		return type;
 	}
 }

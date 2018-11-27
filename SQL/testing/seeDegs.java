@@ -23,7 +23,8 @@ public class seeDegs {
 				String dep = res.getString(3);
 				String lvl = res.getString(4);
 				boolean pl = res.getBoolean(5);
-				System.out.println(deg + " " + mod + " " + dep + " " + lvl + " " + pl);
+				String t = res.getString(6);
+				System.out.println(deg + " " + mod + " " + dep + " " + lvl + " " + pl + " " + t);
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
