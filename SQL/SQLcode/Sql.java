@@ -17,14 +17,14 @@ import classPkg.StuInfo;
 import classPkg.UserInfo;
 
 public class Sql {
-	private String[] getEncPassword(String pw) throws NoSuchAlgorithmException, NoSuchProviderException{
+	private String[] getEncPassword(String pw) throws NoSuchAlgorithmException, NoSuchProviderException {
 		String[] pwSalt = new String[2];
 		byte[] salt = getSalt();
 		pwSalt[1] = new String(salt);
-		pwSalt[0] =  getSecurePassword(pw, salt);
+		pwSalt[0] = getSecurePassword(pw, salt);
 		return pwSalt;
 	}
-	
+
 	private String getSecurePassword(String passwordToHash, byte[] salt) {
 		String generatedPassword = null;
 		try {
@@ -41,13 +41,14 @@ public class Sql {
 		}
 		return generatedPassword;
 	}
-	
+
 	private static byte[] getSalt() throws NoSuchAlgorithmException, NoSuchProviderException {
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "SUN");
 		byte[] salt = new byte[16];
 		sr.nextBytes(salt);
 		return salt;
 	}
+
 	public int createPosRegCode(int reg, char pos) {
 		String s = "";
 		switch (pos) {
@@ -74,7 +75,8 @@ public class Sql {
 		int r = Integer.parseInt(p);
 		return r;
 	}
-	public String generateModCode(String dep, Connection con) throws SQLException{
+
+	public String generateModCode(String dep, Connection con) throws SQLException {
 		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleCode LIKE ?");
 		pstmt.setString(1, dep + "%");
 		ResultSet rs = pstmt.executeQuery();
@@ -89,9 +91,11 @@ public class Sql {
 			return (dep + "00" + Integer.toString(i));
 		} else if (i < 1000) {
 			return (dep + "0" + Integer.toString(i));
-		} else return (dep + Integer.toString(i));
+		} else
+			return (dep + Integer.toString(i));
 	}
-	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException{
+
+	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException {
 		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DepartmentCode = ?");
 		pstmt.setString(1, dep);
 		ResultSet rs = pstmt.executeQuery();
@@ -101,10 +105,12 @@ public class Sql {
 		}
 		i++;
 		pstmt.close();
-		if (i < 10)	{
+		if (i < 10) {
 			return (dep + type + "0" + Integer.toString(i));
-		} else return (dep + type + Integer.toString(i));
+		} else
+			return (dep + type + Integer.toString(i));
 	}
+
 	public String createEmail(String fore, String sur, Connection con) throws SQLException {
 		String e = fore.charAt(0) + sur;
 		e = e.toLowerCase();
@@ -151,7 +157,7 @@ public class Sql {
 			if (con != null)
 				con.close();
 			byte[] bs = salt.getBytes();
-			String enPW = getSecurePassword(pw,bs);
+			String enPW = getSecurePassword(pw, bs);
 			if (enPW.contentEquals(pass)) {
 				// change log in to true
 				return new UserInfo(ID, perm);
@@ -187,7 +193,7 @@ public class Sql {
 				while (rs.next()) {
 					t = rs.getString(1);
 				}
-				student = new StuInfo(reg, title, sur, fore, email, tutor, degree, p, awClass,t);
+				student = new StuInfo(reg, title, sur, fore, email, tutor, degree, p, awClass, t);
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -199,14 +205,15 @@ public class Sql {
 			con.close();
 		return student;
 	}
-	
-	public Module[] getCoreModules(String deg, char lvl) throws SQLException{
+
+	public Module[] getCoreModules(String deg, char lvl) throws SQLException {
 		Module[] coreMods = new Module[10];
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
 		try {
-			pstmt = con.prepareStatement("SELECT * FROM ModuleAssignment WHERE Degree = ? AND LevelTaughtAt = ? AND Obligatory = 1");
+			pstmt = con.prepareStatement(
+					"SELECT * FROM ModuleAssignment WHERE Degree = ? AND LevelTaughtAt = ? AND Obligatory = 1");
 			pstmt.setString(1, deg);
 			pstmt.setString(2, String.valueOf(lvl));
 			ResultSet res1 = pstmt.executeQuery();
@@ -223,9 +230,9 @@ public class Sql {
 				coreMods[i] = new Module(mod, deg, true, cr, lvl, taught, 0.00, 0.00);
 				i++;
 			}
-		}  catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
-		}finally {
+		} finally {
 			if (pstmt != null)
 				pstmt.close();
 			if (pstmt2 != null)
@@ -235,6 +242,7 @@ public class Sql {
 			con.close();
 		return coreMods;
 	}
+
 	// returns array of modules taken this PoS
 	public Module[] getModules(PeriodOfStudy p, StuInfo s) throws SQLException {
 		Module[] modArray = new Module[10];
@@ -341,7 +349,7 @@ public class Sql {
 		}
 		return true;
 	}
-	
+
 	public boolean checkDegreeCodeExists(String deg) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
@@ -363,6 +371,7 @@ public class Sql {
 		}
 		return true;
 	}
+
 	public boolean checkModuleCodeExists(String mod) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
@@ -384,15 +393,15 @@ public class Sql {
 		}
 		return true;
 	}
-	
+
 	// add fns
 	// add new User
-	public void addUser(String usr, String pw, String perm) throws SQLException,NoSuchAlgorithmException, NoSuchProviderException {
+	public void addUser(String usr, String pw, String perm)
+			throws SQLException, NoSuchAlgorithmException, NoSuchProviderException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con
-					.prepareStatement("INSERT INTO Users (Username,Password,Salt,Authorisation) VALUES (?,?,?,?)");
+			pstmt = con.prepareStatement("INSERT INTO Users (Username,Password,Salt,Authorisation) VALUES (?,?,?,?)");
 			pstmt.setString(1, usr);
 			String[] pwSalt = getEncPassword(pw);
 			pstmt.setString(2, pwSalt[0]);
@@ -429,12 +438,12 @@ public class Sql {
 	}
 
 	// add course
-	public void addCourse(String code, String name, String dep, String level, boolean pl, String type) throws SQLException {
+	public void addCourse(String name, String dep, String level, boolean pl, String type) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,?,?)");
-			pstmt.setString(1, code);
+			pstmt.setString(1, generateDegreeCode(dep, type, con));
 			pstmt.setString(2, name);
 			pstmt.setString(3, dep);
 			pstmt.setString(4, level);
@@ -452,12 +461,12 @@ public class Sql {
 	}
 
 	// add module
-	public void addModule(String modCode, String modName, String whenTaught) throws SQLException {
+	public void addModule(String dep, String modName, String whenTaught) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = con.prepareStatement("INSERT INTO Modules VALUES (?,?,?)");
-			pstmt.setString(1, modCode);
+			pstmt.setString(1, generateModCode(dep, con));
 			pstmt.setString(2, modName);
 			pstmt.setString(3, whenTaught);
 			pstmt.executeUpdate();
