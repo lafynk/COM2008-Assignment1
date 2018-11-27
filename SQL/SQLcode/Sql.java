@@ -77,7 +77,6 @@ public class Sql {
 					pass = res.getString(3);
 					// salt
 					perm = res.getString(5);
-					logIn = res.getBoolean(6);
 				}
 			} catch (SQLException ex) {
 				ex.printStackTrace();
@@ -88,7 +87,7 @@ public class Sql {
 			if (con != null)
 				con.close();
 			// decryption of pass
-			if ((pw.contentEquals(pass)) && (logIn == false)) {
+			if (pw.contentEquals(pass) {
 				// change log in to true
 				return new UserInfo(ID, perm);
 			} else
@@ -244,11 +243,11 @@ public class Sql {
 		// generate id
 		try {
 			pstmt = con
-					.prepareStatement("INSERT INTO Users (Username,Password,Authorisation,LoggedIn) VALUES (?,?,?,0)");
+					.prepareStatement("INSERT INTO Users (Username,Password,Authorisation) VALUES (?,?,?)");
 			pstmt.setString(1, usr);
 			pstmt.setString(2, pw);
 			// salt
-			pstmt.setString(3, perm);
+			pstmt.setString(4, perm);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
