@@ -76,7 +76,7 @@ public class adminpage {
 	 */
 	public adminpage() {
 		initialize();
-	}
+}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -319,7 +319,7 @@ public class adminpage {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
+				//	JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -373,7 +373,7 @@ public class adminpage {
 		frmSystemsDesign.getContentPane().add(btnAddModule);
 		
 		JSeparator separator_6 = new JSeparator();
-		separator_6.setBounds(15, 544, 948, 2);
+		separator_6.setBounds(15, 552, 948, 2);
 		frmSystemsDesign.getContentPane().add(separator_6);
 		
 		JLabel lblDegreeCode_2 = new JLabel("Degree Code");
@@ -462,19 +462,21 @@ public class adminpage {
 		JPanel panel_4 = new JPanel();
 		tabbedPane.addTab("Assigned Modules", null, panel_4, null);
 		
-		JButton btnDeleteModule = new JButton("Delete Module");
+		JButton btnDeleteModule = new JButton("<html>Delete Module\r\n(Enter Module Code above)");
+		btnDeleteModule.setVerticalAlignment(SwingConstants.TOP);
 		btnDeleteModule.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.removeMod(modulecode.getText());
-					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
+					
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
-		btnDeleteModule.setBounds(35, 509, 150, 29);
+		btnDeleteModule.setBounds(35, 501, 195, 45);
 		frmSystemsDesign.getContentPane().add(btnDeleteModule);
 		
 		JLabel lblDepartmentToAdd = new JLabel("Department to add degree to");
@@ -506,6 +508,8 @@ public class adminpage {
 		JLabel lblUgPg = new JLabel("UG / PG");
 		lblUgPg.setBounds(795, 382, 146, 20);
 		frmSystemsDesign.getContentPane().add(lblUgPg);
+		
+		
 		
 
 	}

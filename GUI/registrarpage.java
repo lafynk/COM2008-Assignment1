@@ -75,26 +75,22 @@ public class registrarpage {
 	private JButton btnLogout;
 	private JTextField studentmoduletaken;
 	private JLabel label_1;
-	private JSpinner startdate;
-	private JSpinner enddate;
 	private JLabel lblCurrentLevel;
 	private JComboBox currentlvl;
 	private JLabel lblPosCode;
 	private JTextField studentidformodule;
 	private JSeparator separator_3;
+	private JTextField startdate;
+	private JTextField enddate;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
-					registrarpage window = new registrarpage();
-					window.frmSystemsDesign.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				registrarpage window = new registrarpage();
+				window.frmSystemsDesign.setVisible(true);
 			}
 		});
 	}
@@ -376,7 +372,7 @@ public class registrarpage {
 				try {
 					StuInfo stu = null;
 					stu = s.getStudentInfo(Integer.parseInt(studentidmodule.getText()));
-					s.addPoS(Integer.parseInt(studentidmodule.getText()), stu.getPoS(), startdate.getValue().toString(), enddate.getValue().toString(), currentlvl.getSelectedItem().toString().charAt(0));
+					s.addPoS(Integer.parseInt(studentidmodule.getText()), stu.getPoS(), startdate.getText(), enddate.getText(), currentlvl.getSelectedItem().toString().charAt(0));
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -393,17 +389,6 @@ public class registrarpage {
 		JLabel lblEndDate = new JLabel("End Date");
 		lblEndDate.setBounds(572, 431, 146, 20);
 		frmSystemsDesign.getContentPane().add(lblEndDate);
-		
-		startdate = new JSpinner();
-		startdate.setModel(new SpinnerDateModel(new Date(1535756400000L), new Date(1483228800000L), new Date(1893456000000L), Calendar.DAY_OF_YEAR));
-		startdate.setBackground(new Color(240, 240, 240));
-		startdate.setBounds(312, 456, 146, 26);
-		frmSystemsDesign.getContentPane().add(startdate);
-		
-		enddate = new JSpinner();
-		enddate.setModel(new SpinnerDateModel(new Date(1559343600000L), new Date(1483228800000L), new Date(1893456000000L), Calendar.DAY_OF_YEAR));
-		enddate.setBounds(572, 456, 146, 26);
-		frmSystemsDesign.getContentPane().add(enddate);
 		
 		lblCurrentLevel = new JLabel("Current Level");
 		lblCurrentLevel.setBounds(312, 490, 146, 20);
@@ -431,6 +416,18 @@ public class registrarpage {
 		separator_3.setOrientation(SwingConstants.VERTICAL);
 		separator_3.setBounds(220, 612, 79, 80);
 		frmSystemsDesign.getContentPane().add(separator_3);
+		
+		startdate = new JTextField();
+		startdate.setText("YYY-MM-DD");
+		startdate.setBounds(312, 458, 133, 26);
+		frmSystemsDesign.getContentPane().add(startdate);
+		startdate.setColumns(10);
+		
+		enddate = new JTextField();
+		enddate.setText("YYYY-MM-DD");
+		enddate.setColumns(10);
+		enddate.setBounds(572, 458, 133, 26);
+		frmSystemsDesign.getContentPane().add(enddate);
 		
 	}
 }
