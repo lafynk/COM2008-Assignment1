@@ -269,6 +269,49 @@ public class Sql {
 		return true;
 	}
 	
+	public boolean checkDegreeCodeExists(String deg) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode = ?");
+			pstmt.setString(1, deg);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;// already exists
+			} else
+				return false;// free to add
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (con != null)
+				con.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return true;
+	}
+	public boolean checkModuleCodeExists(String mod) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleCode = ?");
+			pstmt.setString(1, mod);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;// already exists
+			} else
+				return false;// free to add
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (con != null)
+				con.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return true;
+	}
+	
 	// add fns
 	// add new User
 	public void addUser(String usr, String pw, String perm) throws SQLException,NoSuchAlgorithmException, NoSuchProviderException {
