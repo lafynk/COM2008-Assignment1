@@ -75,8 +75,8 @@ public class Sql {
 				while (res.next()) {
 					ID = res.getInt(1);
 					pass = res.getString(3);
-					perm = res.getString(4);
 					// salt
+					perm = res.getString(5);
 					logIn = res.getBoolean(6);
 				}
 			} catch (SQLException ex) {
@@ -247,8 +247,8 @@ public class Sql {
 					.prepareStatement("INSERT INTO Users (Username,Password,Authorisation,LoggedIn) VALUES (?,?,?,0)");
 			pstmt.setString(1, usr);
 			pstmt.setString(2, pw);
-			pstmt.setString(3, perm);
 			// salt
+			pstmt.setString(3, perm);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
