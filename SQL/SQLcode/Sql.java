@@ -13,6 +13,33 @@ import classPkg.StuInfo;
 import classPkg.UserInfo;
 
 public class Sql {
+	public int createPosRegCode(int reg, char pos) {
+		String s = "";
+		switch (pos) {
+		case 'A':
+			s = "1";
+			break;
+		case 'B':
+			s = "2";
+			break;
+		case 'C':
+			s = "3";
+			break;
+		case 'D':
+			s = "4";
+			break;
+		case 'E':
+			s = "5";
+			break;
+		case 'F':
+			s = "6";
+			break;
+		}
+		String p = s + Integer.toString(reg);
+		int r = Integer.parseInt(p);
+		return r;
+	}
+
 	public String createEmail(String fore, String sur, Connection con) throws SQLException {
 		String e = fore.charAt(0) + sur;
 		e = e.toLowerCase();
@@ -25,7 +52,7 @@ public class Sql {
 		}
 		pstmt.close();
 		if (i == 0) {
-			return e + "1@uni.ac.uk";
+			return e + "@uni.ac.uk";
 		} else {
 			return (e + Integer.toString(i + 1) + "@uni.ac.uk");
 		}
@@ -49,7 +76,8 @@ public class Sql {
 					ID = res.getInt(1);
 					pass = res.getString(3);
 					perm = res.getString(4);
-					logIn = res.getBoolean(5);
+					// salt
+					logIn = res.getBoolean(6);
 				}
 			} catch (SQLException ex) {
 				ex.printStackTrace();
@@ -220,6 +248,7 @@ public class Sql {
 			pstmt.setString(1, usr);
 			pstmt.setString(2, pw);
 			pstmt.setString(3, perm);
+			// salt
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -344,7 +373,7 @@ public class Sql {
 			con.close();
 	}
 
-	public void assignModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
+	public void assingModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
@@ -365,12 +394,12 @@ public class Sql {
 			con.close();
 	}
 
-	public void addPoS(int posReg, int reg, char pos, String start, String end, char lvl) throws SQLException {
+	public void addPoS(int reg, char pos, String start, String end, char lvl) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = con.prepareStatement("INSERT INTO PeriodsOfStudy VALUES (?,?,?,?,?,?,0.00,0)");
-			pstmt.setInt(1, posReg);
+			pstmt.setInt(1, createPosRegCode(reg, pos));
 			pstmt.setInt(2, reg);
 			pstmt.setString(3, String.valueOf(pos));
 			pstmt.setString(4, start);
