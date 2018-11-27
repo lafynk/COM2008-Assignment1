@@ -32,6 +32,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.sql.SQLException;
 import java.util.Random;
 import java.awt.event.ActionEvent;
@@ -116,17 +118,27 @@ public class adminpage {
 		JButton btnAddAccount = new JButton("Add Account");
 		btnAddAccount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Random rand = new Random();
 		    
 				try {
-					s.addUser(useraccount.getText(), useraccountpwd.getText(), accttype.getSelectedItem().toString());
-				   // frmSystemsDesign.revalidate();
-				   // frmSystemsDesign.repaint();
+					if (s.checkUsernameExists(useraccount.getText())) {
+						JOptionPane.showMessageDialog(null, "This username is already in use.","Operation Failed", JOptionPane.ERROR_MESSAGE);
+					}
+					else {
+						s.addUser(useraccount.getText(), useraccountpwd.getText(), accttype.getSelectedItem().toString());
+					}
+				   
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
+				} catch (NoSuchAlgorithmException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NoSuchProviderException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
+				
 			}
 		});
 		btnAddAccount.setBounds(791, 96, 150, 29);
@@ -255,6 +267,11 @@ public class adminpage {
 		lblPlacement.setBounds(550, 382, 146, 20);
 		frmSystemsDesign.getContentPane().add(lblPlacement);
 		
+		JComboBox type = new JComboBox();
+		type.setModel(new DefaultComboBoxModel(new String[] {"Undergraduate", "Postgraduate"}));
+		type.setBounds(791, 406, 150, 26);
+		frmSystemsDesign.getContentPane().add(type);
+		
 		JButton btnAddDegree = new JButton("Add Degree");
 		btnAddDegree.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -266,7 +283,14 @@ public class adminpage {
 					else {
 						placementgoing = false;
 					}
-					s.addCourse(degreecode.getText(), degree.getText(), depttoadddegree.getText(), degreelvl.getSelectedItem().toString(), placementgoing);
+					String shorttype;
+					if (type.getSelectedItem().toString() == "Undergraduate") {
+						shorttype = "U";
+					}
+					else {
+						shorttype = "P";
+					}//degreecode.getText(),
+					s.addCourse(degree.getText(), depttoadddegree.getText(), degreelvl.getSelectedItem().toString(), placementgoing, shorttype);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
@@ -306,7 +330,7 @@ public class adminpage {
 		separator_5.setBounds(15, 440, 948, 2);
 		frmSystemsDesign.getContentPane().add(separator_5);
 		
-		JLabel lblModuleCode = new JLabel("Module Code");
+		JLabel lblModuleCode = new JLabel("Department Code");
 		lblModuleCode.setBounds(35, 451, 146, 20);
 		frmSystemsDesign.getContentPane().add(lblModuleCode);
 		
@@ -435,6 +459,9 @@ public class adminpage {
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("Modules", null, panel_2, null);
 		
+		JPanel panel_4 = new JPanel();
+		tabbedPane.addTab("Assigned Modules", null, panel_4, null);
+		
 		JButton btnDeleteModule = new JButton("Delete Module");
 		btnDeleteModule.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -475,5 +502,11 @@ public class adminpage {
 		});
 		btnLogout.setBounds(826, 22, 115, 29);
 		frmSystemsDesign.getContentPane().add(btnLogout);
+		
+		JLabel lblUgPg = new JLabel("UG / PG");
+		lblUgPg.setBounds(795, 382, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblUgPg);
+		
+
 	}
 }

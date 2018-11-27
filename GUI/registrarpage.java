@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.HeadlessException;
 
@@ -12,6 +14,8 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.sql.SQLException;
 import java.util.Random;
 import java.awt.event.ActionEvent;
@@ -19,10 +23,16 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import SQLcode.Sql;
+import classPkg.StuInfo;
 import classPkg.UserInfo;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
+import java.util.Date;
+import java.util.Calendar;
+import java.awt.Color;
 
 public class registrarpage {
 
@@ -51,22 +61,27 @@ public class registrarpage {
 	private JSeparator separator_1;
 	private JLabel lblStudentId_1;
 	private JTextField studentidmodule;
-	private JLabel lblModuleCode;
-	private JTextField studentmoduletaken;
 	private JLabel lblGrade;
 	private JTextField studentgrade;
 	private JLabel lblResitGrade;
 	private JTextField studentresit;
 	private JButton btnAssign;
 	private JButton btnDropModule;
-	private JSeparator separator_2;
-	private JSeparator separator_3;
 	private JTabbedPane tabbedPane;
 	private JPanel panel;
 	private JPanel panel_1;
 	private JPanel panel_2;
 	private JPanel panel_3;
 	private JButton btnLogout;
+	private JTextField studentmoduletaken;
+	private JLabel label_1;
+	private JSpinner startdate;
+	private JSpinner enddate;
+	private JLabel lblCurrentLevel;
+	private JComboBox currentlvl;
+	private JLabel lblPosCode;
+	private JTextField studentidformodule;
+	private JSeparator separator_3;
 
 	/**
 	 * Launch the application.
@@ -184,16 +199,28 @@ public class registrarpage {
 		btnAddStudent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Random rand = new Random();
-				int randReg = rand.nextInt(900000000);
+			
 				try {
+					if (s.checkUsernameExists(studentusername.getText())) {
+						JOptionPane.showMessageDialog(null, "This username is already in use.","Operation Failed", JOptionPane.ERROR_MESSAGE);
+					}
+					else {
+						s.addUser(studentusername.getText(), studentpassword.getText(), "Students");
+						UserInfo u = null;
+						u =s.checkLogIn(studentusername.getText(), studentpassword.getText());
+						s.addStudent((u.getRegNo()), studenttitle.getSelectedItem().toString(), studentsname.getText(),studentfname.getText(), studenttutor.getText(), studentdegree.getText(), studentpos.getSelectedItem().toString().charAt(0), "");
+					}
 					
-					s.addUser(studentusername.getText(), studentpassword.getText(), "Students");
-					UserInfo u = null;
-					u =s.checkLogIn(studentusername.getText(), studentpassword.getText());
-					s.addStudent((u.getRegNo()), studenttitle.getSelectedItem().toString(), studentsname.getText(),studentfname.getText(), studenttutor.getText(), studentdegree.getText(), studentpos.getSelectedItem().toString().charAt(0), "");
+		
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
+				} catch (NoSuchAlgorithmException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NoSuchProviderException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				
 			}
@@ -219,17 +246,18 @@ public class registrarpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.removeStudent(Integer.parseInt(studentiddelete.getText()));
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				try {
-					s.removeUser(Integer.parseInt(studentiddelete.getText()));
-					
+					try {
+						s.removeUser(Integer.parseInt(studentiddelete.getText()));
+						
+					} catch (NumberFormatException | SQLException e1) {
+						// TODO Auto-generated catch block
+						//e1.printStackTrace();
+					}
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
 				}
+				
 				
 			}
 		});
@@ -241,47 +269,39 @@ public class registrarpage {
 		frmSystemsDesign.getContentPane().add(separator_1);
 		
 		lblStudentId_1 = new JLabel("Student ID");
-		lblStudentId_1.setBounds(44, 444, 146, 20);
+		lblStudentId_1.setBounds(44, 433, 146, 20);
 		frmSystemsDesign.getContentPane().add(lblStudentId_1);
 		
 		studentidmodule = new JTextField();
 		studentidmodule.setColumns(10);
-		studentidmodule.setBounds(44, 469, 146, 26);
+		studentidmodule.setBounds(44, 458, 146, 26);
 		frmSystemsDesign.getContentPane().add(studentidmodule);
 		
-		lblModuleCode = new JLabel("Module Code");
-		lblModuleCode.setBounds(312, 444, 146, 20);
-		frmSystemsDesign.getContentPane().add(lblModuleCode);
-		
-		studentmoduletaken = new JTextField();
-		studentmoduletaken.setColumns(10);
-		studentmoduletaken.setBounds(312, 469, 146, 26);
-		frmSystemsDesign.getContentPane().add(studentmoduletaken);
-		
 		lblGrade = new JLabel("Grade");
-		lblGrade.setBounds(572, 444, 146, 20);
+		lblGrade.setBounds(572, 554, 146, 20);
 		frmSystemsDesign.getContentPane().add(lblGrade);
 		
 		studentgrade = new JTextField();
 		studentgrade.setText("0");
 		studentgrade.setColumns(10);
-		studentgrade.setBounds(572, 469, 146, 26);
+		studentgrade.setBounds(572, 579, 146, 26);
 		frmSystemsDesign.getContentPane().add(studentgrade);
 		
 		lblResitGrade = new JLabel("Resit Grade");
-		lblResitGrade.setBounds(572, 502, 146, 20);
+		lblResitGrade.setBounds(312, 554, 146, 20);
 		frmSystemsDesign.getContentPane().add(lblResitGrade);
 		
 		studentresit = new JTextField();
 		studentresit.setText("0");
 		studentresit.setColumns(10);
-		studentresit.setBounds(572, 527, 146, 26);
+		studentresit.setBounds(312, 579, 146, 26);
 		frmSystemsDesign.getContentPane().add(studentresit);
 		
 		btnAssign = new JButton("Assign Module");
 		btnAssign.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					
 					s.addTakenModule(Integer.parseInt(studentidmodule.getText()), studentmoduletaken.getText(), Double.parseDouble(studentgrade.getText()), Double.parseDouble(studentresit.getText()));
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
@@ -289,7 +309,7 @@ public class registrarpage {
 				}
 			}
 		});
-		btnAssign.setBounds(818, 468, 150, 29);
+		btnAssign.setBounds(818, 578, 150, 29);
 		frmSystemsDesign.getContentPane().add(btnAssign);
 		
 		btnDropModule = new JButton("Drop Module");
@@ -303,20 +323,11 @@ public class registrarpage {
 				}
 			}
 		});
-		btnDropModule.setBounds(44, 526, 150, 29);
+		btnDropModule.setBounds(40, 667, 150, 29);
 		frmSystemsDesign.getContentPane().add(btnDropModule);
 		
-		separator_2 = new JSeparator();
-		separator_2.setOrientation(SwingConstants.VERTICAL);
-		separator_2.setBounds(514, 487, 2, 52);
-		frmSystemsDesign.getContentPane().add(separator_2);
-		
-		separator_3 = new JSeparator();
-		separator_3.setBounds(15, 569, 964, 7);
-		frmSystemsDesign.getContentPane().add(separator_3);
-		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(0, 592, 1021, 368);
+		tabbedPane.setBounds(0, 699, 1021, 261);
 		frmSystemsDesign.getContentPane().add(tabbedPane);
 		
 		panel = new JPanel();
@@ -329,7 +340,10 @@ public class registrarpage {
 		tabbedPane.addTab("Modules", null, panel_3, null);
 		
 		panel_2 = new JPanel();
-		tabbedPane.addTab("Departments", null, panel_2, null);
+		tabbedPane.addTab("Period Of Study", null, panel_2, null);
+		
+		JPanel panel_4 = new JPanel();
+		tabbedPane.addTab("Assigned Modules", null, panel_4, null);
 		
 		btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
@@ -346,6 +360,77 @@ public class registrarpage {
 		});
 		btnLogout.setBounds(818, 47, 150, 29);
 		frmSystemsDesign.getContentPane().add(btnLogout);
+		
+		studentmoduletaken = new JTextField();
+		studentmoduletaken.setColumns(10);
+		studentmoduletaken.setBounds(44, 639, 146, 26);
+		frmSystemsDesign.getContentPane().add(studentmoduletaken);
+		
+		label_1 = new JLabel("Module Code");
+		label_1.setBounds(44, 614, 146, 20);
+		frmSystemsDesign.getContentPane().add(label_1);
+		
+		JButton btnAddPos = new JButton("Add PoS");
+		btnAddPos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					StuInfo stu = null;
+					stu = s.getStudentInfo(Integer.parseInt(studentidmodule.getText()));
+					s.addPoS(Integer.parseInt(studentidmodule.getText()), stu.getPoS(), startdate.getValue().toString(), enddate.getValue().toString(), currentlvl.getSelectedItem().toString().charAt(0));
+				} catch (NumberFormatException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnAddPos.setBounds(818, 455, 150, 29);
+		frmSystemsDesign.getContentPane().add(btnAddPos);
+		
+		JLabel lblStartDate = new JLabel("Start Date");
+		lblStartDate.setBounds(312, 431, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblStartDate);
+		
+		JLabel lblEndDate = new JLabel("End Date");
+		lblEndDate.setBounds(572, 431, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblEndDate);
+		
+		startdate = new JSpinner();
+		startdate.setModel(new SpinnerDateModel(new Date(1535756400000L), new Date(1483228800000L), new Date(1893456000000L), Calendar.DAY_OF_YEAR));
+		startdate.setBackground(new Color(240, 240, 240));
+		startdate.setBounds(312, 456, 146, 26);
+		frmSystemsDesign.getContentPane().add(startdate);
+		
+		enddate = new JSpinner();
+		enddate.setModel(new SpinnerDateModel(new Date(1559343600000L), new Date(1483228800000L), new Date(1893456000000L), Calendar.DAY_OF_YEAR));
+		enddate.setBounds(572, 456, 146, 26);
+		frmSystemsDesign.getContentPane().add(enddate);
+		
+		lblCurrentLevel = new JLabel("Current Level");
+		lblCurrentLevel.setBounds(312, 490, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblCurrentLevel);
+		
+		currentlvl = new JComboBox();
+		currentlvl.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "P"}));
+		currentlvl.setBounds(312, 515, 146, 26);
+		frmSystemsDesign.getContentPane().add(currentlvl);
+		
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setBounds(15, 547, 964, 7);
+		frmSystemsDesign.getContentPane().add(separator_2);
+		
+		lblPosCode = new JLabel("PoS Code");
+		lblPosCode.setBounds(44, 556, 146, 20);
+		frmSystemsDesign.getContentPane().add(lblPosCode);
+		
+		studentidformodule = new JTextField();
+		studentidformodule.setColumns(10);
+		studentidformodule.setBounds(44, 581, 146, 26);
+		frmSystemsDesign.getContentPane().add(studentidformodule);
+		
+		separator_3 = new JSeparator();
+		separator_3.setOrientation(SwingConstants.VERTICAL);
+		separator_3.setBounds(220, 612, 79, 80);
+		frmSystemsDesign.getContentPane().add(separator_3);
+		
 	}
-
 }
