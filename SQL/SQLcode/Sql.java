@@ -74,7 +74,37 @@ public class Sql {
 		int r = Integer.parseInt(p);
 		return r;
 	}
-
+	public String generateModCode(String dep, Connection con) throws SQLException{
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleCode LIKE ?");
+		pstmt.setString(1, dep + "%");
+		ResultSet rs = pstmt.executeQuery();
+		int i = 0;
+		while (rs.next()) {
+			i++;
+		}
+		i++;
+		if (i < 10) {
+			return (dep + "000" + Integer.toString(i));
+		} else if (i < 100) {
+			return (dep + "00" + Integer.toString(i));
+		} else if (i < 1000) {
+			return (dep + "0" + Integer.toString(i));
+		} else return (dep + Integer.toString(i));
+	}
+	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException{
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DepartmentCode = ?");
+		pstmt.setString(1, dep);
+		ResultSet rs = pstmt.executeQuery();
+		int i = 0;
+		while (rs.next()) {
+			i++;
+		}
+		i++;
+		pstmt.close();
+		if (i < 10)	{
+			return (dep + type + "0" + Integer.toString(i));
+		} else return (dep + type + Integer.toString(i));
+	}
 	public String createEmail(String fore, String sur, Connection con) throws SQLException {
 		String e = fore.charAt(0) + sur;
 		e = e.toLowerCase();
