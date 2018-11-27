@@ -19,6 +19,7 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import SQLcode.Sql;
+import classPkg.UserInfo;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
@@ -185,8 +186,11 @@ public class registrarpage {
 				Random rand = new Random();
 				int randReg = rand.nextInt(900000000);
 				try {
+					
 					s.addUser(studentusername.getText(), studentpassword.getText(), "Students");
-					s.addStudent(100000000 + randReg, studenttitle.getSelectedItem().toString(), studentsname.getText(),studentfname.getText(), studenttutor.getText(), studentdegree.getText(), studentpos.getSelectedItem().toString().charAt(0), "");
+					UserInfo u = null;
+					u =s.checkLogIn(studentusername.getText(), studentpassword.getText());
+					s.addStudent((u.getRegNo()), studenttitle.getSelectedItem().toString(), studentsname.getText(),studentfname.getText(), studenttutor.getText(), studentdegree.getText(), studentpos.getSelectedItem().toString().charAt(0), "");
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
