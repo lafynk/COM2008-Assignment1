@@ -99,9 +99,8 @@ public class Sql {
 		int ID = 0;
 		String pass = "";
 		String perm = "";
-		boolean logIn = false;
+		String salt = "";
 		PreparedStatement pstmt = null;
-		UserInfo u = null;
 		if (pw.length() > 0) {
 			try {
 				pstmt = con.prepareStatement("SELECT * FROM Users WHERE Username = ?");
@@ -110,7 +109,7 @@ public class Sql {
 				while (res.next()) {
 					ID = res.getInt(1);
 					pass = res.getString(3);
-					// salt
+					salt = res.getString(4);
 					perm = res.getString(5);
 				}
 			} catch (SQLException ex) {
@@ -121,8 +120,9 @@ public class Sql {
 			}
 			if (con != null)
 				con.close();
-			// decryption of pass
-			if (pw.contentEquals(pass)) {
+			byte[] bs = salt.getBytes();
+			String enPW = getSecurePassword(pw,bs);
+			if (enPW.contentEquals(pass)) {
 				// change log in to true
 				return new UserInfo(ID, perm);
 			} else
@@ -274,8 +274,6 @@ public class Sql {
 	public void addUser(String usr, String pw, String perm) throws SQLException,NoSuchAlgorithmException, NoSuchProviderException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
-		// encrypt pw
-		// generate id
 		try {
 			pstmt = con
 					.prepareStatement("INSERT INTO Users (Username,Password,Salt,Authorisation) VALUES (?,?,?,?)");
