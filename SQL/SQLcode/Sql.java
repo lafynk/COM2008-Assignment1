@@ -350,12 +350,17 @@ public class Sql {
 		return true;
 	}
 
-	public boolean checkDegreeCodeExists(String deg) throws SQLException {
-		Connection con = setUpConnection();
+	public boolean checkDegreeExists(String name, String dep, String level, boolean pl, String type, Connection con)
+			throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode = ?");
-			pstmt.setString(1, deg);
+			pstmt = con.prepareStatement(
+					"SELECT * FROM Degrees WHERE DegreeName = ? AND DepartmentCode = ? AND MaxLevelOfStudy = ? AND Placement = ? AND DegreeType = ?");
+			pstmt.setString(1, name);
+			pstmt.setString(2, dep);
+			pstmt.setString(3, level);
+			pstmt.setBoolean(4, pl);
+			pstmt.setString(5, type);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				return true;// already exists
@@ -364,20 +369,17 @@ public class Sql {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			if (con != null)
-				con.close();
 			if (pstmt != null)
 				pstmt.close();
 		}
 		return true;
 	}
 
-	public boolean checkModuleCodeExists(String mod) throws SQLException {
-		Connection con = setUpConnection();
+	public boolean checkModuleExists(String name, Connection con) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleCode = ?");
-			pstmt.setString(1, mod);
+			pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleName = ?");
+			pstmt.setString(1, name);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				return true;// already exists
@@ -386,8 +388,6 @@ public class Sql {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			if (con != null)
-				con.close();
 			if (pstmt != null)
 				pstmt.close();
 		}
@@ -441,20 +441,22 @@ public class Sql {
 	public void addCourse(String name, String dep, String level, boolean pl, String type) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
-		try {
-			pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,?,?)");
-			pstmt.setString(1, generateDegreeCode(dep, type, con));
-			pstmt.setString(2, name);
-			pstmt.setString(3, dep);
-			pstmt.setString(4, level);
-			pstmt.setBoolean(5, pl);
-			pstmt.setString(6, type);
-			pstmt.executeUpdate();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (pstmt != null)
-				pstmt.close();
+		if (!checkDegreeExists(name, dep, level, pl, type, con)) {
+			try {
+				pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,?,?)");
+				pstmt.setString(1, generateDegreeCode(dep, type, con));
+				pstmt.setString(2, name);
+				pstmt.setString(3, dep);
+				pstmt.setString(4, level);
+				pstmt.setBoolean(5, pl);
+				pstmt.setString(6, type);
+				pstmt.executeUpdate();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (pstmt != null)
+					pstmt.close();
+			}
 		}
 		if (con != null)
 			con.close();
@@ -464,17 +466,19 @@ public class Sql {
 	public void addModule(String dep, String modName, String whenTaught) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
-		try {
-			pstmt = con.prepareStatement("INSERT INTO Modules VALUES (?,?,?)");
-			pstmt.setString(1, generateModCode(dep, con));
-			pstmt.setString(2, modName);
-			pstmt.setString(3, whenTaught);
-			pstmt.executeUpdate();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (pstmt != null)
-				pstmt.close();
+		if (!checkModuleExists(modName, con)) {
+			try {
+				pstmt = con.prepareStatement("INSERT INTO Modules VALUES (?,?,?)");
+				pstmt.setString(1, generateModCode(dep, con));
+				pstmt.setString(2, modName);
+				pstmt.setString(3, whenTaught);
+				pstmt.executeUpdate();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (pstmt != null)
+					pstmt.close();
+			}
 		}
 		if (con != null)
 			con.close();
@@ -788,6 +792,24 @@ public class Sql {
 			pstmt = con.prepareStatement("UPDATE PeriodsOfStudy SET Progress = ? WHERE PosRegCode = ?");
 			pstmt.setBoolean(1, b);
 			pstmt.setInt(2, posRegNo);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		if (con != null)
+			con.close();
+	}
+
+	public void updateCurPos(int reg, char pos) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("UPDATE Students SET CurrentPeriodOfStudy = ? WHERE RegistrationNo = ?");
+			pstmt.setString(1, String.valueOf(pos));
+			pstmt.setInt(2, reg);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
