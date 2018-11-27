@@ -169,7 +169,42 @@ public class Sql {
 			con.close();
 		return student;
 	}
-
+	
+	public Module[] getCoreModules(String deg, char lvl) throws SQLException{
+		Module[] coreMods = new Module[10];
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM ModuleAssignment WHERE Degree = ? AND LevelTaughtAt = ? AND Obligatory = 1");
+			pstmt.setString(1, deg);
+			pstmt.setString(2, String.valueOf(lvl));
+			ResultSet res1 = pstmt.executeQuery();
+			String taught = " ";
+			int i = 0; // for adding to array
+			while (res1.next()) {
+				String mod = res1.getString(1);
+				int cr = res1.getInt(4);
+				pstmt2 = con.prepareStatement("Select LevelTaughtAt From Modules Where ModuleCode = ?");
+				ResultSet res2 = pstmt2.executeQuery();
+				while (res2.next()) {
+					taught = res2.getString(1);
+				}
+				coreMods[i] = new Module(mod, deg, true, cr, lvl, taught, 0.00, 0.00);
+				i++;
+			}
+		}  catch (Exception ex) {
+			ex.printStackTrace();
+		}finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (pstmt2 != null)
+				pstmt2.close();
+		}
+		if (con != null)
+			con.close();
+		return coreMods;
+	}
 	// returns array of modules taken this PoS
 	public Module[] getModules(PeriodOfStudy p, StuInfo s) throws SQLException {
 		Module[] modArray = new Module[10];
