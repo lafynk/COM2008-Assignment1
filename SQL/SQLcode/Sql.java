@@ -154,9 +154,9 @@ public class Sql {
 			} finally {
 				if (pstmt != null)
 					pstmt.close();
+				if (con != null)
+					con.close();
 			}
-			if (con != null)
-				con.close();
 			byte[] bs = salt.getBytes();
 			String enPW = getSecurePassword(pw, bs);
 			if (enPW.contentEquals(pass)) {
@@ -201,9 +201,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 		return student;
 	}
 
@@ -238,9 +238,9 @@ public class Sql {
 				pstmt.close();
 			if (pstmt2 != null)
 				pstmt2.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 		return coreMods;
 	}
 
@@ -291,9 +291,9 @@ public class Sql {
 				pstmt2.close();
 			if (pstmt3 != null)
 				pstmt3.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 		return modArray;
 	}
 
@@ -323,9 +323,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 		return posArray;
 	}
 
@@ -343,10 +343,10 @@ public class Sql {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			if (con != null)
-				con.close();
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
 		return true;
 	}
@@ -415,9 +415,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add new department
@@ -435,9 +435,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add course
@@ -460,10 +460,10 @@ public class Sql {
 			} finally {
 				if (pstmt != null)
 					pstmt.close();
+				if (con != null)
+					con.close();
 			}
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add module
@@ -483,10 +483,10 @@ public class Sql {
 			} finally {
 				if (pstmt != null)
 					pstmt.close();
+				if (con != null)
+					con.close();
 			}
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add student
@@ -515,9 +515,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add taken module
@@ -536,9 +536,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void assignModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
@@ -557,9 +557,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void addPoS(int reg, char pos, String start, String end, char lvl) throws SQLException {
@@ -579,9 +579,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 	// remove fns
 
@@ -598,9 +598,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 	// delete department
 
@@ -617,9 +617,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// delete course
@@ -635,9 +635,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// delete module
@@ -653,9 +653,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 	// delete student
 
@@ -671,9 +671,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// drop taken module
@@ -690,9 +690,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void removePoS(int regCode) throws SQLException {
@@ -707,9 +707,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// update fns
@@ -727,9 +727,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// update grade (ask for grade type in param, norm or resit)
@@ -746,9 +746,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void updateModuleGrade(int posRegNo, String mod, double grade) throws SQLException {
@@ -765,9 +765,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add resit grade for module
@@ -785,9 +785,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// update progress fn
@@ -804,9 +804,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void updateCurPos(int reg, char pos) throws SQLException {
@@ -822,9 +822,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// other fns
