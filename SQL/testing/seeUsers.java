@@ -3,8 +3,9 @@ package testing;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
 import SQLcode.Sql;
 
 public class seeUsers {
@@ -29,10 +30,10 @@ public class seeUsers {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			if (con != null)
-				con.close();
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
 	}
 }

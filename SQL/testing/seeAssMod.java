@@ -28,10 +28,10 @@ public class seeAssMod {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			if (con != null)
-				con.close();
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
 	}
 }

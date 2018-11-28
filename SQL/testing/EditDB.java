@@ -11,16 +11,15 @@ public class EditDB {
 		PreparedStatement pstmt = null;
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://stusql.dcs.shef.ac.uk/team035", "team035", "b7af5f37");
-			pstmt = con.prepareStatement("ALTER TABLE Users MODIFY COLUMN Salt VARCHAR(16);");
+			pstmt = con.prepareStatement("ALTER TABLE Modules MODIFY COLUMN ModuleName VARCHAR(100);");
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("No access");
 		} finally {
-			if (con != null)
-				con.close();
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
 	}
 }
