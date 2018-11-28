@@ -80,35 +80,36 @@ public class Sql {
 		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleCode LIKE ?");
 		pstmt.setString(1, dep + "%");
 		ResultSet rs = pstmt.executeQuery();
-		int i = 0;
+		String s = dep + "0000";
 		while (rs.next()) {
-			i++;
+			s = rs.getString(1);
 		}
+		pstmt.close();
+		int i = Integer.parseInt(s.substring(3));
 		i++;
-		if (i < 10) {
-			return (dep + "000" + Integer.toString(i));
-		} else if (i < 100) {
-			return (dep + "00" + Integer.toString(i));
-		} else if (i < 1000) {
-			return (dep + "0" + Integer.toString(i));
-		} else
-			return (dep + Integer.toString(i));
+		s = Integer.toString(i);
+		while (s.length() < 4) {
+			s = "0" + s;
+		}
+		return (dep + s);
 	}
 
 	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException {
-		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DepartmentCode = ?");
-		pstmt.setString(1, dep);
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode LIKE = ?");
+		pstmt.setString(1, dep + type + "%");
 		ResultSet rs = pstmt.executeQuery();
-		int i = 0;
+		String s = dep + type + "00";
 		while (rs.next()) {
-			i++;
+			s = rs.getString(1);
 		}
-		i++;
 		pstmt.close();
-		if (i < 10) {
-			return (dep + type + "0" + Integer.toString(i));
-		} else
-			return (dep + type + Integer.toString(i));
+		int i = Integer.parseInt(s.substring(4));
+		i++;
+		s = Integer.toString(i);
+		while (s.length() < 2) {
+			s = "0" + s;
+		}
+		return (dep + type + s);
 	}
 
 	public String createEmail(String fore, String sur, Connection con) throws SQLException {
@@ -153,9 +154,9 @@ public class Sql {
 			} finally {
 				if (pstmt != null)
 					pstmt.close();
+				if (con != null)
+					con.close();
 			}
-			if (con != null)
-				con.close();
 			byte[] bs = salt.getBytes();
 			String enPW = getSecurePassword(pw, bs);
 			if (enPW.contentEquals(pass)) {
@@ -200,9 +201,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 		return student;
 	}
 
@@ -237,9 +238,9 @@ public class Sql {
 				pstmt.close();
 			if (pstmt2 != null)
 				pstmt2.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 		return coreMods;
 	}
 
@@ -290,9 +291,9 @@ public class Sql {
 				pstmt2.close();
 			if (pstmt3 != null)
 				pstmt3.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 		return modArray;
 	}
 
@@ -322,9 +323,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 		return posArray;
 	}
 
@@ -342,20 +343,25 @@ public class Sql {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			if (con != null)
-				con.close();
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
 		return true;
 	}
 
-	public boolean checkDegreeCodeExists(String deg) throws SQLException {
-		Connection con = setUpConnection();
+	public boolean checkDegreeExists(String name, String dep, String level, boolean pl, String type, Connection con)
+			throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode = ?");
-			pstmt.setString(1, deg);
+			pstmt = con.prepareStatement(
+					"SELECT * FROM Degrees WHERE DegreeName = ? AND DepartmentCode = ? AND MaxLevelOfStudy = ? AND Placement = ? AND DegreeType = ?");
+			pstmt.setString(1, name);
+			pstmt.setString(2, dep);
+			pstmt.setString(3, level);
+			pstmt.setBoolean(4, pl);
+			pstmt.setString(5, type);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				return true;// already exists
@@ -364,20 +370,18 @@ public class Sql {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			if (con != null)
-				con.close();
 			if (pstmt != null)
 				pstmt.close();
 		}
 		return true;
 	}
 
-	public boolean checkModuleCodeExists(String mod) throws SQLException {
-		Connection con = setUpConnection();
+	public boolean checkModuleExists(String name, String dep, Connection con) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleCode = ?");
-			pstmt.setString(1, mod);
+			pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleName = ? AND ModuleCode LIKE ?");
+			pstmt.setString(1, name);
+			pstmt.setString(2, dep + "%");
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				return true;// already exists
@@ -386,8 +390,6 @@ public class Sql {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
-			if (con != null)
-				con.close();
 			if (pstmt != null)
 				pstmt.close();
 		}
@@ -413,14 +415,15 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add new department
 	public void addDep(String code, String name) throws SQLException {
 		Connection con = setUpConnection();
+		code = code.toUpperCase();
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = con.prepareStatement("INSERT INTO Departments VALUES (?,?)");
@@ -432,52 +435,59 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add course
 	public void addCourse(String name, String dep, String level, boolean pl, String type) throws SQLException {
 		Connection con = setUpConnection();
+		dep = dep.toUpperCase();
+		type = type.toUpperCase();
 		PreparedStatement pstmt = null;
-		try {
-			pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,?,?)");
-			pstmt.setString(1, generateDegreeCode(dep, type, con));
-			pstmt.setString(2, name);
-			pstmt.setString(3, dep);
-			pstmt.setString(4, level);
-			pstmt.setBoolean(5, pl);
-			pstmt.setString(6, type);
-			pstmt.executeUpdate();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (pstmt != null)
-				pstmt.close();
+		if (!checkDegreeExists(name, dep, level, pl, type, con)) {
+			try {
+				pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,?,?)");
+				pstmt.setString(1, generateDegreeCode(dep, type, con));
+				pstmt.setString(2, name);
+				pstmt.setString(3, dep);
+				pstmt.setString(4, level);
+				pstmt.setBoolean(5, pl);
+				pstmt.setString(6, type);
+				pstmt.executeUpdate();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			}
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add module
 	public void addModule(String dep, String modName, String whenTaught) throws SQLException {
 		Connection con = setUpConnection();
+		dep = dep.toUpperCase();
 		PreparedStatement pstmt = null;
-		try {
-			pstmt = con.prepareStatement("INSERT INTO Modules VALUES (?,?,?)");
-			pstmt.setString(1, generateModCode(dep, con));
-			pstmt.setString(2, modName);
-			pstmt.setString(3, whenTaught);
-			pstmt.executeUpdate();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (pstmt != null)
-				pstmt.close();
+		if (!checkModuleExists(modName, dep, con)) {
+			try {
+				pstmt = con.prepareStatement("INSERT INTO Modules VALUES (?,?,?)");
+				pstmt.setString(1, generateModCode(dep, con));
+				pstmt.setString(2, modName);
+				pstmt.setString(3, whenTaught);
+				pstmt.executeUpdate();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			}
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add student
@@ -506,9 +516,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add taken module
@@ -527,9 +537,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void assignModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
@@ -548,9 +558,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void addPoS(int reg, char pos, String start, String end, char lvl) throws SQLException {
@@ -570,9 +580,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 	// remove fns
 
@@ -589,14 +599,15 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 	// delete department
 
 	public void removeDeps(String dep) throws SQLException {
 		Connection con = setUpConnection();
+		dep = dep.toUpperCase();
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = con.prepareStatement("DELETE FROM Departments WHERE DepartmentCode = ?");
@@ -607,9 +618,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// delete course
@@ -625,9 +636,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// delete module
@@ -643,9 +654,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 	// delete student
 
@@ -661,9 +672,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// drop taken module
@@ -680,9 +691,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void removePoS(int regCode) throws SQLException {
@@ -697,9 +708,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// update fns
@@ -717,9 +728,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// update grade (ask for grade type in param, norm or resit)
@@ -736,9 +747,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void updateModuleGrade(int posRegNo, String mod, double grade) throws SQLException {
@@ -755,9 +766,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// add resit grade for module
@@ -775,9 +786,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// update progress fn
@@ -794,9 +805,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	public void updateCurPos(int reg, char pos) throws SQLException {
@@ -812,9 +823,9 @@ public class Sql {
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (con != null)
+				con.close();
 		}
-		if (con != null)
-			con.close();
 	}
 
 	// other fns
