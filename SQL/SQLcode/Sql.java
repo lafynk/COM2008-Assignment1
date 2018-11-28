@@ -80,35 +80,36 @@ public class Sql {
 		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleCode LIKE ?");
 		pstmt.setString(1, dep + "%");
 		ResultSet rs = pstmt.executeQuery();
-		int i = 0;
+		String s = dep + "0000";
 		while (rs.next()) {
-			i++;
+			s = rs.getString(1);
 		}
+		pstmt.close();
+		int i = Integer.parseInt(s.substring(3));
 		i++;
-		if (i < 10) {
-			return (dep + "000" + Integer.toString(i));
-		} else if (i < 100) {
-			return (dep + "00" + Integer.toString(i));
-		} else if (i < 1000) {
-			return (dep + "0" + Integer.toString(i));
-		} else
-			return (dep + Integer.toString(i));
+		s = Integer.toString(i);
+		while (s.length() < 4) {
+			s = "0" + s;
+		}
+		return (dep + s);
 	}
 
 	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException {
 		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DepartmentCode = ?");
 		pstmt.setString(1, dep);
 		ResultSet rs = pstmt.executeQuery();
-		int i = 0;
+		String s = dep + "000";
 		while (rs.next()) {
-			i++;
+			s = rs.getString(1);
 		}
-		i++;
 		pstmt.close();
-		if (i < 10) {
-			return (dep + type + "0" + Integer.toString(i));
-		} else
-			return (dep + type + Integer.toString(i));
+		int i = Integer.parseInt(s.substring(3));
+		i++;
+		s = Integer.toString(i);
+		while (s.length() < 3) {
+			s = "0" + s;
+		}
+		return (dep + s);
 	}
 
 	public String createEmail(String fore, String sur, Connection con) throws SQLException {
@@ -375,11 +376,12 @@ public class Sql {
 		return true;
 	}
 
-	public boolean checkModuleExists(String name, Connection con) throws SQLException {
+	public boolean checkModuleExists(String name, String dep, Connection con) throws SQLException {
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleName = ?");
+			pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleName = ? AND ModuleCode LIKE ?");
 			pstmt.setString(1, name);
+			pstmt.setString(2, dep + "%");
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				return true;// already exists
@@ -421,6 +423,7 @@ public class Sql {
 	// add new department
 	public void addDep(String code, String name) throws SQLException {
 		Connection con = setUpConnection();
+		code = code.toUpperCase();
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = con.prepareStatement("INSERT INTO Departments VALUES (?,?)");
@@ -440,6 +443,7 @@ public class Sql {
 	// add course
 	public void addCourse(String name, String dep, String level, boolean pl, String type) throws SQLException {
 		Connection con = setUpConnection();
+		dep = dep.toUpperCase();
 		PreparedStatement pstmt = null;
 		if (!checkDegreeExists(name, dep, level, pl, type, con)) {
 			try {
@@ -465,8 +469,9 @@ public class Sql {
 	// add module
 	public void addModule(String dep, String modName, String whenTaught) throws SQLException {
 		Connection con = setUpConnection();
+		dep = dep.toUpperCase();
 		PreparedStatement pstmt = null;
-		if (!checkModuleExists(modName, con)) {
+		if (!checkModuleExists(modName, dep, con)) {
 			try {
 				pstmt = con.prepareStatement("INSERT INTO Modules VALUES (?,?,?)");
 				pstmt.setString(1, generateModCode(dep, con));
@@ -601,6 +606,7 @@ public class Sql {
 
 	public void removeDeps(String dep) throws SQLException {
 		Connection con = setUpConnection();
+		dep = dep.toUpperCase();
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = con.prepareStatement("DELETE FROM Departments WHERE DepartmentCode = ?");
