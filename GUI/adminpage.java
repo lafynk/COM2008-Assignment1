@@ -34,9 +34,17 @@ import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Random;
 import java.awt.event.ActionEvent;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 public class adminpage {
 
@@ -54,6 +62,11 @@ public class adminpage {
 	private JTextField moduletoadd;
 	private JTextField credits;
 	private JTextField depttoadddegree;
+	private JTable table_1;
+	private JTable table;
+	private JTable table_2;
+	private JTable table_3;
+	private JTable table_4;
 
 	/**
 	 * Launch the application.
@@ -73,15 +86,17 @@ public class adminpage {
 
 	/**
 	 * Create the application.
+	 * @throws SQLException 
 	 */
-	public adminpage() {
+	public adminpage() throws SQLException {
 		initialize();
 }
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws SQLException 
 	 */
-	private void initialize() {
+	private void initialize() throws SQLException {
 		Sql s = new Sql();
 		frmSystemsDesign = new JFrame();
 		frmSystemsDesign.setLocation(100, 0);
@@ -125,6 +140,10 @@ public class adminpage {
 					}
 					else {
 						s.addUser(useraccount.getText(), useraccountpwd.getText(), accttype.getSelectedItem().toString());
+						frmSystemsDesign.dispose();
+						adminpage window = new adminpage();
+						window.frmSystemsDesign.setVisible(true);
+						JOptionPane.showMessageDialog(null, "Account Created.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 					}
 				   
 				} catch (SQLException e1) {
@@ -133,10 +152,10 @@ public class adminpage {
 					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.","Operation Failed", JOptionPane.ERROR_MESSAGE);
 				} catch (NoSuchAlgorithmException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					//e1.printStackTrace();
 				} catch (NoSuchProviderException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					//e1.printStackTrace();
 				}
 				
 			}
@@ -165,6 +184,10 @@ public class adminpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.removeUser(Integer.parseInt(useraccountid.getText()));
+					frmSystemsDesign.dispose();
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Account Deleted.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 				//	e1.printStackTrace();
@@ -202,6 +225,10 @@ public class adminpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.addDep(departmentcode.getText(), department.getText());
+					frmSystemsDesign.dispose();
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Department Created.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					///e1.printStackTrace();
@@ -217,6 +244,10 @@ public class adminpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.removeDeps(departmentcode.getText());
+					frmSystemsDesign.dispose();
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Department Deleted.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
@@ -291,6 +322,10 @@ public class adminpage {
 						shorttype = "P";
 					}//degreecode.getText(),
 					s.addCourse(degree.getText(), depttoadddegree.getText(), degreelvl.getSelectedItem().toString(), placementgoing, shorttype);
+					frmSystemsDesign.dispose();
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Degree Created.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
@@ -303,12 +338,12 @@ public class adminpage {
 		
 		JSeparator separator_4 = new JSeparator();
 		separator_4.setOrientation(SwingConstants.VERTICAL);
-		separator_4.setBounds(235, 234, 24, 69);
+		separator_4.setBounds(235, 234, 24, 60);
 		frmSystemsDesign.getContentPane().add(separator_4);
 		
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setOrientation(SwingConstants.VERTICAL);
-		separator_2.setBounds(235, 363, 24, 69);
+		separator_2.setBounds(235, 307, 24, 135);
 		frmSystemsDesign.getContentPane().add(separator_2);
 		
 		JButton btnDeleteDegree = new JButton("Delete Degree");
@@ -316,6 +351,10 @@ public class adminpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.removeCourse(degreecode.getText());
+					frmSystemsDesign.dispose();
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Degree Deleted.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
@@ -362,6 +401,10 @@ public class adminpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.addModule(modulecode.getText(), module.getText(), modulewhentaught.getSelectedItem().toString());
+					frmSystemsDesign.dispose();
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Module Created.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
@@ -433,6 +476,10 @@ public class adminpage {
 						coreornot = false;
 					}
 					s.assignModuleToDegree(degreetoaddmodule.getText(), moduletoadd.getText(), coreornot, Integer.parseInt(credits.getText()), modulelvl.getSelectedItem().toString());
+					frmSystemsDesign.dispose();
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Module Assigned To Degree.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
@@ -446,29 +493,173 @@ public class adminpage {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 673, 994, 287);
 		frmSystemsDesign.getContentPane().add(tabbedPane);
+		//////////////////////////////////////////////////////////////////////////////////
+		JScrollPane scrollPane = new JScrollPane();
+		tabbedPane.addTab("User Accounts", null, scrollPane, null);
+		scrollPane.setViewportBorder(null);
 		
-		JPanel panel = new JPanel();
-		tabbedPane.addTab("User Accounts", null, panel, null);
-		
-		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("Departments", null, panel_1, null);
-		
-		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("Degrees", null, panel_3, null);
-		
-		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("Modules", null, panel_2, null);
-		
-		JPanel panel_4 = new JPanel();
-		tabbedPane.addTab("Assigned Modules", null, panel_4, null);
-		
+		DefaultTableModel model = new DefaultTableModel(); 
+		JTable table = new JTable(model); 
+	
+		model.addColumn("Account ID"); 
+		model.addColumn("Username"); 
+		model.addColumn("Account Type"); 
+
+		PreparedStatement pstmt = null;
+		Connection con = null;
+		try {
+			con = s.setUpConnection();
+			pstmt = con.prepareStatement("SELECT * FROM Users");
+			ResultSet res = pstmt.executeQuery();
+			ResultSetMetaData md = res.getMetaData();
+			while (res.next()) {
+				int reg = res.getInt(1);
+				String usr = res.getString(2);
+				String perm = res.getString(5);
+				model.addRow(new Object[]{reg,usr,perm});
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			new login();
+		}
+		scrollPane.setViewportView(table);
+//////////////////////////////////////////////////////////////////////////////////////////
+		JScrollPane scrollPane_1 = new JScrollPane();
+		tabbedPane.addTab("Departments", null, scrollPane_1, null);
+		DefaultTableModel model_1 = new DefaultTableModel(); 
+		JTable table_1 = new JTable(model_1); 
+	
+		model_1.addColumn("Department Code"); 
+		model_1.addColumn("Department Name"); 
+
+		try {
+			
+			pstmt = con.prepareStatement("SELECT * FROM Departments");
+			ResultSet res = pstmt.executeQuery();
+			ResultSetMetaData md = res.getMetaData();
+			while (res.next()) {
+				String dcode = res.getString(1);
+				String dname = res.getString(2);
+				model_1.addRow(new Object[]{dcode,dname});
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} 
+		scrollPane_1.setViewportView(table_1);
+//////////////////////////////////////////////////////////////////////////////////	
+		JScrollPane scrollPane_2 = new JScrollPane();
+		tabbedPane.addTab("Degrees", null, scrollPane_2, null);
+		DefaultTableModel model_2 = new DefaultTableModel(); 
+		JTable table_2 = new JTable(model_2); 
+	
+		model_2.addColumn("Degree Code"); 
+		model_2.addColumn("Degree Name"); 
+		model_2.addColumn("Department Code"); 
+		model_2.addColumn("Max Level Of Study"); 
+		model_2.addColumn("Placement"); 
+
+		try {
+			
+			pstmt = con.prepareStatement("SELECT * FROM Degrees");
+			ResultSet res = pstmt.executeQuery();
+			ResultSetMetaData md = res.getMetaData();
+			while (res.next()) {
+				String dcode = res.getString(1);
+				String dname = res.getString(2);
+				String depname = res.getString(3);
+				String maxlvlstudy = res.getString(4);
+				String placementpossible = res.getString(5);
+				String placementstring = null;
+				if (placementpossible.contentEquals("0")) {
+					placementstring = "No";
+				}else {
+					placementstring = "Yes";
+				}
+				model_2.addRow(new Object[]{dcode,dname,depname,maxlvlstudy,placementstring});
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} 
+		scrollPane_2.setViewportView(table_2);
+//////////////////////////////////////////////////////////////////////////////////
+		JScrollPane scrollPane_3 = new JScrollPane();
+		tabbedPane.addTab("Modules", null, scrollPane_3, null);
+		DefaultTableModel model_3 = new DefaultTableModel(); 
+		JTable table_3 = new JTable(model_3); 
+	
+		model_3.addColumn("Module Code"); 
+		model_3.addColumn("Module Name"); 
+		model_3.addColumn("When Taught"); 
+
+
+		try {
+			
+			pstmt = con.prepareStatement("SELECT * FROM Modules");
+			ResultSet res = pstmt.executeQuery();
+			ResultSetMetaData md = res.getMetaData();
+			while (res.next()) {
+				String mcode = res.getString(1);
+				String mname = res.getString(2);
+				String whentaught = res.getString(3);
+			
+				model_3.addRow(new Object[]{mcode,mname,whentaught});
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} 
+		scrollPane_3.setViewportView(table_3);
+//////////////////////////////////////////////////////////////////////////////////
+		JScrollPane scrollPane_4 = new JScrollPane();
+		tabbedPane.addTab("Assigned Modules", null, scrollPane_4, null);
+		DefaultTableModel model_4 = new DefaultTableModel(); 
+		JTable table_4 = new JTable(model_4); 
+	
+		model_4.addColumn("Degree Code"); 
+		model_4.addColumn("Module Code"); 
+		model_4.addColumn("Core"); 
+		model_4.addColumn("Credits"); 
+		model_4.addColumn("Level Taught At"); 
+
+		try {
+			
+			pstmt = con.prepareStatement("SELECT * FROM ModuleAssignment");
+			ResultSet res = pstmt.executeQuery();
+			ResultSetMetaData md = res.getMetaData();
+			while (res.next()) {
+				String dcode = res.getString(1);
+				String mcode = res.getString(2);
+				String coretf = res.getString(3);
+				String creditnum = res.getString(4);
+				String lvltaughtat = res.getString(5);
+				String coretfstring = null;
+				if (coretf.contentEquals("0")) {
+					coretfstring = "No";
+				}else {
+					coretfstring = "Yes";
+				}
+				model_4.addRow(new Object[]{dcode,mcode,coretfstring,creditnum,lvltaughtat});
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (con != null)
+				con.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		scrollPane_4.setViewportView(table_4);
+//////////////////////////////////////////////////////////////////////////////////
 		JButton btnDeleteModule = new JButton("<html>Delete Module\r\n(Enter Module Code above)");
 		btnDeleteModule.setVerticalAlignment(SwingConstants.TOP);
 		btnDeleteModule.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.removeMod(modulecode.getText());
-					
+					frmSystemsDesign.dispose();
+					adminpage window = new adminpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Module Deleted.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();

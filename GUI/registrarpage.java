@@ -16,18 +16,25 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Random;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
 import SQLcode.Sql;
 import classPkg.StuInfo;
 import classPkg.UserInfo;
 
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import java.util.Date;
@@ -68,10 +75,6 @@ public class registrarpage {
 	private JButton btnAssign;
 	private JButton btnDropModule;
 	private JTabbedPane tabbedPane;
-	private JPanel panel;
-	private JPanel panel_1;
-	private JPanel panel_2;
-	private JPanel panel_3;
 	private JButton btnLogout;
 	private JTextField studentmoduletaken;
 	private JLabel label_1;
@@ -89,7 +92,13 @@ public class registrarpage {
 	public static void main(String[] args) throws SQLException{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				registrarpage window = new registrarpage();
+				registrarpage window = null;
+				try {
+					window = new registrarpage();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				window.frmSystemsDesign.setVisible(true);
 			}
 		});
@@ -97,15 +106,17 @@ public class registrarpage {
 
 	/**
 	 * Create the application.
+	 * @throws SQLException 
 	 */
-	public registrarpage() {
+	public registrarpage() throws SQLException {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws SQLException 
 	 */
-	private void initialize() {
+	private void initialize() throws SQLException {
 		Sql s = new Sql();
 		frmSystemsDesign = new JFrame();
 		frmSystemsDesign.setTitle("Systems Design & Security: Team Project");
@@ -205,6 +216,11 @@ public class registrarpage {
 						UserInfo u = null;
 						u =s.checkLogIn(studentusername.getText(), studentpassword.getText());
 						s.addStudent((u.getRegNo()), studenttitle.getSelectedItem().toString(), studentsname.getText(),studentfname.getText(), studenttutor.getText(), studentdegree.getText(), studentpos.getSelectedItem().toString().charAt(0), "");
+						
+						frmSystemsDesign.dispose();
+						registrarpage window = new registrarpage();
+						window.frmSystemsDesign.setVisible(true);
+						JOptionPane.showMessageDialog(null, "Student Account Created.","Operation Successful", JOptionPane.ERROR_MESSAGE);
 					}
 					
 		
@@ -298,7 +314,7 @@ public class registrarpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					
-					s.addTakenModule(Integer.parseInt(studentidmodule.getText()), studentmoduletaken.getText(), Double.parseDouble(studentgrade.getText()), Double.parseDouble(studentresit.getText()));
+					s.addTakenModule(Integer.parseInt(studentidformodule.getText()), studentmoduletaken.getText(), Double.parseDouble(studentgrade.getText()), Double.parseDouble(studentresit.getText()));
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
@@ -312,7 +328,7 @@ public class registrarpage {
 		btnDropModule.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					s.removeTakenMod(Integer.parseInt(studentidmodule.getText()), studentmoduletaken.getText());
+					s.removeTakenMod(Integer.parseInt(studentidformodule.getText()), studentmoduletaken.getText());
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 				//	e1.printStackTrace();
@@ -325,21 +341,6 @@ public class registrarpage {
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 699, 1021, 261);
 		frmSystemsDesign.getContentPane().add(tabbedPane);
-		
-		panel = new JPanel();
-		tabbedPane.addTab("Students", null, panel, null);
-		
-		panel_1 = new JPanel();
-		tabbedPane.addTab("Degrees", null, panel_1, null);
-		
-		panel_3 = new JPanel();
-		tabbedPane.addTab("Modules", null, panel_3, null);
-		
-		panel_2 = new JPanel();
-		tabbedPane.addTab("Period Of Study", null, panel_2, null);
-		
-		JPanel panel_4 = new JPanel();
-		tabbedPane.addTab("Assigned Modules", null, panel_4, null);
 		
 		btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
@@ -418,7 +419,7 @@ public class registrarpage {
 		frmSystemsDesign.getContentPane().add(separator_3);
 		
 		startdate = new JTextField();
-		startdate.setText("YYY-MM-DD");
+		startdate.setText("YYYY-MM-DD");
 		startdate.setBounds(312, 458, 133, 26);
 		frmSystemsDesign.getContentPane().add(startdate);
 		startdate.setColumns(10);
@@ -429,5 +430,224 @@ public class registrarpage {
 		enddate.setBounds(572, 458, 133, 26);
 		frmSystemsDesign.getContentPane().add(enddate);
 		
-	}
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+JScrollPane scrollPane = new JScrollPane();
+tabbedPane.addTab("Student Accounts", null, scrollPane, null);
+scrollPane.setViewportBorder(null);
+
+DefaultTableModel model = new DefaultTableModel(); 
+JTable table = new JTable(model); 
+
+model.addColumn("Student ID"); 
+model.addColumn("Title"); 
+model.addColumn("Surname"); 
+model.addColumn("Forename"); 
+model.addColumn("Email"); 
+model.addColumn("Tutor"); 
+model.addColumn("Degree Code"); 
+model.addColumn("Current Level Of Study");
+model.addColumn("Awarded Class");
+ 
+
+PreparedStatement pstmt = null;
+Connection con = null;
+try {
+con = s.setUpConnection();
+pstmt = con.prepareStatement("SELECT * FROM Students");
+ResultSet res = pstmt.executeQuery();
+ResultSetMetaData md = res.getMetaData();
+while (res.next()) {
+int reg = res.getInt(1);
+String regno = res.getString(1);
+String title = res.getString(2);
+String sname = res.getString(3);
+String fname = res.getString(4);
+String email = res.getString(5);
+String tutor = res.getString(6);
+String dcode = res.getString(7);
+String currentlvlos = res.getString(8);
+String awardedclass = res.getString(9);
+String awardedclassstring = null;
+if (awardedclass==null) {
+	awardedclassstring = "In Progress";
 }
+model.addRow(new Object[]{regno,title,sname,fname,email,tutor,dcode,currentlvlos,awardedclassstring});
+}
+} catch (SQLException ex) {
+ex.printStackTrace();
+} finally {
+new login();
+}
+scrollPane.setViewportView(table);
+//////////////////////////////////////////////////////////////////////////////////////////
+JScrollPane scrollPane_1 = new JScrollPane();
+tabbedPane.addTab("Departments", null, scrollPane_1, null);
+DefaultTableModel model_1 = new DefaultTableModel(); 
+JTable table_1 = new JTable(model_1); 
+
+model_1.addColumn("Department Code"); 
+model_1.addColumn("Department Name"); 
+
+try {
+
+pstmt = con.prepareStatement("SELECT * FROM Departments");
+ResultSet res = pstmt.executeQuery();
+ResultSetMetaData md = res.getMetaData();
+while (res.next()) {
+String dcode = res.getString(1);
+String dname = res.getString(2);
+model_1.addRow(new Object[]{dcode,dname});
+}
+} catch (SQLException ex) {
+ex.printStackTrace();
+} 
+scrollPane_1.setViewportView(table_1);
+//////////////////////////////////////////////////////////////////////////////////
+JScrollPane scrollPane_2 = new JScrollPane();
+tabbedPane.addTab("Degrees", null, scrollPane_2, null);
+DefaultTableModel model_2 = new DefaultTableModel(); 
+JTable table_2 = new JTable(model_2); 
+
+model_2.addColumn("Degree Code"); 
+model_2.addColumn("Degree Name"); 
+model_2.addColumn("Department Code"); 
+model_2.addColumn("Max Level Of Study"); 
+model_2.addColumn("Placement"); 
+
+try {
+
+pstmt = con.prepareStatement("SELECT * FROM Degrees");
+ResultSet res = pstmt.executeQuery();
+ResultSetMetaData md = res.getMetaData();
+while (res.next()) {
+String dcode = res.getString(1);
+String dname = res.getString(2);
+String depname = res.getString(3);
+String maxlvlstudy = res.getString(4);
+String placementpossible = res.getString(5);
+String placementstring = null;
+if (placementpossible.contentEquals("0")) {
+placementstring = "No";
+}else {
+placementstring = "Yes";
+}
+model_2.addRow(new Object[]{dcode,dname,depname,maxlvlstudy,placementstring});
+}
+} catch (SQLException ex) {
+ex.printStackTrace();
+} 
+scrollPane_2.setViewportView(table_2);
+//////////////////////////////////////////////////////////////////////////////////
+JScrollPane scrollPane_3 = new JScrollPane();
+tabbedPane.addTab("Modules", null, scrollPane_3, null);
+DefaultTableModel model_3 = new DefaultTableModel(); 
+JTable table_3 = new JTable(model_3); 
+
+model_3.addColumn("Module Code"); 
+model_3.addColumn("Module Name"); 
+model_3.addColumn("When Taught"); 
+
+
+try {
+
+pstmt = con.prepareStatement("SELECT * FROM Modules");
+ResultSet res = pstmt.executeQuery();
+ResultSetMetaData md = res.getMetaData();
+while (res.next()) {
+String mcode = res.getString(1);
+String mname = res.getString(2);
+String whentaught = res.getString(3);
+
+model_3.addRow(new Object[]{mcode,mname,whentaught});
+}
+} catch (SQLException ex) {
+ex.printStackTrace();
+} 
+scrollPane_3.setViewportView(table_3);
+//////////////////////////////////////////////////////////////////////////////////
+JScrollPane scrollPane_4 = new JScrollPane();
+tabbedPane.addTab("Assigned Modules", null, scrollPane_4, null);
+DefaultTableModel model_4 = new DefaultTableModel(); 
+JTable table_4 = new JTable(model_4); 
+
+model_4.addColumn("Degree Code"); 
+model_4.addColumn("Module Code"); 
+model_4.addColumn("Core"); 
+model_4.addColumn("Credits"); 
+model_4.addColumn("Level Taught At"); 
+
+try {
+
+pstmt = con.prepareStatement("SELECT * FROM ModuleAssignment");
+ResultSet res = pstmt.executeQuery();
+ResultSetMetaData md = res.getMetaData();
+while (res.next()) {
+String dcode = res.getString(1);
+String mcode = res.getString(2);
+String coretf = res.getString(3);
+String creditnum = res.getString(4);
+String lvltaughtat = res.getString(5);
+String coretfstring = null;
+if (coretf.contentEquals("0")) {
+coretfstring = "No";
+}else {
+coretfstring = "Yes";
+}
+model_4.addRow(new Object[]{dcode,mcode,coretfstring,creditnum,lvltaughtat});
+}
+} catch (SQLException ex) {
+ex.printStackTrace();
+} 
+scrollPane_4.setViewportView(table_4);
+	
+//////////////////////////////////////////////////////////////////////////////////
+JScrollPane scrollPane_5 = new JScrollPane();
+tabbedPane.addTab("Periods Of Study", null, scrollPane_5, null);
+DefaultTableModel model_5 = new DefaultTableModel(); 
+JTable table_5 = new JTable(model_5); 
+
+model_5.addColumn("PoS Code"); 
+model_5.addColumn("Student RegNo"); 
+model_5.addColumn("Period Of Study"); 
+model_5.addColumn("Start Date"); 
+model_5.addColumn("End Date"); 
+model_5.addColumn("Current Level"); 
+model_5.addColumn("Grade"); 
+model_5.addColumn("Progress"); 
+
+try {
+
+pstmt = con.prepareStatement("SELECT * FROM PeriodsOfStudy");
+ResultSet res = pstmt.executeQuery();
+ResultSetMetaData md = res.getMetaData();
+while (res.next()) {
+String poscode = res.getString(1);
+String reg = res.getString(2);
+String pos = res.getString(3);
+String start = res.getString(4);
+String end = res.getString(5);
+String lvl = res.getString(6);
+String grade = res.getString(7);
+String progress = res.getString(8);
+String progressstring = null;
+if (progress.contentEquals("0")) {
+progressstring = "No";
+}else {
+progressstring = "Yes";
+}
+
+model_5.addRow(new Object[]{poscode,reg,pos,start,end,lvl,grade,progressstring});
+}
+} catch (SQLException ex) {
+ex.printStackTrace();
+} finally {
+if (con != null)
+con.close();
+if (pstmt != null)
+pstmt.close();
+}
+scrollPane_5.setViewportView(table_5);
+}
+}
+

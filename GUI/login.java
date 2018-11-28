@@ -107,11 +107,25 @@ public class login {
 					new teacherpage();
 				}
 				else if (u.getPermission().contentEquals("Admin")){
-					adminpage window = new adminpage();
+					adminpage window = null;
+					try {
+						window = new adminpage();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Could not open window. Too many connections.","Error!", JOptionPane.ERROR_MESSAGE);
+					}
 					window.frmSystemsDesign.setVisible(true);
 				}
 				else if (u.getPermission().contentEquals("Registrars")){
-					registrarpage window = new registrarpage();
+					registrarpage window = null;
+					try {
+						window = new registrarpage();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Could not open window. Too many connections.","Error!", JOptionPane.ERROR_MESSAGE);
+					}
 					window.frmSystemsDesign.setVisible(true);
 						
 				
