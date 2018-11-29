@@ -664,6 +664,23 @@ public class Sql {
 				con.close();
 		}
 	}
+
+	public void removeUserByUsername(String usr) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM Users WHERE Username = ?");
+			pstmt.setString(1, usr);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
 	// delete department
 
 	public void removeDeps(String dep) throws SQLException {
