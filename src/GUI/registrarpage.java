@@ -255,7 +255,8 @@ public class registrarpage {
 				try {
 					PeriodOfStudy[] pos = s.getPeriodsOfStudy(Integer.parseInt(studentiddelete.getText()));
 					for (PeriodOfStudy p : pos) {
-						s.removeTakenMods(p.getPosRegCode());
+						if (!(p == null))
+							s.removeTakenMods(p.getPosRegCode());
 					}
 					s.removePoSs(Integer.parseInt(studentiddelete.getText()));
 					s.removeStudent(Integer.parseInt(studentiddelete.getText()));
