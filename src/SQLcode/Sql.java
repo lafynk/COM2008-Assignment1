@@ -95,7 +95,7 @@ public class Sql {
 	}
 
 	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException {
-		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode LIKE ?");
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode LIKE = ?");
 		pstmt.setString(1, dep + type + "%");
 		ResultSet rs = pstmt.executeQuery();
 		String s = dep + type + "00";
@@ -130,7 +130,29 @@ public class Sql {
 		}
 	}
 
-	// find user
+	public String getDegreeCode(String name, boolean p) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		String code = "";
+		try {
+			pstmt = con.prepareStatement("SELECT DegreeCode FROM Degrees WHERE DegreeName = ? AND Placement = ?");
+			pstmt.setString(1, name);
+			pstmt.setBoolean(2, p);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				code = rs.getString(1);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+		return code;
+	}
+	// This function takes a username and password and checks if they are allowed to log in
 	public UserInfo checkLogIn(String usr, String pw) throws SQLException {
 		Connection con = setUpConnection();
 		int ID = 0;
