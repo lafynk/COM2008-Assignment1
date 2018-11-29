@@ -95,7 +95,7 @@ public class Sql {
 	}
 
 	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException {
-		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode LIKE = ?");
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode LIKE ?");
 		pstmt.setString(1, dep + type + "%");
 		ResultSet rs = pstmt.executeQuery();
 		String s = dep + type + "00";
@@ -130,14 +130,13 @@ public class Sql {
 		}
 	}
 
-	public String getDegreeCode(String name, boolean p) throws SQLException {
+	public String getDegreeCode(String name) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		String code = "";
 		try {
-			pstmt = con.prepareStatement("SELECT DegreeCode FROM Degrees WHERE DegreeName = ? AND Placement = ?");
+			pstmt = con.prepareStatement("SELECT DegreeCode FROM Degrees WHERE DegreeName = ?");
 			pstmt.setString(1, name);
-			pstmt.setBoolean(2, p);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				code = rs.getString(1);
@@ -282,6 +281,7 @@ public class Sql {
 				String mod = res1.getString(1);
 				int cr = res1.getInt(4);
 				pstmt2 = con.prepareStatement("Select WhenTaught From Modules Where ModuleCode = ?");
+				pstmt2.setString(1, mod);
 				ResultSet res2 = pstmt2.executeQuery();
 				while (res2.next()) {
 					taught = res2.getString(1);

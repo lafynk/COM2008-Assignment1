@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 
 import SQLcode.Sql;
 import classPkg.Module;
+import classPkg.PeriodOfStudy;
 import classPkg.StuInfo;
 import classPkg.UserInfo;
 
@@ -391,7 +392,16 @@ public class registrarpage {
 					s.addPoS(Integer.parseInt(studentidmodule.getText()), stu.getPoS(), startdate.getText(), enddate.getText(), currentlvl.getSelectedItem().toString().charAt(0));
 					Module[] modulearray = new Module[] {};
 					modulearray  = s.getCoreModules(stu.getDegree(), currentlvl.getSelectedItem().toString().charAt(0));
-					
+					PeriodOfStudy[] p = s.getPeriodsOfStudy(stu.getRegNo());
+					int i = 0;
+					for (PeriodOfStudy pos: p) {
+						if (stu.getPoS()==pos.getPoS()){
+							i = pos.getPosRegCode();
+						}
+					}
+					for (Module x:modulearray) {
+						s.addTakenModule(i, x.getModule(), 0.00, 0.00);
+					}
 					frmSystemsDesign.dispose();
 					registrarpage window = new registrarpage();
 					window.frmSystemsDesign.setVisible(true);

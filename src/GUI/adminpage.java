@@ -325,6 +325,7 @@ public class adminpage {
 						shorttype = "P";
 					}//degreecode.getText(),
 					s.addCourse(degreestring, depttoadddegree.getText(), degreelvl.getSelectedItem().toString(), placementgoing, shorttype);
+					s.assignModuleToDegree(s.getDegreeCode(degreestring), "TST0001", false, 0, "1");
 					frmSystemsDesign.dispose();
 					adminpage window = new adminpage();
 					window.frmSystemsDesign.setVisible(true);
