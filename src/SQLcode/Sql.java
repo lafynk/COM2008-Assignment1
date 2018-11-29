@@ -208,8 +208,8 @@ public class Sql {
 				String email = res.getString(5);
 				String tutor = res.getString(6);
 				String degree = res.getString(7);
-				char p = res.getString(7).charAt(0);
-				String awClass = res.getString(8);
+				char p = res.getString(8).charAt(0);
+				String awClass = res.getString(9);
 				String t = "";
 				pstmt2 = con.prepareStatement("SELECT DegreeType FROM Degrees WHERE DegreeCode = ?");
 				pstmt2.setString(1, degree);
