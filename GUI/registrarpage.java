@@ -28,6 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import SQLcode.Sql;
+import classPkg.Module;
 import classPkg.StuInfo;
 import classPkg.UserInfo;
 
@@ -220,7 +221,7 @@ public class registrarpage {
 						frmSystemsDesign.dispose();
 						registrarpage window = new registrarpage();
 						window.frmSystemsDesign.setVisible(true);
-						JOptionPane.showMessageDialog(null, "Student Account Created.","Operation Successful", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Student Account Created.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 					}
 					
 		
@@ -260,6 +261,10 @@ public class registrarpage {
 					s.removeStudent(Integer.parseInt(studentiddelete.getText()));
 					try {
 						s.removeUser(Integer.parseInt(studentiddelete.getText()));
+						frmSystemsDesign.dispose();
+						registrarpage window = new registrarpage();
+						window.frmSystemsDesign.setVisible(true);
+						JOptionPane.showMessageDialog(null, "Student Account Deleted.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 						
 					} catch (NumberFormatException | SQLException e1) {
 						// TODO Auto-generated catch block
@@ -315,6 +320,10 @@ public class registrarpage {
 				try {
 					
 					s.addTakenModule(Integer.parseInt(studentidformodule.getText()), studentmoduletaken.getText(), Double.parseDouble(studentgrade.getText()), Double.parseDouble(studentresit.getText()));
+					frmSystemsDesign.dispose();
+					registrarpage window = new registrarpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Module Assigned.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 					//e1.printStackTrace();
@@ -329,6 +338,10 @@ public class registrarpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s.removeTakenMod(Integer.parseInt(studentidformodule.getText()), studentmoduletaken.getText());
+					frmSystemsDesign.dispose();
+					registrarpage window = new registrarpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Module Dropped.","Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 				//	e1.printStackTrace();
@@ -372,8 +385,17 @@ public class registrarpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					StuInfo stu = null;
+					Module mod = null;
 					stu = s.getStudentInfo(Integer.parseInt(studentidmodule.getText()));
+					
 					s.addPoS(Integer.parseInt(studentidmodule.getText()), stu.getPoS(), startdate.getText(), enddate.getText(), currentlvl.getSelectedItem().toString().charAt(0));
+					Module[] modulearray = new Module[] {};
+					modulearray  = s.getCoreModules(stu.getDegree(), currentlvl.getSelectedItem().toString().charAt(0));
+					
+					frmSystemsDesign.dispose();
+					registrarpage window = new registrarpage();
+					window.frmSystemsDesign.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Period of Study added."+modulearray,"Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -641,13 +663,42 @@ model_5.addRow(new Object[]{poscode,reg,pos,start,end,lvl,grade,progressstring})
 }
 } catch (SQLException ex) {
 ex.printStackTrace();
+} 
+scrollPane_5.setViewportView(table_5);
+//////////////////////////////////////////////
+JScrollPane scrollPane_6 = new JScrollPane();
+tabbedPane.addTab("Modules Taken", null, scrollPane_6, null);
+DefaultTableModel model_6 = new DefaultTableModel(); 
+JTable table_6 = new JTable(model_6); 
+
+model_6.addColumn("PoS Code"); 
+model_6.addColumn("Module Code"); 
+model_6.addColumn("Grade"); 
+model_6.addColumn("Resit");  
+
+try {
+
+pstmt = con.prepareStatement("SELECT * FROM ModuleTaken");
+ResultSet res = pstmt.executeQuery();
+ResultSetMetaData md = res.getMetaData();
+while (res.next()) {
+String poscode = res.getString(1);
+String modcode = res.getString(2);
+String grade = res.getString(3);
+String resit = res.getString(4);
+
+
+model_6.addRow(new Object[]{poscode,modcode,grade,resit});
+}
+} catch (SQLException ex) {
+ex.printStackTrace();
 } finally {
 if (con != null)
 con.close();
 if (pstmt != null)
 pstmt.close();
 }
-scrollPane_5.setViewportView(table_5);
+scrollPane_6.setViewportView(table_6);
 }
 }
 

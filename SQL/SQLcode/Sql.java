@@ -214,7 +214,7 @@ public class Sql {
 		PreparedStatement pstmt2 = null;
 		try {
 			pstmt = con.prepareStatement(
-					"SELECT * FROM ModuleAssignment WHERE Degree = ? AND LevelTaughtAt = ? AND Obligatory = 1");
+					"SELECT * FROM ModuleAssignment WHERE DegreeCode = ? AND LevelTaughtAt = ? AND Obligatory = 1");
 			pstmt.setString(1, deg);
 			pstmt.setString(2, String.valueOf(lvl));
 			ResultSet res1 = pstmt.executeQuery();

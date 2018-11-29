@@ -308,11 +308,14 @@ public class adminpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Boolean placementgoing;
+					String degreestring;
 					if (placement.getSelectedItem().toString() == "Yes") {
 						placementgoing = true;
+						degreestring = degree.getText()+" with a Year in Industry";
 					}
 					else {
 						placementgoing = false;
+						degreestring = degree.getText();
 					}
 					String shorttype;
 					if (type.getSelectedItem().toString() == "Undergraduate") {
@@ -321,7 +324,7 @@ public class adminpage {
 					else {
 						shorttype = "P";
 					}//degreecode.getText(),
-					s.addCourse(degree.getText(), depttoadddegree.getText(), degreelvl.getSelectedItem().toString(), placementgoing, shorttype);
+					s.addCourse(degreestring, depttoadddegree.getText(), degreelvl.getSelectedItem().toString(), placementgoing, shorttype);
 					frmSystemsDesign.dispose();
 					adminpage window = new adminpage();
 					window.frmSystemsDesign.setVisible(true);
