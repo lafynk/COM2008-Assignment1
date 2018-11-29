@@ -1,3 +1,0 @@
-Team 35
-DBname: team035
-DBpassword: b7af5f37
