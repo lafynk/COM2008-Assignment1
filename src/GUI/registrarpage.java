@@ -208,8 +208,7 @@ public class registrarpage {
 								JOptionPane.ERROR_MESSAGE);
 					} else {
 						s.addUser(studentusername.getText(), studentpassword.getText(), "Students");
-						UserInfo u = null;
-						u = s.checkLogIn(studentusername.getText(), studentpassword.getText());
+						UserInfo u = s.checkLogIn(studentusername.getText(), studentpassword.getText());
 						s.addStudent(u.getRegNo(), studenttitle.getSelectedItem().toString(), studentsname.getText(),
 								studentfname.getText(), studenttutor.getText(), studentdegree.getText(),
 								studentpos.getSelectedItem().toString().charAt(0), "");
