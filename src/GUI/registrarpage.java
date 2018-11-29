@@ -214,6 +214,7 @@ public class registrarpage {
 							if (u == null)
 								s.removeUserByUsername(studentusername.getText());
 						}
+						System.out.println(studentpos.getSelectedItem().toString().charAt(0));
 						s.addStudent(u.getRegNo(), studenttitle.getSelectedItem().toString(), studentsname.getText(),
 								studentfname.getText(), studenttutor.getText(), studentdegree.getText(),
 								studentpos.getSelectedItem().toString().charAt(0), "");
@@ -396,7 +397,7 @@ public class registrarpage {
 				try {
 					Module mod = null;
 					StuInfo stu = s.getStudentInfo(Integer.parseInt(studentidmodule.getText()));
-
+					System.out.println(stu.getPoS());
 					s.addPoS(Integer.parseInt(studentidmodule.getText()), stu.getPoS(), startdate.getText(),
 							enddate.getText(), currentlvl.getSelectedItem().toString().charAt(0));
 					Module[] modulearray = s.getCoreModules(stu.getDegree(),
