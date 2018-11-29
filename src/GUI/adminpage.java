@@ -14,18 +14,17 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.BoxLayout;
-/**
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;*/
+import com.jgoodies.forms.layout.RowSpec;
 
 import SQLcode.Sql;
 
-//import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.FormSpecs;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 
-//import net.miginfocom.swing.MigLayout;
+import net.miginfocom.swing.MigLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JSeparator;
@@ -309,11 +308,14 @@ public class adminpage {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Boolean placementgoing;
+					String degreestring;
 					if (placement.getSelectedItem().toString() == "Yes") {
 						placementgoing = true;
+						degreestring = degree.getText()+" with a Year in Industry";
 					}
 					else {
 						placementgoing = false;
+						degreestring = degree.getText();
 					}
 					String shorttype;
 					if (type.getSelectedItem().toString() == "Undergraduate") {
@@ -322,7 +324,7 @@ public class adminpage {
 					else {
 						shorttype = "P";
 					}//degreecode.getText(),
-					s.addCourse(degree.getText(), depttoadddegree.getText(), degreelvl.getSelectedItem().toString(), placementgoing, shorttype);
+					s.addCourse(degreestring, depttoadddegree.getText(), degreelvl.getSelectedItem().toString(), placementgoing, shorttype);
 					frmSystemsDesign.dispose();
 					adminpage window = new adminpage();
 					window.frmSystemsDesign.setVisible(true);
@@ -706,4 +708,3 @@ public class adminpage {
 
 	}
 }
-
