@@ -206,7 +206,43 @@ public class Sql {
 		}
 		return student;
 	}
-
+	public Module getModInfo(String deg,String mod) throws SQLException{
+		Module mI = null;
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		try {
+			pstmt = con.prepareStatement(
+					"SELECT * FROM ModuleAssignment WHERE DegreeCode = ? AND ModuleCode = 1");
+			pstmt.setString(1, deg);
+			pstmt.setString(2, mod);
+			ResultSet res1 = pstmt.executeQuery();
+			String taught = "";
+			int i = 0; // for adding to array
+			while (res1.next()) {
+				boolean o = res1.getBoolean(3);
+				int cr = res1.getInt(4);
+				char lvl = res1.getString(5).charAt(0);
+				pstmt2 = con.prepareStatement("Select WhenTaught From Modules Where ModuleCode = ?");
+				ResultSet res2 = pstmt2.executeQuery();
+				while (res2.next()) {
+					taught = res2.getString(1);
+				}
+				mI = new Module(mod, deg, o, cr, lvl, taught, 0.00, 0.00);
+				i++;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (pstmt2 != null)
+				pstmt2.close();
+			if (con != null)
+				con.close();
+		}
+		return mI;
+	}
 	public Module[] getCoreModules(String deg, char lvl) throws SQLException {
 		Module[] coreMods = new Module[10];
 		Connection con = setUpConnection();
@@ -214,7 +250,7 @@ public class Sql {
 		PreparedStatement pstmt2 = null;
 		try {
 			pstmt = con.prepareStatement(
-					"SELECT * FROM ModuleAssignment WHERE Degree = ? AND LevelTaughtAt = ? AND Obligatory = 1");
+					"SELECT * FROM ModuleAssignment WHERE DegreeCode = ? AND LevelTaughtAt = ? AND Obligatory = 1");
 			pstmt.setString(1, deg);
 			pstmt.setString(2, String.valueOf(lvl));
 			ResultSet res1 = pstmt.executeQuery();
@@ -223,7 +259,7 @@ public class Sql {
 			while (res1.next()) {
 				String mod = res1.getString(1);
 				int cr = res1.getInt(4);
-				pstmt2 = con.prepareStatement("Select LevelTaughtAt From Modules Where ModuleCode = ?");
+				pstmt2 = con.prepareStatement("Select WhenTaught From Modules Where ModuleCode = ?");
 				ResultSet res2 = pstmt2.executeQuery();
 				while (res2.next()) {
 					taught = res2.getString(1);
