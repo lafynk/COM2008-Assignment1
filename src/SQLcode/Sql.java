@@ -151,7 +151,9 @@ public class Sql {
 		}
 		return code;
 	}
-	// This function takes a username and password and checks if they are allowed to log in
+
+	// This function takes a username and password and checks if they are allowed to
+	// log in
 	public UserInfo checkLogIn(String usr, String pw) throws SQLException {
 		Connection con = setUpConnection();
 		int ID = 0;
@@ -227,14 +229,14 @@ public class Sql {
 		}
 		return student;
 	}
-	public Module getModInfo(String deg,String mod) throws SQLException{
+
+	public Module getModInfo(String deg, String mod) throws SQLException {
 		Module mI = null;
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
 		try {
-			pstmt = con.prepareStatement(
-					"SELECT * FROM ModuleAssignment WHERE DegreeCode = ? AND ModuleCode = 1");
+			pstmt = con.prepareStatement("SELECT * FROM ModuleAssignment WHERE DegreeCode = ? AND ModuleCode = 1");
 			pstmt.setString(1, deg);
 			pstmt.setString(2, mod);
 			ResultSet res1 = pstmt.executeQuery();
@@ -264,6 +266,7 @@ public class Sql {
 		}
 		return mI;
 	}
+
 	public Module[] getCoreModules(String deg, char lvl) throws SQLException {
 		Module[] coreMods = new Module[10];
 		Connection con = setUpConnection();
@@ -754,12 +757,46 @@ public class Sql {
 		}
 	}
 
+	public void removeTakenMods(int regCode) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM ModuleTaken WHERE PosRegCode = ?");
+			pstmt.setInt(1, regCode);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
 	public void removePoS(int regCode) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = con.prepareStatement("DELETE FROM PeriodsOfStudy WHERE PosRegCode = ?");
 			pstmt.setInt(1, regCode);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	public void removePoSs(int reg) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM PeriodsOfStudy WHERE RegistrationNo = ?");
+			pstmt.setInt(1, reg);
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
