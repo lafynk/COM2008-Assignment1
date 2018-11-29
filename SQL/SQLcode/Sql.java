@@ -95,7 +95,7 @@ public class Sql {
 	}
 
 	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException {
-		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode LIKE = ?");
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode LIKE ?");
 		pstmt.setString(1, dep + type + "%");
 		ResultSet rs = pstmt.executeQuery();
 		String s = dep + type + "00";
