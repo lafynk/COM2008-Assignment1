@@ -281,7 +281,7 @@ public class Sql {
 			String taught = " ";
 			int i = 0; // for adding to array
 			while (res1.next()) {
-				String mod = res1.getString(1);
+				String mod = res1.getString(2);
 				int cr = res1.getInt(4);
 				pstmt2 = con.prepareStatement("Select WhenTaught From Modules Where ModuleCode = ?");
 				pstmt2.setString(1, mod);
