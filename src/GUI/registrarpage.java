@@ -207,8 +207,13 @@ public class registrarpage {
 						JOptionPane.showMessageDialog(null, "This username is already in use.", "Operation Failed",
 								JOptionPane.ERROR_MESSAGE);
 					} else {
-						s.addUser(studentusername.getText(), studentpassword.getText(), "Students");
-						UserInfo u = s.checkLogIn(studentusername.getText(), studentpassword.getText());
+						UserInfo u = null;
+						while (u == null) {
+							s.addUser(studentusername.getText(), studentpassword.getText(), "Students");
+							u = s.checkLogIn(studentusername.getText(), studentpassword.getText());
+							if (u == null)
+								s.removeUserByUsername(studentusername.getText());
+						}
 						s.addStudent(u.getRegNo(), studenttitle.getSelectedItem().toString(), studentsname.getText(),
 								studentfname.getText(), studenttutor.getText(), studentdegree.getText(),
 								studentpos.getSelectedItem().toString().charAt(0), "");
@@ -251,11 +256,12 @@ public class registrarpage {
 
 		btnDeleteStudent = new JButton("Delete Student");
 		btnDeleteStudent.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
 				try {
 					PeriodOfStudy[] pos = s.getPeriodsOfStudy(Integer.parseInt(studentiddelete.getText()));
 					for (PeriodOfStudy p : pos) {
-						if (!(p == null))
+						if (p != null)
 							s.removeTakenMods(p.getPosRegCode());
 					}
 					s.removePoSs(Integer.parseInt(studentiddelete.getText()));
@@ -388,23 +394,27 @@ public class registrarpage {
 		btnAddPos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					StuInfo stu = null;
 					Module mod = null;
-					stu = s.getStudentInfo(Integer.parseInt(studentidmodule.getText()));
+					StuInfo stu = s.getStudentInfo(Integer.parseInt(studentidmodule.getText()));
 
 					s.addPoS(Integer.parseInt(studentidmodule.getText()), stu.getPoS(), startdate.getText(),
 							enddate.getText(), currentlvl.getSelectedItem().toString().charAt(0));
-					Module[] modulearray = new Module[] {};
-					modulearray = s.getCoreModules(stu.getDegree(), currentlvl.getSelectedItem().toString().charAt(0));
+					Module[] modulearray = s.getCoreModules(stu.getDegree(),
+							currentlvl.getSelectedItem().toString().charAt(0));
 					PeriodOfStudy[] p = s.getPeriodsOfStudy(stu.getRegNo());
 					int i = 0;
 					for (PeriodOfStudy pos : p) {
-						if (stu.getPoS() == pos.getPoS()) {
-							i = pos.getPosRegCode();
+						if (pos != null) {
+							if (stu.getPoS() == pos.getPoS()) {
+								i = pos.getPosRegCode();
+							}
 						}
 					}
 					for (Module x : modulearray) {
-						s.addTakenModule(i, x.getModule(), 0.00, 0.00);
+						if (x != null) {
+							System.out.println(x.getModule());
+							s.addTakenModule(i, x.getModule(), 0.00, 0.00);
+						}
 					}
 					frmSystemsDesign.dispose();
 					registrarpage window = new registrarpage();
