@@ -1,5 +1,6 @@
 package SQLcode;
 
+//Import all necessary libraries
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -17,6 +18,7 @@ import classPkg.StuInfo;
 import classPkg.UserInfo;
 
 public class Sql {
+	// This function takes a string (a password) and then returns an encrypted version of the password and the salt used to make it more secure
 	private String[] getEncPassword(String pw) throws NoSuchAlgorithmException, NoSuchProviderException {
 		String[] pwSalt = new String[2];
 		byte[] salt = getSalt();
@@ -49,6 +51,7 @@ public class Sql {
 		return salt;
 	}
 
+//This is a function that creates a Registration Code and returns it
 	public int createPosRegCode(int reg, char pos) {
 		String s = "";
 		switch (pos) {
@@ -76,6 +79,7 @@ public class Sql {
 		return r;
 	}
 
+//This function is used to generate a Module code for a given department
 	public String generateModCode(String dep, Connection con) throws SQLException {
 		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleCode LIKE ?");
 		pstmt.setString(1, dep + "%");
@@ -94,6 +98,7 @@ public class Sql {
 		return (dep + s);
 	}
 
+// This function takes a department as well as a degree type and creates a unique Degree code
 	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException {
 		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode LIKE ?");
 		pstmt.setString(1, dep + type + "%");
@@ -112,6 +117,7 @@ public class Sql {
 		return (dep + type + s);
 	}
 
+//This function takes a user's forename and surname and creates a unique email address for that user
 	public String createEmail(String fore, String sur, Connection con) throws SQLException {
 		String e = fore.charAt(0) + sur;
 		e = e.toLowerCase();
@@ -130,6 +136,7 @@ public class Sql {
 		}
 	}
 
+//This function finds the degree code for a given Degree (name)
 	public String getDegreeCode(String name) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
@@ -152,8 +159,7 @@ public class Sql {
 		return code;
 	}
 
-	// This function takes a username and password and checks if they are allowed to
-	// log in
+	// This function takes a username and password and checks if they are allowed to log in
 	public UserInfo checkLogIn(String usr, String pw) throws SQLException {
 		Connection con = setUpConnection();
 		int ID = 0;
@@ -191,7 +197,7 @@ public class Sql {
 			return null;
 	}
 
-	// find student info from regNo
+	// This function returns all known information about a student given their Registration Number
 	public StuInfo getStudentInfo(int reg) throws SQLException {
 		Connection con = setUpConnection();
 		StuInfo student = null;
@@ -230,6 +236,7 @@ public class Sql {
 		return student;
 	}
 
+//Like the previous function, this function returns all the known information about a module given a Module Code and the Degree Code for the degree that the module is a part of
 	public Module getModInfo(String deg, String mod) throws SQLException {
 		Module mI = null;
 		Connection con = setUpConnection();
