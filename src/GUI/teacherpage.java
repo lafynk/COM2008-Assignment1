@@ -1,7 +1,11 @@
 package GUI;
 import java.awt.*;
 import javax.swing.*;
+
+import SQLcode.Sql;
+
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 /**import SQLcode.Sql;
 import java.sql.SQLException;
@@ -20,6 +24,7 @@ public class teacherpage extends JFrame {
 		 };
 	 
 public teacherpage() throws HeadlessException {
+	Sql s = new Sql();
 	JFrame window = new JFrame("Systems Design & Security: Team Project");
 	window.setVisible(true);
     window.setSize(1000,1000);
@@ -70,18 +75,18 @@ public teacherpage() throws HeadlessException {
 		 
 	//Add grade field
 	JLabel addLabel = new JLabel("Add Grade:");
-	addLabel .setBounds(10,140,150,60);
-	addLabel .setFont(new Font("", Font.PLAIN, 20));
+	addLabel.setBounds(10,140,150,60);
+	addLabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(addLabel);
 	
 	//module code field
-	JTextField reg = new JTextField("Period of Study");
-	reg.setBounds(10,190,150,50);
+	JTextField reg = new JTextField("Registration No");
+	reg.setBounds(170,190,150,50);
 	panel.add(reg);
 	
 	//module code field
 	JTextField score = new JTextField("score");
-	score.setBounds(170,190,150,50);
+	score.setBounds(10,190,150,50);
 	panel.add(score);
 	
 	//add grade button
@@ -90,13 +95,25 @@ public teacherpage() throws HeadlessException {
 	panel.add(addButton);
 	//action for Search
 	addButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent e) {	
+		try {
+			Integer nReg = Integer.parseInt(reg.getText());
+			double nScore = Double.parseDouble(score.getText());
+			try {
+				s.updateGrade(nReg, nScore);
+				JOptionPane.showMessageDialog(null, "Grade Added." , "Operation Succesful",
+						JOptionPane.INFORMATION_MESSAGE);
+				} catch(SQLException e1) {
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+							"Operation Failed", JOptionPane.ERROR_MESSAGE);
+				}
+		}catch(NumberFormatException ex) {
+			JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+					"Operation Failed", JOptionPane.ERROR_MESSAGE);
+	}
+	
 			window.dispose();
-			/**try {
-			s.updateGrade(reg.getText(), score.getText());
-			} catch(SQLException e1) {
-				el.printStackTrace();
-			}*/
+			
 		}
 	});
 	
