@@ -1,10 +1,16 @@
 package GUI;
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import SQLcode.Sql;
 
 import java.awt.event.ActionListener;
+import java.io.Reader;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 /**import SQLcode.Sql;
@@ -224,21 +230,41 @@ public teacherpage() throws HeadlessException {
 	 
 	JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 	tabbedPane.setBounds(0, 592, 1021, 368);
-	//.getContentPane().add(tabbedPane);
-	
-	JPanel panel_0 = new JPanel();
-	tabbedPane.addTab("Students", null, panel_0, null);
-	
-	JPanel panel_1 = new JPanel();
-	tabbedPane.addTab("Degrees", null, panel_1, null);
-	
-	JPanel panel_3 = new JPanel();
-	tabbedPane.addTab("Modules", null, panel_3, null);
-	
-	JPanel panel_2 = new JPanel();
-	tabbedPane.addTab("Departments", null, panel_2, null);
-	
 	panel.add(tabbedPane);
+	
+	JScrollPane scrollPane = new JScrollPane();
+	tabbedPane.addTab("Students", null, scrollPane, null);
+	scrollPane.setViewportBorder(null);
+	
+	DefaultTableModel model = new DefaultTableModel();
+	JTable table = new JTable(model);
+
+	model.addColumn("Registration No");
+	model.addColumn("Module Code");
+	model.addColumn("Grade");
+	model.addColumn("Resit Grade");
+	
+	PreparedStatement pstmt = null;
+	Connection con = null;
+	try {
+		con = s.setUpConnection();
+		pstmt = con.prepareStatement("SELECT * FROM ModuleTaken");
+		ResultSet res = pstmt.executeQuery();
+		ResultSetMetaData md = res.getMetaData();
+		while (res.next()) {
+			int reg_t = res.getInt(1);
+			String mod = res.getString(2);
+			double grade = res.getDouble(3);
+			double rGrade = res.getDouble(4);
+			model.addRow(new Object[] { reg_t, mod, grade, rGrade });
+		}
+	} catch (SQLException ex) {
+		ex.printStackTrace();
+	} finally {
+		new login();
+	}
+	scrollPane.setViewportView(table);
+	
 	
     window.repaint();
   }
