@@ -80,50 +80,7 @@ public teacherpage() throws HeadlessException {
 	});
 		
 	//Add grade field
-	JLabel intialLabel = new JLabel("Update Initial Grade:");
-	intialLabel.setBounds(450,140,250,60);
-	intialLabel.setFont(new Font("", Font.PLAIN, 20));
-	panel.add(intialLabel);
-	
-	//module code field
-	JTextField regI = new JTextField("PoS Code");
-	regI.setBounds(610,190,150,50);
-	panel.add(regI);
-		
-	//module code field
-	JTextField scoreI = new JTextField("score");
-	scoreI.setBounds(450,190,150,50);
-	panel.add(scoreI);
-		
-	//add grade button
-	JButton addButtonI = new JButton("Update Grade");
-	addButtonI.setBounds(770,190,100,49);
-	panel.add(addButtonI);
-	//action for Search
-	addButtonI.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		try {
-			Integer nRegI = Integer.parseInt(regI.getText());
-			double nScoreI = Double.parseDouble(scoreI.getText());
-			try {
-				s.updateGrade(nRegI, nScoreI);
-				JOptionPane.showMessageDialog(null, "Grade Updated." , "Operation Succesful",
-						JOptionPane.INFORMATION_MESSAGE);
-				} catch(SQLException e1) {
-					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
-							"Operation Failed", JOptionPane.ERROR_MESSAGE);
-				}
-		}catch(NumberFormatException ex) {
-			JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
-					"Operation Failed", JOptionPane.ERROR_MESSAGE);
-	}
-	
-			window.dispose();
-			
-		}
-	});
-	//Add grade field
-	JLabel addLabel = new JLabel("Add Grade:");
+	JLabel addLabel = new JLabel("Update Grade:");
 	addLabel.setBounds(10,140,150,60);
 	addLabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(addLabel);
@@ -139,17 +96,35 @@ public teacherpage() throws HeadlessException {
 	panel.add(score);
 	
 	//add grade button
-	JButton addButton = new JButton("Add Grade");
+	JButton addButton = new JButton("Update Grade");
 	addButton.setBounds(330,190,100,49);
 	panel.add(addButton);
 	//action for Search
 	addButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {	
+		try {
+			Integer nReg = Integer.parseInt(reg.getText());
+			double nScore = Double.parseDouble(score.getText());
+			try {
+				s.updateGrade(nReg, nScore);
+				JOptionPane.showMessageDialog(null, "Grade Updated." , "Operation Succesful",
+						JOptionPane.INFORMATION_MESSAGE);
+				} catch(SQLException e1) {
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+							"Operation Failed", JOptionPane.ERROR_MESSAGE);
+				}
+		}catch(NumberFormatException ex) {
+			JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+					"Operation Failed", JOptionPane.ERROR_MESSAGE);
+	}
+	
+			window.dispose();
+			
 		}
 	});
 	
 	//update grade field
-	JLabel updateLabel = new JLabel("Update Grade:");
+	JLabel updateLabel = new JLabel("Update Module Grade:");
 	updateLabel.setBounds(10,250,150,60);
 	updateLabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(updateLabel);
@@ -177,7 +152,25 @@ public teacherpage() throws HeadlessException {
 	//action for Search
 	updateButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
+			try {
+				Integer n1Reg = Integer.parseInt(reg1.getText());
+				String n1Mod =  modCode.getText();
+				double n1Score = Double.parseDouble(score1.getText());
+				try {
+					s.updateModuleGrade(n1Reg, n1Mod, n1Score);
+					JOptionPane.showMessageDialog(null, "Grade Added." , "Operation Succesful",
+							JOptionPane.INFORMATION_MESSAGE);
+					} catch(SQLException e1) {
+						JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+								"Operation Failed", JOptionPane.ERROR_MESSAGE);
+					}
+			}catch(NumberFormatException ex) {
+				JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+						"Operation Failed", JOptionPane.ERROR_MESSAGE);
+		}
+		
 				window.dispose();
+				
 			}
 		});
 		
@@ -253,7 +246,7 @@ public teacherpage() throws HeadlessException {
 	panel.add(tabbedPane);
 	
 	JScrollPane scrollPane = new JScrollPane();
-	tabbedPane.addTab("Students", null, scrollPane, null);
+	tabbedPane.addTab("Periods Of Study", null, scrollPane, null);
 	scrollPane.setViewportBorder(null);
 	
 	DefaultTableModel model = new DefaultTableModel();
@@ -300,6 +293,30 @@ public teacherpage() throws HeadlessException {
 	}
 	scrollPane.setViewportView(table);
 	
+	JScrollPane scrollPane_1 = new JScrollPane();
+	tabbedPane.addTab("Modules Taken", null, scrollPane_1, null);
+	DefaultTableModel model_1 = new DefaultTableModel();
+	JTable table_1 = new JTable(model_1);
+	model_1.addColumn("PosRegCode");
+	model_1.addColumn("Module Code");
+	model_1.addColumn("Grade");
+	model_1.addColumn("Resit Grade");
+	try {
+		con = s.setUpConnection();
+		pstmt = con.prepareStatement("SELECT * FROM ModuleTaken");
+		ResultSet res = pstmt.executeQuery();
+		ResultSetMetaData md = res.getMetaData();
+		while (res.next()) {
+			String poscode = res.getString(1);
+			String regP = res.getString(2);
+			String grade = res.getString(3);
+			String rgrade = res.getString(4);
+			model_1.addRow(new Object[] {poscode, regP, grade, rgrade});
+		}
+	} catch (SQLException ex) {
+		ex.printStackTrace();
+	}
+	scrollPane_1.setViewportView(table_1);
 	
     window.repaint();
   }
