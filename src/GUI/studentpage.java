@@ -96,7 +96,7 @@ public studentpage() throws HeadlessException {
 			  panel.add(tabbedPane);
 	
 			  JScrollPane scrollPane = new JScrollPane();
-			  tabbedPane.addTab("Progress", null, scrollPane, null);
+			  tabbedPane.addTab("Period of Study", null, scrollPane, null);
 			  scrollPane.setViewportBorder(null);
 			  
 			  DefaultTableModel model1 = new DefaultTableModel();
@@ -126,13 +126,52 @@ public studentpage() throws HeadlessException {
 				  ex.printStackTrace();
 				  JOptionPane.showMessageDialog(null, "Registration not recognised try again","Error!", JOptionPane.ERROR_MESSAGE);
 			  }
-			  
-			 
-			  scrollPane.setViewportView(table1);
-			
+			   scrollPane.setViewportView(table1);
+			   
+			   JScrollPane scrollPane_1 = new JScrollPane();
+			   tabbedPane.addTab("Overall Progress", null, scrollPane_1, null);
+			   DefaultTableModel model_1 = new DefaultTableModel();
+			   JTable table_1 = new JTable(model_1);
+			   
+			   model_1.addColumn("PoS Code");
+			   model_1.addColumn("Student RegNo");
+			   model_1.addColumn("Period Of Study");
+			   model_1.addColumn("Start Date");
+			   model_1.addColumn("End Date");
+			   model_1.addColumn("Current Level");
+			   model_1.addColumn("Grade");
+			   model_1.addColumn("Progress");
+				
+			   try {
+				   con = s.setUpConnection();
+				   Integer nEReg = Integer.parseInt(eReg.getText());
+				   pstmt = con.prepareStatement("SELECT * FROM PeriodsOfStudy WHERE PosRegCode = '"+nEReg+"'");
+				   ResultSet res = pstmt.executeQuery();
+				   ResultSetMetaData md = res.getMetaData();
+				   while (res.next()) {
+						String poscode = res.getString(1);
+						String regP = res.getString(2);
+						String pos = res.getString(3);
+						String start = res.getString(4);
+						String end = res.getString(5);
+						String lvl = res.getString(6);
+						String grade = res.getString(7);
+						String progress = res.getString(8);
+						String progressstring = null;
+						if (progress.contentEquals("0")) {
+							progressstring = "No";
+						} else {
+							progressstring = "Yes";
+						}
 
-
-		   }
+						model_1.addRow(new Object[] { poscode, regP, pos, start, end, lvl, grade, progressstring });
+					}
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					  JOptionPane.showMessageDialog(null, "Registration not recognised try again","Error!", JOptionPane.ERROR_MESSAGE);
+				}
+			   scrollPane_1.setViewportView(table_1);
+		  }
 	});
 	
 
