@@ -911,7 +911,6 @@ public class Sql {
 				con.close();
 		}
 	}
-
 	// update progress fn
 	public void updateProgress(int posRegNo, boolean b) throws SQLException {
 		Connection con = setUpConnection();
@@ -921,6 +920,7 @@ public class Sql {
 			pstmt.setBoolean(1, b);
 			pstmt.setInt(2, posRegNo);
 			pstmt.executeUpdate();
+			updateCurPos(Integer.parseInt(String.valueOf(posRegNo).substring(1)));
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
@@ -931,19 +931,48 @@ public class Sql {
 		}
 	}
 
-	public void updateCurPos(int reg, char pos) throws SQLException {
+	public void updateCurPos(int reg) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		String pos = "";
 		try {
-			pstmt = con.prepareStatement("UPDATE Students SET CurrentPeriodOfStudy = ? WHERE RegistrationNo = ?");
-			pstmt.setString(1, String.valueOf(pos));
-			pstmt.setInt(2, reg);
-			pstmt.executeUpdate();
+			pstmt = con.prepareStatement("SELECT CurrentPeriodOfStudy FROM Students WHERE RegistrationNo = ?");
+			pstmt.setInt(1, reg);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				switch (rs.getString(1)) {
+				case "A":
+					pos = "B";
+					break;
+				case "B":
+					pos = "C";
+					break;
+				case "C":
+					pos = "D";
+					break;
+				case "D":
+					pos = "E";
+					break;
+				case "E":
+					pos = "F";
+					break;
+				case "F":
+					pos = "F";
+					break;
+				}
+			}
+			pstmt2 = con.prepareStatement("UPDATE Students SET CurrentPeriodOfStudy = ? WHERE RegistrationNo = ?");
+			pstmt2.setString(1, pos);
+			pstmt2.setInt(2, reg);
+			pstmt2.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
 			if (pstmt != null)
 				pstmt.close();
+			if (pstmt2 != null)
+				pstmt2.close();
 			if (con != null)
 				con.close();
 		}
