@@ -382,21 +382,28 @@ public class Sql {
 		return totalCredit;
 	}
 	
-	public double getPosMarks(PeriodOfStudy p, int r) {
-		double totalMarks = 0;
+	public double calcPosAverage(PeriodOfStudy p, int r) {
+		double totalPercent = 0;
+		double posAverage = 0;
+		int modCount = 0;
 		StuInfo s = null;
 		
 		try {
 			s = getStudentInfo(r);
 			Module[] modArray = getModules(p,s);
 			for (Module x:modArray) {
-				totalMarks += x.getGrade();
+				double modMarks = x.getGrade();
+				double modCredit = x.getCredit();
+				double modPercent = modMarks / modCredit;
+				totalPercent += modPercent;
+				modCount ++;
 			}
+			posAverage = totalPercent / modCount;
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
 	
-		return totalMarks;
+		return posAverage;
 	}
 
 	public PeriodOfStudy[] getPeriodsOfStudy(int reg) throws SQLException {
