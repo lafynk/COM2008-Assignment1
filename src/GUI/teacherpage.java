@@ -100,7 +100,7 @@ public teacherpage() throws HeadlessException {
 	
 	//Log out button and position
 	JButton logButton = new JButton("Log out");
-	logButton.setBounds(700,120,130,49);
+	logButton.setBounds(845,10,130,49);
 	panel.add(logButton);
 	logButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {

@@ -40,7 +40,7 @@ public class studentpage extends JFrame {
 		 }
 	 
 public studentpage() throws HeadlessException {
-	
+	Sql s = new Sql();
 	JFrame window = new JFrame("Systems Design & Security: Team Project");
 	 window.setVisible(true);
 	 window.setSize(1000,1000);
@@ -55,7 +55,7 @@ public studentpage() throws HeadlessException {
 	 
 	//Log out button and position
 	JButton logButton = new JButton("Log out");
-	logButton.setBounds(700,130,130,49);
+	logButton.setBounds(845,10,130,49);
 	panel.add(logButton);
 	logButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -81,10 +81,9 @@ public studentpage() throws HeadlessException {
 	welcomelabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(welcomelabel);
 	
-	JTextField eReg = new JTextField("Enter Registration Number");
+	JTextField eReg = new JTextField("Enter PosReg Number");
 	eReg.setBounds(10,130,200,50);
 	panel.add(eReg);
-
 	
 	JButton addmodulebutton = new JButton("View Status");
 	addmodulebutton.setBounds(220,130,130,49);
@@ -93,7 +92,7 @@ public studentpage() throws HeadlessException {
 		  public void actionPerformed(ActionEvent e) {
 			  //getModules	
 			  JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-			  tabbedPane.setBounds(10, 170, 973, 780);
+			  tabbedPane.setBounds(10, 190, 955, 750);
 			  panel.add(tabbedPane);
 	
 			  JScrollPane scrollPane = new JScrollPane();
@@ -104,21 +103,31 @@ public studentpage() throws HeadlessException {
 			  JTable table1 = new JTable(model1);
 			  
 			  model1.addColumn("PosResCode");
-			  model1.addColumn("Registration No");
-			  model1.addColumn("Perioid of Study");
-			  model1.addColumn("Start Date");
-			  model1.addColumn("End Date");
-			  model1.addColumn("Current Level");
+			  model1.addColumn("Module Code");
 			  model1.addColumn("Grade");
-			  model1.addColumn("Progress");
+			  model1.addColumn("Resit Grade");
 			  
 			  PreparedStatement pstmt = null;
 			  Connection con = null;
-			  /**try {
+			  try {
 				  con = s.setUpConnection();
-				  pstmt = con.preparedStatement("SELECT")
-			  }*/
+				  Integer nEReg = Integer.parseInt(eReg.getText());
+				  pstmt = con.prepareStatement("SELECT * FROM ModuleTaken WHERE PosRegCode = '"+nEReg+"'");
+				  ResultSet res = pstmt.executeQuery();
+				  ResultSetMetaData md = res.getMetaData();
+				  while (res.next()) {
+						String poscode = res.getString(1);
+						String regP = res.getString(2);
+						String grade = res.getString(3);
+						String rgrade = res.getString(4);
+						model1.addRow(new Object[] {poscode, regP, grade, rgrade});
+					}
+			  } catch (SQLException ex) {
+				  ex.printStackTrace();
+				  JOptionPane.showMessageDialog(null, "Registration not recognised try again","Error!", JOptionPane.ERROR_MESSAGE);
+			  }
 			  
+			 
 			  scrollPane.setViewportView(table1);
 			
 
