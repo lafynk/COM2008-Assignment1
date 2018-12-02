@@ -254,6 +254,7 @@ public class Sql {
 				int cr = res1.getInt(4);
 				char lvl = res1.getString(5).charAt(0);
 				pstmt2 = con.prepareStatement("Select WhenTaught From Modules Where ModuleCode = ?");
+				pstmt2.setString(1, mod);
 				ResultSet res2 = pstmt2.executeQuery();
 				while (res2.next()) {
 					taught = res2.getString(1);
