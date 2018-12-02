@@ -1008,7 +1008,6 @@ public class Sql {
 		double degreeAvg = 0;
 		StuInfo s;
 		double totalPercent = 0;
-		int i = 0;
 		PeriodOfStudy[] p = null;
 		PeriodOfStudy i = null;
 		
@@ -1017,15 +1016,13 @@ public class Sql {
 			p = getPeriodsOfStudy(r);
 			for (PeriodOfStudy pos:p) {
 				if (pos!= null) {
-					if (pos.getPosRegCode() == posRegNo) {
-						i = pos;
-					}
+					
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+		return 0.00;
 	}
 	// other than getting all PoS grades)
 	// pass or fail (same as above, we just need a fn to return PoSmodulesinfo like
