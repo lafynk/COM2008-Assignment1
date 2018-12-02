@@ -962,9 +962,17 @@ public class Sql {
 			s = getStudentInfo(r);
 			Module[] modArray = getModules(p,s);
 			for (Module x:modArray) {
-				double modMarks = x.getGrade();
+				double resitGrade = x.getResit();
 				double modCredit = x.getCredit();
-				double modPercent = modMarks / modCredit;
+				double modPercent = 0;
+				
+				if (resitGrade == 0) {
+					double modMarks = x.getGrade();
+					modPercent = modMarks / modCredit;
+				} else {
+					modPercent = resitGrade / modCredit;
+				}
+				
 				totalPercent += modPercent;
 				modCount ++;
 			}
