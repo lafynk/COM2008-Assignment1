@@ -952,15 +952,27 @@ public class Sql {
 	// check taken module are applicable (right level of study and module)
 	// check taken module credit total (could leave for josh and tom)
 	// calc weighted mean grade (could leave for tom and josh as no sql involved
-	public double calcPosAverage(PeriodOfStudy p, int r) {
+	public double calcPosAverage(int posRegNo) throws SQLException {
 		double totalPercent = 0;
 		double posAverage = 0;
 		int modCount = 0;
 		StuInfo s = null;
+		PeriodOfStudy[] p = null;
+		PeriodOfStudy i = null;
+		int r = Integer.parseInt(String.valueOf(posRegNo).substring(2));
+		
 		
 		try {
+			p = getPeriodsOfStudy(r);
+			for (PeriodOfStudy pos:p) {
+				if (pos!= null) {
+					if (pos.getPosRegCode() == posRegNo) {
+						i = pos;
+					}
+				}
+			}
 			s = getStudentInfo(r);
-			Module[] modArray = getModules(p,s);
+			Module[] modArray = getModules(i,s);
 			for (Module x:modArray) {
 				double resitGrade = x.getResit();
 				double modCredit = x.getCredit();
@@ -981,6 +993,23 @@ public class Sql {
 		}
 	
 		return posAverage;
+	}
+	
+	public double calcDegreeAverage(int r) {
+		double degreeAvg = 0;
+		StuInfo s;
+		
+		try {
+			s = getStudentInfo(r);
+			for (int x = 1; x <= 6; x++)  {
+				int tempPosReg = 0;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return degreeAvg;
 	}
 	// other than getting all PoS grades)
 	// pass or fail (same as above, we just need a fn to return PoSmodulesinfo like
