@@ -977,11 +977,12 @@ public class Sql {
 				double resitGrade = x.getResit();
 				double modCredit = x.getCredit();
 				double modPercent = 0;
+				
 				if (resitGrade == 0) {
 					double modMarks = x.getGrade();
-					modPercent = modMarks / modCredit;
+					modPercent = modMarks * (modCredit/120);
 				} else {
-					modPercent = resitGrade / modCredit;
+					modPercent = resitGrade * (modCredit/120);
 				}
 				
 				totalPercent += modPercent;
@@ -994,6 +995,7 @@ public class Sql {
 	
 		return posAverage;
 	}
+
 	
 	public double calcDegreeAverage(int r) {
 		double degreeAvg = 0;
