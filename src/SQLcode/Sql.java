@@ -1052,15 +1052,15 @@ public class Sql {
 							return pos.getGrade();
 						}
 						break;
-					case 2:
+					case '2':
 						totalPercent += pos.getGrade();
 						count ++;
 						break;
-					case 3:
+					case '3':
 						totalPercent += 2 * pos.getGrade();
 						count += 2;
 						break;
-					case 4:
+					case '4':
 						totalPercent += 2 * pos.getGrade();
 						count += 2;
 						break;
