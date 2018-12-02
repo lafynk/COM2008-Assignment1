@@ -234,7 +234,23 @@ public teacherpage() throws HeadlessException {
 	//action for Search
 	aveButton1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			window.dispose();
+			try {
+				Integer nreg4 = Integer.parseInt(reg4.getText());
+				try {
+					double average = s.calcPosAverage(nreg4);
+					s.updateGrade(nreg4, average);
+					window.dispose();
+					teacherpage t4 = new teacherpage();
+					window.setVisible(true);
+					
+				} catch(SQLException e1) {
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+							"Operation Failed", JOptionPane.ERROR_MESSAGE);
+				}
+			}catch(NumberFormatException ex) {
+				JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+						"Operation Failed", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	});
 	
@@ -244,9 +260,25 @@ public teacherpage() throws HeadlessException {
 	//action for Search
 	aveButton2.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			window.dispose();
+			try {
+				Integer nreg4 = Integer.parseInt(reg4.getText());
+				try {
+					double average = s.calcPosAverage(nreg4);
+					s.updateGrade(nreg4, average);
+					JOptionPane.showMessageDialog(null, average,
+							"Students Degree Average", JOptionPane.INFORMATION_MESSAGE);
+					
+				} catch(SQLException e1) {
+					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+							"Operation Failed", JOptionPane.ERROR_MESSAGE);
+				}
+			}catch(NumberFormatException ex) {
+				JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+						"Operation Failed", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	});
+	
 	 
 	JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 	tabbedPane.setBounds(0, 592, 1021, 368);
