@@ -365,30 +365,6 @@ public class Sql {
 		return modArray;
 	}
 	
-	
-	public double calcPosAverage(PeriodOfStudy p, int r) {
-		double totalPercent = 0;
-		double posAverage = 0;
-		int modCount = 0;
-		StuInfo s = null;
-		
-		try {
-			s = getStudentInfo(r);
-			Module[] modArray = getModules(p,s);
-			for (Module x:modArray) {
-				double modMarks = x.getGrade();
-				double modCredit = x.getCredit();
-				double modPercent = modMarks / modCredit;
-				totalPercent += modPercent;
-				modCount ++;
-			}
-			posAverage = totalPercent / modCount;
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-	
-		return posAverage;
-	}
 
 	public PeriodOfStudy[] getPeriodsOfStudy(int reg) throws SQLException {
 		Connection con = setUpConnection();
@@ -976,6 +952,29 @@ public class Sql {
 	// check taken module are applicable (right level of study and module)
 	// check taken module credit total (could leave for josh and tom)
 	// calc weighted mean grade (could leave for tom and josh as no sql involved
+	public double calcPosAverage(PeriodOfStudy p, int r) {
+		double totalPercent = 0;
+		double posAverage = 0;
+		int modCount = 0;
+		StuInfo s = null;
+		
+		try {
+			s = getStudentInfo(r);
+			Module[] modArray = getModules(p,s);
+			for (Module x:modArray) {
+				double modMarks = x.getGrade();
+				double modCredit = x.getCredit();
+				double modPercent = modMarks / modCredit;
+				totalPercent += modPercent;
+				modCount ++;
+			}
+			posAverage = totalPercent / modCount;
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	
+		return posAverage;
+	}
 	// other than getting all PoS grades)
 	// pass or fail (same as above, we just need a fn to return PoSmodulesinfo like
 	// find module)
