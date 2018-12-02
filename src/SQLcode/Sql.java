@@ -365,7 +365,7 @@ public class Sql {
 		return modArray;
 	}
 	
-	public int getTotalCredit(PeriodOfStudy p, int r) {
+	public int getPosCredit(PeriodOfStudy p, int r) {
 		int totalCredit = 0;
 		StuInfo s = null;
 		
@@ -374,6 +374,23 @@ public class Sql {
 			Module[] modArray = getModules(p,s);
 			for (Module x:modArray) {
 				totalCredit += x.getCredit();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	
+		return totalCredit;
+	}
+	
+	public double getPosMarks(PeriodOfStudy p, int r) {
+		double totalMarks = 0;
+		StuInfo s = null;
+		
+		try {
+			s = getStudentInfo(r);
+			Module[] modArray = getModules(p,s);
+			for (Module x:modArray) {
+				totalMarks += x.getGrade();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
