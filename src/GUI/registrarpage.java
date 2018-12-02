@@ -352,14 +352,20 @@ public class registrarpage {
 					System.out.println(newstu.getDegree());
 					System.out.println(studentmoduletaken.getText());
 					Module currentmod = s.getModInfo(newstu.getDegree(), studentmoduletaken.getText());
+					if (currentmod == null) {
+						JOptionPane.showMessageDialog(null, "Cannot assign this module to this period of study.", "Operation Failed",
+								JOptionPane.ERROR_MESSAGE);
+					}else {
+					System.out.println(newstu.getDegree());
 					System.out.println(currentmod);
 					System.out.println(currentmod.getCredit());
 					int newcredit = currentmod.getCredit();
-					if ((newstu.getType() == "U")&&(crTotal + newcredit >120)) {
+					System.out.print(newstu.getType());
+					if ((newstu.getType().contentEquals("U"))&&(crTotal + newcredit >120)) {
 						JOptionPane.showMessageDialog(null, "Undergraduates cannot study more than 120 credits.", "Operation Failed",
 								JOptionPane.ERROR_MESSAGE);
 					}
-					else if ((newstu.getType()=="P") && (crTotal + newcredit >180)) {
+					else if ((newstu.getType().contentEquals("P")) && (crTotal + newcredit >180)) {
 						JOptionPane.showMessageDialog(null, "Postgraduates cannot study more than 180 credits.", "Operation Failed",
 								JOptionPane.ERROR_MESSAGE);
 					}
@@ -371,7 +377,7 @@ public class registrarpage {
 						window.frmSystemsDesign.setVisible(true);
 						JOptionPane.showMessageDialog(null, "Module Assigned.", "Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 					}
-					
+					}
 					
 				} catch (SQLException e2) {
 					// TODO Auto-generated catch block

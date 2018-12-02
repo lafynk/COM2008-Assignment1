@@ -1,0 +1,1041 @@
+package SQLcode;
+
+//Import all necessary libraries
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import classPkg.Module;
+import classPkg.PeriodOfStudy;
+import classPkg.StuInfo;
+import classPkg.UserInfo;
+
+public class Sql {
+	// This function takes a string (a password) and then returns an encrypted version of the password and the salt used to make it more secure
+	private String[] getEncPassword(String pw) throws NoSuchAlgorithmException, NoSuchProviderException {
+		String[] pwSalt = new String[2];
+		byte[] salt = getSalt();
+		pwSalt[1] = new String(salt);
+		pwSalt[0] = getSecurePassword(pw, salt);
+		return pwSalt;
+	}
+
+	private String getSecurePassword(String passwordToHash, byte[] salt) {
+		String generatedPassword = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(salt);
+			byte[] bytes = md.digest(passwordToHash.getBytes());
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < bytes.length; i++) {
+				sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+			}
+			generatedPassword = sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return generatedPassword;
+	}
+
+	private static byte[] getSalt() throws NoSuchAlgorithmException, NoSuchProviderException {
+		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "SUN");
+		byte[] salt = new byte[16];
+		sr.nextBytes(salt);
+		return salt;
+	}
+
+//This is a function that creates a Registration Code and returns it
+	public int createPosRegCode(int reg, char pos) {
+		String s = "";
+		switch (pos) {
+		case 'A':
+			s = "1";
+			break;
+		case 'B':
+			s = "2";
+			break;
+		case 'C':
+			s = "3";
+			break;
+		case 'D':
+			s = "4";
+			break;
+		case 'E':
+			s = "5";
+			break;
+		case 'F':
+			s = "6";
+			break;
+		}
+		String p = s + Integer.toString(reg);
+		int r = Integer.parseInt(p);
+		return r;
+	}
+
+//This function is used to generate a Module code for a given department
+	public String generateModCode(String dep, Connection con) throws SQLException {
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleCode LIKE ?");
+		pstmt.setString(1, dep + "%");
+		ResultSet rs = pstmt.executeQuery();
+		String s = dep + "0000";
+		while (rs.next()) {
+			s = rs.getString(1);
+		}
+		pstmt.close();
+		int i = Integer.parseInt(s.substring(3));
+		i++;
+		s = Integer.toString(i);
+		while (s.length() < 4) {
+			s = "0" + s;
+		}
+		return (dep + s);
+	}
+
+// This function takes a department as well as a degree type and creates a unique Degree code
+	public String generateDegreeCode(String dep, String type, Connection con) throws SQLException {
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Degrees WHERE DegreeCode LIKE ?");
+		pstmt.setString(1, dep + type + "%");
+		ResultSet rs = pstmt.executeQuery();
+		String s = dep + type + "00";
+		while (rs.next()) {
+			s = rs.getString(1);
+		}
+		pstmt.close();
+		int i = Integer.parseInt(s.substring(4));
+		i++;
+		s = Integer.toString(i);
+		while (s.length() < 2) {
+			s = "0" + s;
+		}
+		return (dep + type + s);
+	}
+
+//This function takes a user's forename and surname and creates a unique email address for that user
+	public String createEmail(String fore, String sur, Connection con) throws SQLException {
+		String e = fore.charAt(0) + sur;
+		e = e.toLowerCase();
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM Students WHERE Email LIKE ?");
+		pstmt.setString(1, e + "%");
+		ResultSet rs = pstmt.executeQuery();
+		int i = 0;
+		while (rs.next()) {
+			i++;
+		}
+		pstmt.close();
+		if (i == 0) {
+			return e + "1@uni.ac.uk";
+		} else {
+			return (e + Integer.toString(i + 1) + "@uni.ac.uk");
+		}
+	}
+
+//This function finds the degree code for a given Degree (name)
+	public String getDegreeCode(String name) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		String code = "";
+		try {
+			pstmt = con.prepareStatement("SELECT DegreeCode FROM Degrees WHERE DegreeName = ?");
+			pstmt.setString(1, name);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				code = rs.getString(1);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+		return code;
+	}
+
+	// This function takes a username and password and checks if they are allowed to log in
+	public UserInfo checkLogIn(String usr, String pw) throws SQLException {
+		Connection con = setUpConnection();
+		int ID = 0;
+		String pass = "";
+		String perm = "";
+		String salt = "";
+		PreparedStatement pstmt = null;
+		if (pw.length() > 0) {
+			try {
+				pstmt = con.prepareStatement("SELECT * FROM Users WHERE Username = ?");
+				pstmt.setString(1, usr);
+				ResultSet res = pstmt.executeQuery();
+				while (res.next()) {
+					ID = res.getInt(1);
+					pass = res.getString(3);
+					salt = res.getString(4);
+					perm = res.getString(5);
+				}
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			}
+			byte[] bs = salt.getBytes();
+			String enPW = getSecurePassword(pw, bs);
+			if (enPW.contentEquals(pass)) {
+				// change log in to true
+				return new UserInfo(ID, perm);
+			} else
+				return null;
+		} else
+			return null;
+	}
+
+	// This function returns all known information about a student given their Registration Number
+	public StuInfo getStudentInfo(int reg) throws SQLException {
+		Connection con = setUpConnection();
+		StuInfo student = null;
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM Students WHERE RegistrationNo = ?");
+			pstmt.setInt(1, reg);
+			ResultSet res = pstmt.executeQuery();
+			while (res.next()) {
+				String title = res.getString(2);
+				String sur = res.getString(3);
+				String fore = res.getString(4);
+				String email = res.getString(5);
+				String tutor = res.getString(6);
+				String degree = res.getString(7);
+				char p = res.getString(8).charAt(0);
+				String awClass = res.getString(9);
+				String t = "";
+				pstmt2 = con.prepareStatement("SELECT DegreeType FROM Degrees WHERE DegreeCode = ?");
+				pstmt2.setString(1, degree);
+				ResultSet rs = pstmt2.executeQuery();
+				while (rs.next()) {
+					t = rs.getString(1);
+				}
+				student = new StuInfo(reg, title, sur, fore, email, tutor, degree, p, awClass, t);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+		return student;
+	}
+
+//Like the previous function, this function returns all the known information about a module given a Module Code and the Degree Code for the degree that the module is a part of
+	public Module getModInfo(String deg, String mod) throws SQLException {
+		Module mI = null;
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM ModuleAssignment WHERE DegreeCode = ? AND ModuleCode = 1");
+			pstmt.setString(1, deg);
+			pstmt.setString(2, mod);
+			ResultSet res1 = pstmt.executeQuery();
+			String taught = "";
+			int i = 0; // for adding to array
+			while (res1.next()) {
+				boolean o = res1.getBoolean(3);
+				int cr = res1.getInt(4);
+				char lvl = res1.getString(5).charAt(0);
+				pstmt2 = con.prepareStatement("Select WhenTaught From Modules Where ModuleCode = ?");
+				ResultSet res2 = pstmt2.executeQuery();
+				while (res2.next()) {
+					taught = res2.getString(1);
+				}
+				mI = new Module(mod, deg, o, cr, lvl, taught, 0.00, 0.00);
+				i++;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (pstmt2 != null)
+				pstmt2.close();
+			if (con != null)
+				con.close();
+		}
+		return mI;
+	}
+
+	public Module[] getCoreModules(String deg, char lvl) throws SQLException {
+		Module[] coreMods = new Module[10];
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		try {
+			pstmt = con.prepareStatement(
+					"SELECT * FROM ModuleAssignment WHERE DegreeCode = ? AND LevelTaughtAt = ? AND Obligatory = 1");
+			pstmt.setString(1, deg);
+			pstmt.setString(2, String.valueOf(lvl));
+			ResultSet res1 = pstmt.executeQuery();
+			String taught = " ";
+			int i = 0; // for adding to array
+			while (res1.next()) {
+				String mod = res1.getString(2);
+				int cr = res1.getInt(4);
+				pstmt2 = con.prepareStatement("Select WhenTaught From Modules Where ModuleCode = ?");
+				pstmt2.setString(1, mod);
+				ResultSet res2 = pstmt2.executeQuery();
+				while (res2.next()) {
+					taught = res2.getString(1);
+				}
+				coreMods[i] = new Module(mod, deg, true, cr, lvl, taught, 0.00, 0.00);
+				i++;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (pstmt2 != null)
+				pstmt2.close();
+			if (con != null)
+				con.close();
+		}
+		return coreMods;
+	}
+
+	// returns array of modules taken this PoS
+	public Module[] getModules(PeriodOfStudy p, StuInfo s) throws SQLException {
+		Module[] modArray = new Module[10];
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		PreparedStatement pstmt3 = null;
+		boolean ob = false;
+		int credit = 0;
+		char level = 'A';// default first value
+		String taught = "";
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM ModuleTaken WHERE PosRegCode = ?");
+			pstmt2 = con.prepareStatement("SELECT * FROM ModuleAssignment WHERE ModuleCode = ? AND DegreeCode = ?");
+			pstmt3 = con.prepareStatement("SELECT WhenTaught FROM Modules WHERE ModuleCode = ?");
+			pstmt.setInt(1, p.getPosRegCode());
+			ResultSet r1 = pstmt.executeQuery();
+			int i = 0; // for adding to array
+			while (r1.next()) {
+				String mod = r1.getString(2);
+				double grade = r1.getDouble(3);
+				double resit = r1.getDouble(4);
+				pstmt3.setString(1, mod);
+				ResultSet r3 = pstmt3.executeQuery();
+				while (r3.next()) {
+					taught = r3.getString(1);
+				}
+				pstmt2.setString(1, mod);
+				pstmt2.setString(2, s.getDegree());
+				ResultSet r2 = pstmt2.executeQuery();
+				while (r2.next()) {
+					ob = r2.getBoolean(3);
+					credit = r2.getInt(4);
+					level = r2.getString(5).charAt(0);
+				}
+				modArray[i] = new Module(mod, s.getDegree(), ob, credit, level, taught, grade, resit);
+				i++;
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (pstmt2 != null)
+				pstmt2.close();
+			if (pstmt3 != null)
+				pstmt3.close();
+			if (con != null)
+				con.close();
+		}
+		return modArray;
+	}
+	
+
+	public PeriodOfStudy[] getPeriodsOfStudy(int reg) throws SQLException {
+		Connection con = setUpConnection();
+		PeriodOfStudy[] posArray = new PeriodOfStudy[6];// can take 5 PoS's if taking masters with placement and can
+														// only retake on PoS so 6 is max
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM PeriodsOfStudy WHERE RegistrationNo = ?");
+			pstmt.setInt(1, reg);
+			ResultSet res = pstmt.executeQuery();
+			int i = 0; // for adding to array
+			while (res.next()) {
+				int prcode = res.getInt(1);
+				char pos = res.getString(3).charAt(0);
+				Date start = res.getDate(4);
+				Date end = res.getDate(5);
+				char level = res.getString(6).charAt(0);
+				double grade = res.getDouble(7);
+				boolean progress = res.getBoolean(8);
+				posArray[i] = new PeriodOfStudy(prcode, reg, pos, start, end, level, grade, progress);
+				i++;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+		return posArray;
+	}
+
+	public boolean checkUsernameExists(String usr) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM Users WHERE Username = ?");
+			pstmt.setString(1, usr);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;// already exists
+			} else
+				return false;// free to add
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+		return true;
+	}
+
+	public boolean checkDegreeExists(String name, String dep, String level, boolean pl, String type, Connection con)
+			throws SQLException {
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement(
+					"SELECT * FROM Degrees WHERE DegreeName = ? AND DepartmentCode = ? AND MaxLevelOfStudy = ? AND Placement = ? AND DegreeType = ?");
+			pstmt.setString(1, name);
+			pstmt.setString(2, dep);
+			pstmt.setString(3, level);
+			pstmt.setBoolean(4, pl);
+			pstmt.setString(5, type);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;// already exists
+			} else
+				return false;// free to add
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return true;
+	}
+
+	public boolean checkModuleExists(String name, String dep, Connection con) throws SQLException {
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("SELECT * FROM Modules WHERE ModuleName = ? AND ModuleCode LIKE ?");
+			pstmt.setString(1, name);
+			pstmt.setString(2, dep + "%");
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;// already exists
+			} else
+				return false;// free to add
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return true;
+	}
+
+	// add fns
+	// add new User
+	public void addUser(String usr, String pw, String perm)
+			throws SQLException, NoSuchAlgorithmException, NoSuchProviderException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO Users (Username,Password,Salt,Authorisation) VALUES (?,?,?,?)");
+			pstmt.setString(1, usr);
+			String[] pwSalt = getEncPassword(pw);
+			pstmt.setString(2, pwSalt[0]);
+			pstmt.setString(3, pwSalt[1]);
+			pstmt.setString(4, perm);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// add new department
+	public void addDep(String code, String name) throws SQLException {
+		Connection con = setUpConnection();
+		code = code.toUpperCase();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO Departments VALUES (?,?)");
+			pstmt.setString(1, code);
+			pstmt.setString(2, name);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// add course
+	public void addCourse(String name, String dep, String level, boolean pl, String type) throws SQLException {
+		Connection con = setUpConnection();
+		dep = dep.toUpperCase();
+		type = type.toUpperCase();
+		PreparedStatement pstmt = null;
+		if (!checkDegreeExists(name, dep, level, pl, type, con)) {
+			try {
+				pstmt = con.prepareStatement("INSERT INTO Degrees VALUES (?,?,?,?,?,?)");
+				pstmt.setString(1, generateDegreeCode(dep, type, con));
+				pstmt.setString(2, name);
+				pstmt.setString(3, dep);
+				pstmt.setString(4, level);
+				pstmt.setBoolean(5, pl);
+				pstmt.setString(6, type);
+				pstmt.executeUpdate();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			}
+		}
+	}
+
+	// add module
+	public void addModule(String dep, String modName, String whenTaught) throws SQLException {
+		Connection con = setUpConnection();
+		dep = dep.toUpperCase();
+		PreparedStatement pstmt = null;
+		if (!checkModuleExists(modName, dep, con)) {
+			try {
+				pstmt = con.prepareStatement("INSERT INTO Modules VALUES (?,?,?)");
+				pstmt.setString(1, generateModCode(dep, con));
+				pstmt.setString(2, modName);
+				pstmt.setString(3, whenTaught);
+				pstmt.executeUpdate();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			}
+		}
+	}
+
+	// add student
+	public void addStudent(int regNo, String title, String surname, String forename, String tutor, String degCode,
+			char periodOfStudy, String awardedClass) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO Students VALUES (?,?,?,?,?,?,?,?,?)");
+			pstmt.setInt(1, regNo);
+			pstmt.setString(2, title);
+			pstmt.setString(3, surname);
+			pstmt.setString(4, forename);
+			String email = createEmail(forename, surname, con);
+			pstmt.setString(5, email);
+			pstmt.setString(6, tutor);
+			pstmt.setString(7, degCode);
+			pstmt.setString(8, String.valueOf(periodOfStudy));
+			if (awardedClass == "") {
+				pstmt.setString(9, null);
+			} else
+				pstmt.setString(9, awardedClass);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// add taken module
+	public void addTakenModule(int regCode, String modCode, double g, double r) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO ModuleTaken VALUES (?,?,?,?)");
+			pstmt.setInt(1, regCode);
+			pstmt.setString(2, modCode);
+			pstmt.setDouble(3, g);
+			pstmt.setDouble(4, r);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	public void assignModuleToDegree(String deg, String mod, boolean o, int credit, String lvl) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO ModuleAssignment VALUES (?,?,?,?,?)");
+			pstmt.setString(1, deg);
+			pstmt.setString(2, mod);
+			pstmt.setBoolean(3, o);
+			pstmt.setInt(4, credit);
+			pstmt.setString(5, lvl);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	public void addPoS(int reg, char pos, String start, String end, char lvl) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("INSERT INTO PeriodsOfStudy VALUES (?,?,?,?,?,?,0.00,0)");
+			pstmt.setInt(1, createPosRegCode(reg, pos));
+			pstmt.setInt(2, reg);
+			pstmt.setString(3, String.valueOf(pos));
+			pstmt.setString(4, start);
+			pstmt.setString(5, end);
+			pstmt.setString(6, String.valueOf(lvl));
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+	// remove fns
+
+	// delete user
+	public void removeUser(int id) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM Users WHERE ID = ?");
+			pstmt.setInt(1, id);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	public void removeUserByUsername(String usr) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM Users WHERE Username = ?");
+			pstmt.setString(1, usr);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+	// delete department
+
+	public void removeDeps(String dep) throws SQLException {
+		Connection con = setUpConnection();
+		dep = dep.toUpperCase();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM Departments WHERE DepartmentCode = ?");
+			pstmt.setString(1, dep);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// delete course
+	public void removeCourse(String deg) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM Degrees WHERE DegreeCode = ?");
+			pstmt.setString(1, deg);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// delete module
+	public void removeMod(String mod) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM Modules WHERE ModuleCode = ?");
+			pstmt.setString(1, mod);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+	// delete student
+
+	public void removeStudent(int reg) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM Students WHERE RegistrationNo = ?");
+			pstmt.setInt(1, reg);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// drop taken module
+	public void removeTakenMod(int regCode, String modCode) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM ModuleTaken WHERE PosRegCode = ? AND ModuleCode = ?");
+			pstmt.setInt(1, regCode);
+			pstmt.setString(2, modCode);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	public void removeTakenMods(int regCode) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM ModuleTaken WHERE PosRegCode = ?");
+			pstmt.setInt(1, regCode);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	public void removePoS(int regCode) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM PeriodsOfStudy WHERE PosRegCode = ?");
+			pstmt.setInt(1, regCode);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	public void removePoSs(int reg) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM PeriodsOfStudy WHERE RegistrationNo = ?");
+			pstmt.setInt(1, reg);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// update fns
+	// update awarded class
+	public void updateAwardedClass(int regNo, String awardedClass) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("UPDATE Students SET AwardedClass = ? WHERE RegistrationNo = ?");
+			pstmt.setString(1, awardedClass);
+			pstmt.setInt(2, regNo);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// update grade (ask for grade type in param, norm or resit)
+	public void updateGrade(int posRegNo, double grade) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("UPDATE PeriodsOfStudy SET Grade = ? WHERE PosRegCode = ?");
+			pstmt.setDouble(1, grade);
+			pstmt.setInt(2, posRegNo);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	public void updateModuleGrade(double grade, int posRegNo, String mod) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("UPDATE ModuleTaken SET Grade = ? WHERE PosRegCode = ? AND ModuleCode = ?");
+			pstmt.setDouble(1, grade);
+			pstmt.setInt(2, posRegNo);
+			pstmt.setString(3, mod);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// add resit grade for module
+	public void updateModuleResit(int posRegNo, String mod, double grade) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("UPDATE ModuleTaken SET Resit = ? WHERE PosRegCode = ? AND ModuleCode = ?");
+			pstmt.setDouble(1, grade);
+			pstmt.setInt(2, posRegNo);
+			pstmt.setString(3, mod);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// update progress fn
+	public void updateProgress(int posRegNo, boolean b) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("UPDATE PeriodsOfStudy SET Progress = ? WHERE PosRegCode = ?");
+			pstmt.setBoolean(1, b);
+			pstmt.setInt(2, posRegNo);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	public void updateCurPos(int reg, char pos) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("UPDATE Students SET CurrentPeriodOfStudy = ? WHERE RegistrationNo = ?");
+			pstmt.setString(1, String.valueOf(pos));
+			pstmt.setInt(2, reg);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
+
+	// other fns
+	// check taken module are applicable (right level of study and module)
+	// check taken module credit total (could leave for josh and tom)
+	// calc weighted mean grade (could leave for tom and josh as no sql involved
+	public double calcPosAverage(int posRegNo) throws SQLException {
+		double totalPercent = 0;
+		double posAverage = 0;
+		int modCount = 0;
+		StuInfo s = null;
+		PeriodOfStudy[] p = null;
+		PeriodOfStudy i = null;
+		int r = Integer.parseInt(String.valueOf(posRegNo).substring(2));
+		
+		
+		try {
+			p = getPeriodsOfStudy(r);
+			for (PeriodOfStudy pos:p) {
+				if (pos!= null) {
+					if (pos.getPosRegCode() == posRegNo) {
+						i = pos;
+					}
+				}
+			}
+			s = getStudentInfo(r);
+			Module[] modArray = getModules(i,s);
+			for (Module x:modArray) {
+				double resitGrade = x.getResit();
+				double modCredit = x.getCredit();
+				double modPercent = 0;
+				
+				if (resitGrade == 0) {
+					double modMarks = x.getGrade();
+					modPercent = modMarks * (modCredit/120);
+				} else {
+					modPercent = resitGrade * (modCredit/120);
+				}
+				
+				totalPercent += modPercent;
+				modCount ++;
+			}
+			posAverage = totalPercent / modCount;
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	
+		return posAverage;
+	}
+
+	
+	public double calcDegreeAverage(int r) {
+		double degreeAvg = 0;
+		StuInfo s;
+		double totalPercent = 0;
+		int i = 0;
+		
+		try {
+			s = getStudentInfo(r);
+			for (int x = 1; x <= 6; x++)  {
+				int tempPosReg = 0;
+				String tpr = String.valueOf(x);
+				tpr += String.valueOf(r);
+				tempPosReg = Integer.parseInt(tpr);
+				double posPercent = calcPosAverage(tempPosReg);
+				if (posPercent != 0) {
+					totalPercent += calcPosAverage(tempPosReg);
+					i++;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		degreeAvg = totalPercent / i;
+		return degreeAvg;
+	}
+	// other than getting all PoS grades)
+	// pass or fail (same as above, we just need a fn to return PoSmodulesinfo like
+	// find module)
+	// find awarded class in final year (as above)
+
+	// get connection
+	public Connection setUpConnection() throws SQLException {
+		Connection con = null;
+		try {
+			con = DriverManager.getConnection("jdbc:mysql://stusql.dcs.shef.ac.uk/team035", "team035", "b7af5f37");
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return con;
+	}
+}

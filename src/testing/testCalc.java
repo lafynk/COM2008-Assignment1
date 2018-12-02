@@ -9,6 +9,6 @@ public class testCalc {
 	public static void main(String[] args) throws SQLException {
 		Sql s = new Sql();
 		System.out.println(s.calcPosAverage(110000054));
-		System.out.println(s.calcPosAverage(10000054));
+		System.out.println(s.calcDegreeAverage(10000054));
 	}
 }
