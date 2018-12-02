@@ -13,10 +13,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
-/**import SQLcode.Sql;
-import java.sql.SQLException;
- */
-
 
 public class teacherpage extends JFrame {
 	 /**
@@ -227,9 +223,13 @@ public teacherpage() throws HeadlessException {
 	aveLabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(aveLabel);
 	
+	//module code field
+	JTextField reg4 = new JTextField("PoS Code");
+	reg4.setBounds(10,450,150,50);
+	panel.add(reg4);
 	
 	JButton aveButton1 = new JButton("Calculate average");
-	aveButton1.setBounds(10,450,150,49);
+	aveButton1.setBounds(170,450,150,49);
 	panel.add(aveButton1);
 	//action for Search
 	aveButton1.addActionListener(new ActionListener() {
@@ -239,7 +239,7 @@ public teacherpage() throws HeadlessException {
 	});
 	
 	JButton aveButton2 = new JButton("Calculate Degree average");
-	aveButton2.setBounds(170,450,200,49);
+	aveButton2.setBounds(330,450,200,49);
 	panel.add(aveButton2);
 	//action for Search
 	aveButton2.addActionListener(new ActionListener() {
@@ -326,5 +326,6 @@ public teacherpage() throws HeadlessException {
 	scrollPane_1.setViewportView(table_1);
 	
     window.repaint();
-  }
+    }
 }
+  

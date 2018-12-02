@@ -965,7 +965,6 @@ public class Sql {
 				double resitGrade = x.getResit();
 				double modCredit = x.getCredit();
 				double modPercent = 0;
-				
 				if (resitGrade == 0) {
 					double modMarks = x.getGrade();
 					modPercent = modMarks / modCredit;
