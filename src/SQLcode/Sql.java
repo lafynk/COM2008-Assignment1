@@ -1009,20 +1009,62 @@ public class Sql {
 		StuInfo s;
 		double totalPercent = 0;
 		PeriodOfStudy[] p = null;
-		PeriodOfStudy i = null;
+		int count = 0;
 		
 		try {
 			s = getStudentInfo(r);
 			p = getPeriodsOfStudy(r);
 			for (PeriodOfStudy pos:p) {
 				if (pos!= null) {
-					
+					switch (pos.getLevel()) {
+					case '1':
+						if (getMaxLevel(s.getDegree()) == '1') {
+							return pos.getGrade();
+						}
+						break;
+					case 2:
+						totalPercent += pos.getGrade();
+						count ++;
+						break;
+					case 3:
+						totalPercent += 2 * pos.getGrade();
+						count += 2;
+						break;
+					case 4:
+						totalPercent += 2 * pos.getGrade();
+						count += 2;
+						break;
+					}
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return 0.00;
+		
+		degreeAvg = totalPercent/count;
+		return degreeAvg;
+	}
+	
+	public char getMaxLevel(String deg) throws SQLException{
+		char lvl = '0';
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("SELECT MaxLevelOfStudy FROM Degrees WHERE DegreeCode = ?");
+			pstmt.setString(1, deg);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				lvl = rs.getString(1).charAt(0);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+		return lvl;
 	}
 	// other than getting all PoS grades)
 	// pass or fail (same as above, we just need a fn to return PoSmodulesinfo like
