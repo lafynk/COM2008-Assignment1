@@ -364,6 +364,23 @@ public class Sql {
 		}
 		return modArray;
 	}
+	
+	public int getTotalCredit(PeriodOfStudy p, int r) {
+		int totalCredit = 0;
+		StuInfo s = null;
+		
+		try {
+			s = getStudentInfo(r);
+			Module[] modArray = getModules(p,s);
+			for (Module x:modArray) {
+				totalCredit += x.getCredit();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	
+		return totalCredit;
+	}
 
 	public PeriodOfStudy[] getPeriodsOfStudy(int reg) throws SQLException {
 		Connection con = setUpConnection();
