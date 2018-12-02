@@ -57,15 +57,15 @@ public teacherpage() throws HeadlessException {
 	addLabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(addLabel);
 	
-	//PoS code field and position
-	JTextField reg = new JTextField("PoS Code");
-	reg.setBounds(170,120,150,50);
-	panel.add(reg);
-	
 	//Score field and position
 	JTextField score = new JTextField("score");
-	score.setBounds(10,120,150,50);
+	score.setBounds(170,120,150,50);
 	panel.add(score);
+	
+	//PoS code field and position
+	JTextField reg = new JTextField("PoS Code");
+	reg.setBounds(10,120,150,50);
+	panel.add(reg);
 	
 	//add grade button
 	JButton addButton = new JButton("Update Grade");
@@ -90,8 +90,10 @@ public teacherpage() throws HeadlessException {
 			JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
 					"Operation Failed", JOptionPane.ERROR_MESSAGE);
 	}
-	
+		//refresh page
 		window.dispose();
+		teacherpage t1 = new teacherpage();
+		window.setVisible(true);
 			
 		}
 	});
@@ -100,6 +102,18 @@ public teacherpage() throws HeadlessException {
 	JButton logButton = new JButton("Log out");
 	logButton.setBounds(700,120,130,49);
 	panel.add(logButton);
+	logButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			try {
+				window.dispose();
+				login window = new login();
+				window.frmSystemsDesign.setVisible(true);
+			
+			} catch (HeadlessException e1) {
+				
+			}
+		}
+	});
 	
 	//update module grade label and position
 	JLabel updateLabel = new JLabel("Update Module Grade:");
@@ -125,7 +139,7 @@ public teacherpage() throws HeadlessException {
 	
 	//add grade button
 	JButton updateButton = new JButton("Update Grade");
-	updateButton.setBounds(490,230,130,60);
+	updateButton.setBounds(490,230,130,39);
 	panel.add(updateButton);
 	//action for Search
 	updateButton.addActionListener(new ActionListener() {
@@ -146,7 +160,11 @@ public teacherpage() throws HeadlessException {
 				JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
 						"Operation Failed", JOptionPane.ERROR_MESSAGE);
 		}
+			//refresh the page
 			window.dispose();
+			teacherpage t2 = new teacherpage();
+			window.setVisible(true);
+				
 			}
 		});
 		
@@ -197,7 +215,10 @@ public teacherpage() throws HeadlessException {
 				JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
 						"Operation Failed", JOptionPane.ERROR_MESSAGE);
 		}
+			//refresh page
 			window.dispose();
+			teacherpage t3 = new teacherpage();
+			window.setVisible(true);
 			}
 	});
 	
