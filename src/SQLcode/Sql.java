@@ -959,7 +959,7 @@ public class Sql {
 		StuInfo s = null;
 		PeriodOfStudy[] p = null;
 		PeriodOfStudy i = null;
-		int r = Integer.parseInt(String.valueOf(posRegNo).substring(2));
+		int r = Integer.parseInt(String.valueOf(posRegNo).substring(1));
 		
 		
 		try {
