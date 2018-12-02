@@ -396,7 +396,7 @@ public class Sql {
 			e1.printStackTrace();
 		}
 	
-		return totalCredit;
+		return totalMarks;
 	}
 
 	public PeriodOfStudy[] getPeriodsOfStudy(int reg) throws SQLException {
