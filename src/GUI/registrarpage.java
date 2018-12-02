@@ -324,20 +324,61 @@ public class registrarpage {
 
 		btnAssign = new JButton("Assign Module");
 		btnAssign.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e){
+				PeriodOfStudy[] pos;
+				
+				int regcode = Integer.parseInt(studentidformodule.getText().substring(1));
+				StuInfo newstu = null;
+				
 				try {
-
-					s.addTakenModule(Integer.parseInt(studentidformodule.getText()), studentmoduletaken.getText(),
-							Double.parseDouble(studentgrade.getText()), Double.parseDouble(studentresit.getText()));
-					frmSystemsDesign.dispose();
-					registrarpage window = new registrarpage();
-					window.frmSystemsDesign.setVisible(true);
-					JOptionPane.showMessageDialog(null, "Module Assigned.", "Operation Successful",
-							JOptionPane.INFORMATION_MESSAGE);
-				} catch (NumberFormatException | SQLException e1) {
+					newstu = s.getStudentInfo(regcode);
+					pos = s.getPeriodsOfStudy(regcode);
+					PeriodOfStudy i = null;
+					for (PeriodOfStudy p : pos) {
+						if (p != null) {
+							if (p.getPosRegCode() == Integer.parseInt(studentidformodule.getText())) {
+								i = p;
+							}
+						}
+					}
+					Module[] m = s.getModules(i, newstu);
+					int crTotal = 0;
+					for (Module mod: m) {
+						if (mod != null) {
+							crTotal = crTotal + mod.getCredit();
+						}
+					}
+					System.out.println(crTotal);
+					System.out.println(newstu.getDegree());
+					System.out.println(studentmoduletaken.getText());
+					Module currentmod = s.getModInfo(newstu.getDegree(), studentmoduletaken.getText());
+					System.out.println(currentmod);
+					System.out.println(currentmod.getCredit());
+					int newcredit = currentmod.getCredit();
+					if ((newstu.getType() == "U")&&(crTotal + newcredit >120)) {
+						JOptionPane.showMessageDialog(null, "Undergraduates cannot study more than 120 credits.", "Operation Failed",
+								JOptionPane.ERROR_MESSAGE);
+					}
+					else if ((newstu.getType()=="P") && (crTotal + newcredit >180)) {
+						JOptionPane.showMessageDialog(null, "Postgraduates cannot study more than 180 credits.", "Operation Failed",
+								JOptionPane.ERROR_MESSAGE);
+					}
+					else {
+						s.addTakenModule(Integer.parseInt(studentidformodule.getText()), studentmoduletaken.getText(),
+						Double.parseDouble(studentgrade.getText()), Double.parseDouble(studentresit.getText()));
+						frmSystemsDesign.dispose();
+						registrarpage window = new registrarpage();
+						window.frmSystemsDesign.setVisible(true);
+						JOptionPane.showMessageDialog(null, "Module Assigned.", "Operation Successful", JOptionPane.INFORMATION_MESSAGE);
+					}
+					
+					
+				} catch (SQLException e2) {
 					// TODO Auto-generated catch block
-					// e1.printStackTrace();
+					//e2.printStackTrace();
 				}
+			
+	
 			}
 		});
 		btnAssign.setBounds(818, 578, 150, 29);
@@ -420,7 +461,7 @@ public class registrarpage {
 					frmSystemsDesign.dispose();
 					registrarpage window = new registrarpage();
 					window.frmSystemsDesign.setVisible(true);
-					JOptionPane.showMessageDialog(null, "Period of Study added." + modulearray, "Operation Successful",
+					JOptionPane.showMessageDialog(null, "Period of Study added." , "Operation Successful",
 							JOptionPane.INFORMATION_MESSAGE);
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
