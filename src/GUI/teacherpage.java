@@ -30,36 +30,39 @@ public class teacherpage extends JFrame {
 		 };
 	 
 public teacherpage() throws HeadlessException {
-	Sql s = new Sql();
+	//establish new sql connection
+	Sql s = new Sql(); 
+	//setting the size of the window and some attributes
 	JFrame window = new JFrame("Systems Design & Security: Team Project");
 	window.setVisible(true);
     window.setSize(1000,1000);
 	window.setResizable(false);
-	//window.setLayout(new FlowLayout());
 	window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	
+	//components to be added to panel, then added to window
 	JPanel panel = new JPanel();
 	panel.setLayout(null);
 	window.add(panel);
 	 
+	//teacher label and position
 	JLabel teacherlabel = new JLabel("Teacher Dashboard");
 	teacherlabel.setBounds(10,10,300,50);
 	teacherlabel.setFont(new Font("", Font.PLAIN, 30));
 	panel.add(teacherlabel);
 
 		
-	//Add grade field
+	//Add grade field and position
 	JLabel addLabel = new JLabel("Update Grade:");
 	addLabel.setBounds(10,70,150,60);
 	addLabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(addLabel);
 	
-	//module code field
+	//PoS code field and position
 	JTextField reg = new JTextField("PoS Code");
 	reg.setBounds(170,120,150,50);
 	panel.add(reg);
 	
-	//module code field
+	//Score field and position
 	JTextField score = new JTextField("score");
 	score.setBounds(10,120,150,50);
 	panel.add(score);
@@ -69,6 +72,7 @@ public teacherpage() throws HeadlessException {
 	addButton.setBounds(330,120,130,49);
 	panel.add(addButton);
 	//action for Search
+	//takes the PoS and Score and updates that field in database
 	addButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {	
 		try {
@@ -87,28 +91,33 @@ public teacherpage() throws HeadlessException {
 					"Operation Failed", JOptionPane.ERROR_MESSAGE);
 	}
 	
-			window.dispose();
+		window.dispose();
 			
 		}
 	});
 	
-	//update grade field
+	//Log out button and position
+	JButton logButton = new JButton("Log out");
+	logButton.setBounds(700,120,130,49);
+	panel.add(logButton);
+	
+	//update module grade label and position
 	JLabel updateLabel = new JLabel("Update Module Grade:");
 	updateLabel.setBounds(10,180,230,60);
 	updateLabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(updateLabel);
 	
-	//module code field
+	//Pos code field and position
 	JTextField reg1 = new JTextField("PoS Code");
     reg1.setBounds(10,230,150,50);
 	panel.add(reg1);
 	
-	//module code field
+	//module code field and position
 	JTextField modCode = new JTextField("Module Code");
 	modCode.setBounds(170,230,150,50);
 	panel.add(modCode);
 
-	//score field
+	//score field and position
 	JTextField score1 = new JTextField("Score");
 	score1.setBounds(330,230,150,50);
 	panel.add(score1);
@@ -126,7 +135,7 @@ public teacherpage() throws HeadlessException {
 				String n1Mod =  modCode.getText();
 				double n1Score = Double.parseDouble(score1.getText());
 				try {
-					s.updateModuleGrade(n1Reg, n1Mod, n1Score);
+					s.updateModuleGrade(n1Score, n1Reg, n1Mod);
 					JOptionPane.showMessageDialog(null, "Grade Added." , "Operation Succesful",
 							JOptionPane.INFORMATION_MESSAGE);
 					} catch(SQLException e1) {
@@ -137,9 +146,7 @@ public teacherpage() throws HeadlessException {
 				JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
 						"Operation Failed", JOptionPane.ERROR_MESSAGE);
 		}
-		
-				window.dispose();
-				
+			window.dispose();
 			}
 		});
 		
@@ -174,13 +181,24 @@ public teacherpage() throws HeadlessException {
 	//action for Search
 	updateButton1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			window.dispose();
-			/**try {
-			s.updateModuleResit(reg2.getText(), modCode1.getText(), score2.getText());
-			} catch(SQLException e1) {
-				el.printStackTrace();
-			}*/
+			try {
+				Integer n2Reg = Integer.parseInt(reg2.getText());
+				String n2Mod =  modCode1.getText();
+				double n2Score = Double.parseDouble(score2.getText());
+				try {
+					s.updateModuleResit(n2Reg, n2Mod, n2Score);
+					JOptionPane.showMessageDialog(null, "Grade Added." , "Operation Succesful",
+							JOptionPane.INFORMATION_MESSAGE);
+					} catch(SQLException e1) {
+						JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+								"Operation Failed", JOptionPane.ERROR_MESSAGE);
+					}
+			}catch(NumberFormatException ex) {
+				JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
+						"Operation Failed", JOptionPane.ERROR_MESSAGE);
 		}
+			window.dispose();
+			}
 	});
 	
 	//resit grade field

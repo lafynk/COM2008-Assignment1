@@ -871,11 +871,11 @@ public class Sql {
 		}
 	}
 
-	public void updateModuleGrade(int posRegNo, String mod, double grade) throws SQLException {
+	public void updateModuleGrade(double grade, int posRegNo, String mod) throws SQLException {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("UPDATE PeriodsOfStudy SET Grade = ? WHERE PosRegCode = ? AND ModuleCode = ?");
+			pstmt = con.prepareStatement("UPDATE ModuleTaken SET Grade = ? WHERE PosRegCode = ? AND ModuleCode = ?");
 			pstmt.setDouble(1, grade);
 			pstmt.setInt(2, posRegNo);
 			pstmt.setString(3, mod);
@@ -895,7 +895,7 @@ public class Sql {
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = con.prepareStatement("UPDATE PeriodsOfStudy SET Resit = ? WHERE PosRegCode = ? AND ModuleCode = ?");
+			pstmt = con.prepareStatement("UPDATE ModuleTaken SET Resit = ? WHERE PosRegCode = ? AND ModuleCode = ?");
 			pstmt.setDouble(1, grade);
 			pstmt.setInt(2, posRegNo);
 			pstmt.setString(3, mod);
