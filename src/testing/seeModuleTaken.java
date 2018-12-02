@@ -3,6 +3,7 @@ package testing;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import SQLcode.Sql;
@@ -17,6 +18,8 @@ public class seeModuleTaken {
 			con = s.setUpConnection();
 			pstmt = con.prepareStatement("SELECT * FROM ModuleTaken");
 			ResultSet res = pstmt.executeQuery();
+			ResultSetMetaData rsmd = res.getMetaData();
+			System.out.println(rsmd.getColumnName(4));
 			while (res.next()) {
 				int posreg = res.getInt(1);
 				String mod = res.getString(2);

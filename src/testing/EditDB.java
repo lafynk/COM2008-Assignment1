@@ -10,7 +10,7 @@ public class EditDB {
 		PreparedStatement pstmt = null;
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://stusql.dcs.shef.ac.uk/team035", "team035", "b7af5f37");
-			pstmt = con.prepareStatement("ALTER TABLE Modules MODIFY COLUMN ModuleName VARCHAR(100);");
+			pstmt = con.prepareStatement("ALTER TABLE PeriodsOfStudy MODIFY COLUMN Grade FLOAT(5,2);");
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
