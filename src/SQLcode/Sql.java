@@ -988,11 +988,16 @@ public class Sql {
 				totalPercent += modPercent;
 				modCount ++;
 			}
-			posAverage = totalPercent / modCount;
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
 	
+		if (modCount == 0) {
+			posAverage = 0;
+		} else {
+			posAverage = totalPercent / modCount;
+		}
+		
 		return posAverage;
 	}
 
@@ -1000,16 +1005,31 @@ public class Sql {
 	public double calcDegreeAverage(int r) {
 		double degreeAvg = 0;
 		StuInfo s;
+		double totalPercent = 0;
+		int i = 0;
 		
 		try {
 			s = getStudentInfo(r);
-			for (int x = 1; x <= 6; x++)  {
+			for (int x = 2; x <= 6; x++)  {
 				int tempPosReg = 0;
+				String tpr = String.valueOf(x);
+				tpr += String.valueOf(r);
+				tempPosReg = Integer.parseInt(tpr);
+				double posPercent = calcPosAverage(tempPosReg);
+				if (posPercent != 0) {
+					totalPercent += calcPosAverage(tempPosReg);
+					i++;
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
+		if (i==0) {
+			degreeAvg = 0;
+		} else {
+			degreeAvg = totalPercent / i;
+		}
 		
 		return degreeAvg;
 	}
