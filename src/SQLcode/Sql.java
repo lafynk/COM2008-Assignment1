@@ -365,22 +365,6 @@ public class Sql {
 		return modArray;
 	}
 	
-	public int getPosCredit(PeriodOfStudy p, int r) {
-		int totalCredit = 0;
-		StuInfo s = null;
-		
-		try {
-			s = getStudentInfo(r);
-			Module[] modArray = getModules(p,s);
-			for (Module x:modArray) {
-				totalCredit += x.getCredit();
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-	
-		return totalCredit;
-	}
 	
 	public double calcPosAverage(PeriodOfStudy p, int r) {
 		double totalPercent = 0;
