@@ -1,12 +1,35 @@
 package GUI;
-import java.awt.*;
-import javax.swing.*;
-//import java.sql.SQLException;
-//import java.sql.*;
-//import SQLcode.Sql;
-//classPkg.UserInfo;
-import java.awt.event.ActionListener;
+
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
+import javax.swing.DefaultComboBoxModel;
+//import net.miginfocom.swing.MigLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
+import SQLcode.Sql;
 
 //---------------------------------------------------------------------------------------------------------
 
@@ -47,14 +70,42 @@ public studentpage() throws HeadlessException {
 	panel.add(addmodulebutton);
 	addmodulebutton.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
-			  //getModules
+			  //getModules	
+			  JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			  tabbedPane.setBounds(10, 170, 973, 780);
+			  panel.add(tabbedPane);
+	
+			  JScrollPane scrollPane = new JScrollPane();
+			  tabbedPane.addTab("Progress", null, scrollPane, null);
+			  scrollPane.setViewportBorder(null);
+			  
+			  DefaultTableModel model1 = new DefaultTableModel();
+			  JTable table1 = new JTable(model1);
+			  
+			  model1.addColumn("PosResCode");
+			  model1.addColumn("Registration No");
+			  model1.addColumn("Perioid of Study");
+			  model1.addColumn("Start Date");
+			  model1.addColumn("End Date");
+			  model1.addColumn("Current Level");
+			  model1.addColumn("Grade");
+			  model1.addColumn("Progress");
+			  
+			  PreparedStatement pstmt = null;
+			  Connection con = null;
+			  /**try {
+				  con = s.setUpConnection();
+				  pstmt = con.preparedStatement("SELECT")
+			  }*/
+			  
+			  scrollPane.setViewportView(table1);
+			
+
+
 		   }
 	});
 	
-	//Text area where grades will go 
-	JTextArea textA = new JTextArea(200,200);
-	textA .setBounds(10, 170, 973, 780);
-	panel.add(textA);
+
 	
 window.repaint();	 
 }
