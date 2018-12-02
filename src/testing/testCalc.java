@@ -8,6 +8,7 @@ public class testCalc {
 
 	public static void main(String[] args) throws SQLException {
 		Sql s = new Sql();
-		s.calcPosAverage(110000054);
+		System.out.println(s.calcPosAverage(110000054));
+		System.out.println(s.calcPosAverage(10000054));
 	}
 }

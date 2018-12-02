@@ -243,7 +243,7 @@ public class Sql {
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
 		try {
-			pstmt = con.prepareStatement("SELECT * FROM ModuleAssignment WHERE DegreeCode = ? AND ModuleCode = 1");
+			pstmt = con.prepareStatement("SELECT * FROM ModuleAssignment WHERE DegreeCode = ? AND ModuleCode = ?");
 			pstmt.setString(1, deg);
 			pstmt.setString(2, mod);
 			ResultSet res1 = pstmt.executeQuery();
@@ -1009,31 +1009,23 @@ public class Sql {
 		StuInfo s;
 		double totalPercent = 0;
 		int i = 0;
+		PeriodOfStudy[] p = null;
+		PeriodOfStudy i = null;
 		
 		try {
 			s = getStudentInfo(r);
-			for (int x = 2; x <= 6; x++)  {
-				int tempPosReg = 0;
-				String tpr = String.valueOf(x);
-				tpr += String.valueOf(r);
-				tempPosReg = Integer.parseInt(tpr);
-				double posPercent = calcPosAverage(tempPosReg);
-				if (posPercent != 0) {
-					totalPercent += calcPosAverage(tempPosReg);
-					i++;
+			p = getPeriodsOfStudy(r);
+			for (PeriodOfStudy pos:p) {
+				if (pos!= null) {
+					if (pos.getPosRegCode() == posRegNo) {
+						i = pos;
+					}
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		if (i==0) {
-			degreeAvg = 0;
-		} else {
-			degreeAvg = totalPercent / i;
-		}
-		
-		return degreeAvg;
 	}
 	// other than getting all PoS grades)
 	// pass or fail (same as above, we just need a fn to return PoSmodulesinfo like
