@@ -974,19 +974,21 @@ public class Sql {
 			s = getStudentInfo(r);
 			Module[] modArray = getModules(i,s);
 			for (Module x:modArray) {
-				double resitGrade = x.getResit();
-				double modCredit = x.getCredit();
-				double modPercent = 0;
-				
-				if (resitGrade == 0) {
-					double modMarks = x.getGrade();
-					modPercent = modMarks * (modCredit/120);
-				} else {
-					modPercent = resitGrade * (modCredit/120);
+				if (x != null) {
+					double resitGrade = x.getResit();
+					double modCredit = x.getCredit();
+					double modPercent = 0;
+					
+					if (resitGrade == 0) {
+						double modMarks = x.getGrade();
+						modPercent = modMarks * (modCredit/120);
+					} else {
+						modPercent = resitGrade * (modCredit/120);
+					}
+					
+					totalPercent += modPercent;
+					modCount ++;
 				}
-				
-				totalPercent += modPercent;
-				modCount ++;
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
