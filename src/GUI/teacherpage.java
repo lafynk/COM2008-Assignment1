@@ -239,6 +239,7 @@ public teacherpage() throws HeadlessException {
 				try {
 					double average = s.calcPosAverage(nreg4);
 					s.updateGrade(nreg4, average);
+					progress(nreg4, average);
 					window.dispose();
 					teacherpage t4 = new teacherpage();
 					window.setVisible(true);
@@ -253,6 +254,11 @@ public teacherpage() throws HeadlessException {
 			}
 		}
 	});
+	
+	public void progress(int posRegNo, int score) throws SQLException {
+		
+		
+	}
 	
 	JButton aveButton2 = new JButton("Calculate Degree average");
 	aveButton2.setBounds(330,450,200,49);
