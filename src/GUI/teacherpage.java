@@ -185,7 +185,6 @@ public teacherpage() throws HeadlessException {
 	JTextField modCode1 = new JTextField("Module Code");
 	modCode1.setBounds(170,345,150,50);
 	panel.add(modCode1);
-	
 
 	//module code field
 	JTextField score2 = new JTextField("Score");

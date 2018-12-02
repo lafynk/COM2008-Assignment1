@@ -52,6 +52,22 @@ public studentpage() throws HeadlessException {
 	 JPanel panel = new JPanel();
 	 panel.setLayout(null);
 	 window.add(panel);
+	 
+	//Log out button and position
+	JButton logButton = new JButton("Log out");
+	logButton.setBounds(700,130,130,49);
+	panel.add(logButton);
+	logButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			try {
+				window.dispose();
+				login window = new login();
+				window.frmSystemsDesign.setVisible(true);
+			} catch (HeadlessException e1) {
+					
+			}
+		}
+	});
 	
 	 //student label
 	JLabel studentlabel = new JLabel("Student Dashboard");
@@ -65,8 +81,13 @@ public studentpage() throws HeadlessException {
 	welcomelabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(welcomelabel);
 	
+	JTextField eReg = new JTextField("Enter Registration Number");
+	eReg.setBounds(10,130,200,50);
+	panel.add(eReg);
+
+	
 	JButton addmodulebutton = new JButton("View Status");
-	addmodulebutton.setBounds(470,100,130,40);
+	addmodulebutton.setBounds(220,130,130,49);
 	panel.add(addmodulebutton);
 	addmodulebutton.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
