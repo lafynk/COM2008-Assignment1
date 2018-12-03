@@ -84,6 +84,7 @@ public class teacherpage extends JFrame {
 						s.updateModuleGrade(n1Score, n1Reg, n1Mod);
 						double newAve = s.calcPosAverage(n1Reg);
 						s.updateGrade(n1Reg, newAve);
+						progress(n1Reg, newAve);
 						JOptionPane.showMessageDialog(null, "Grade Added." , "Operation Succesful",
 								JOptionPane.INFORMATION_MESSAGE);
 						} catch(SQLException e1) {
@@ -140,6 +141,7 @@ public class teacherpage extends JFrame {
 						s.updateModuleResit(n2Reg, n2Mod, n2Score);
 						double newAve = s.calcPosAverage(n2Reg);
 						s.updateGrade(n2Reg, newAve);
+						progress(n2Reg, newAve);
 						JOptionPane.showMessageDialog(null, "Grade Added." , "Operation Succesful",
 								JOptionPane.INFORMATION_MESSAGE);
 						} catch(SQLException e1) {
@@ -198,30 +200,41 @@ public class teacherpage extends JFrame {
 				t4.setVisible(true);
 			}
 		});
-	
-			
 		
+		JLabel ave1Label = new JLabel("Calculate degree average Grade:");
+		ave1Label.setBounds(340,290,300,60);
+		ave1Label.setFont(new Font("", Font.PLAIN, 20));
+		panel.add(ave1Label);
+		
+		//module code field
+		JTextField reg5 = new JTextField("Enter PoS Code");
+		reg5.setBounds(340,345,150,50);
+		panel.add(reg5);
+		
+		JTextField degree = new JTextField("Enter Degree");
+		degree.setBounds(500,345,150,50);
+		panel.add(degree);
+ 
 		JButton aveButton2 = new JButton("Calculate Degree average");
-		aveButton2.setBounds(330,345,200,49);
+		aveButton2.setBounds(660,345,200,49);
 		panel.add(aveButton2);
 		//action for Search
 		aveButton2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Integer nreg4 = Integer.parseInt(reg4.getText());
-					try {
-						double average = s.calcPosAverage(nreg4);
-						s.updateGrade(nreg4, average);
-						JOptionPane.showMessageDialog(null, average,
-								"Students Degree Average", JOptionPane.INFORMATION_MESSAGE);
-						
-					} catch(SQLException e1) {
-						JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
-								"Operation Failed", JOptionPane.ERROR_MESSAGE);
-					}
+					Integer nreg5 = Integer.parseInt(reg5.getText());
+					String lvl1 = degree.getText();
+					double average = s.calcDegreeAverage(nreg5);
+					char lvl = s.getMaxLevel(lvl1);
+					//String destination = teacherpage.this.getClass(lvl, average);
+					JOptionPane.showMessageDialog(null, average,
+							"Students Degree Average", JOptionPane.INFORMATION_MESSAGE);
 				}catch(NumberFormatException ex) {
 					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
 							"Operation Failed", JOptionPane.ERROR_MESSAGE);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -306,6 +319,43 @@ public class teacherpage extends JFrame {
 		
 	    window.repaint();
 	}
+	
+	public String getClass(char Number, double score) {
+		if(Number == '1' || Number == '4' && score < 49.5) {
+			return "Fail";
+		}
+		else if (Number == '3' || Number == '4'|| Number == '2' && score > 69.4) {
+			return "Distinction";
+		}
+		else if (Number == '1' && 49.4 < score && score > 59.5) {
+			return "Pass";
+		}
+		else if (Number == '1' && 59.4 < score && score > 69.5) {
+			return "Merit";
+		}
+		else if (Number == '1' && score > 69.5) {
+			return "Distinction";
+		} 
+		else if (Number == '3' || Number == '4' || Number == '2' && 49.4 < score && score > 59.5) {
+			return "Lower Second";
+		}
+		else if (Number == '3' || Number == '4' || Number =='2' && 59.4 < score && score > 69.5) {
+			return "Upper Second";
+		}
+		else if (Number == '3' || Number == '4' || Number == '2' && score > 69.5) {
+			return "First Class";
+		}
+		else if (Number == '3' || Number == '2' && score < 39.6) {
+			return "Fail";
+		}
+		else if (Number == '3' || Number == '2' && score > 39.5 && score < 44.5) {
+			return "Pass (Non-Honours)";
+		}
+		else {
+			return "Third Class";
+		}
+	}
+	
 	public void progress(int posRegNo, double value) throws SQLException {
 		Sql s = new Sql();
 		int r = Integer.parseInt(String.valueOf(posRegNo).substring(1));
