@@ -82,6 +82,8 @@ public class teacherpage extends JFrame {
 					double n1Score = Double.parseDouble(score1.getText());
 					try {
 						s.updateModuleGrade(n1Score, n1Reg, n1Mod);
+						double newAve = s.calcPosAverage(n1Reg);
+						s.updateGrade(n1Reg, newAve);
 						JOptionPane.showMessageDialog(null, "Grade Added." , "Operation Succesful",
 								JOptionPane.INFORMATION_MESSAGE);
 						} catch(SQLException e1) {
