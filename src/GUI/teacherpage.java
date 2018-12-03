@@ -47,96 +47,31 @@ public class teacherpage extends JFrame {
 		teacherlabel.setFont(new Font("", Font.PLAIN, 30));
 		panel.add(teacherlabel);
 	
-			
-		//Add grade field and position
-		JLabel addLabel = new JLabel("Update Grade:");
-		addLabel.setBounds(10,70,150,60);
-		addLabel.setFont(new Font("", Font.PLAIN, 20));
-		panel.add(addLabel);
-		
-		//Score field and position
-		JTextField score = new JTextField("score");
-		score.setBounds(170,120,150,50);
-		panel.add(score);
-		
-		//PoS code field and position
-		JTextField reg = new JTextField("PoS Code");
-		reg.setBounds(10,120,150,50);
-		panel.add(reg);
-		
-		//add grade button
-		JButton addButton = new JButton("Update Grade");
-		addButton.setBounds(330,120,130,49);
-		panel.add(addButton);
-		//action for Search
-		//takes the PoS and Score and updates that field in database
-		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {	
-			try {
-				Integer nReg = Integer.parseInt(reg.getText());
-				double nScore = Double.parseDouble(score.getText());
-				try {
-					s.updateGrade(nReg, nScore);
-					JOptionPane.showMessageDialog(null, "Grade Updated." , "Operation Succesful",
-							JOptionPane.INFORMATION_MESSAGE);
-					} catch(SQLException e1) {
-						JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
-								"Operation Failed", JOptionPane.ERROR_MESSAGE);
-					}
-			}catch(NumberFormatException ex) {
-				JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
-						"Operation Failed", JOptionPane.ERROR_MESSAGE);
-		}
-			//refresh page
-			window.dispose();
-			teacherpage t1 = new teacherpage();
-			window.setVisible(true);
-				
-			}
-		});
-		
-		//Log out button and position
-		JButton logButton = new JButton("Log out");
-		logButton.setBounds(845,10,130,49);
-		panel.add(logButton);
-		logButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					window.dispose();
-					login window = new login();
-					window.frmSystemsDesign.setVisible(true);
-				
-				} catch (HeadlessException e1) {
-					
-				}
-			}
-		});
-		
 		//update module grade label and position
 		JLabel updateLabel = new JLabel("Update Module Grade:");
-		updateLabel.setBounds(10,180,230,60);
+		updateLabel.setBounds(10,70,300,60);
 		updateLabel.setFont(new Font("", Font.PLAIN, 20));
 		panel.add(updateLabel);
 		
 		//Pos code field and position
 		JTextField reg1 = new JTextField("PoS Code");
-	    reg1.setBounds(10,230,150,50);
+	    reg1.setBounds(10,120,150,50);
 		panel.add(reg1);
 		
 		//module code field and position
 		JTextField modCode = new JTextField("Module Code");
-		modCode.setBounds(170,230,150,50);
+		modCode.setBounds(170,120,150,50);
 		panel.add(modCode);
 	
 		//score field and position
 		JTextField score1 = new JTextField("Score");
-		score1.setBounds(330,230,150,50);
+		score1.setBounds(330,120,150,50);
 		panel.add(score1);
 	
 		
 		//add grade button
 		JButton updateButton = new JButton("Update Grade");
-		updateButton.setBounds(490,230,130,39);
+		updateButton.setBounds(490,120,130,49);
 		panel.add(updateButton);
 		//action for Search
 		updateButton.addActionListener(new ActionListener() {
@@ -160,7 +95,7 @@ public class teacherpage extends JFrame {
 				//refresh the page
 				window.dispose();
 				teacherpage t2 = new teacherpage();
-				window.setVisible(true);
+				t2.setVisible(true);
 					
 				}
 			});
@@ -168,29 +103,29 @@ public class teacherpage extends JFrame {
 		
 		//resit grade field
 		JLabel resitLabel = new JLabel("Update Resit Grade:");
-		resitLabel.setBounds(10,290,200,60);
+		resitLabel.setBounds(10,180,230,60);
 		resitLabel.setFont(new Font("", Font.PLAIN, 20));
 		panel.add(resitLabel);
 		
 	
 		//module code field
 		JTextField reg2 = new JTextField("PoS Code");
-		reg2.setBounds(10,345,150,50);
+		reg2.setBounds(10,230,150,50);
 		panel.add(reg2);
 		
 		//module code field
 		JTextField modCode1 = new JTextField("Module Code");
-		modCode1.setBounds(170,345,150,50);
+		modCode1.setBounds(170,230,150,50);
 		panel.add(modCode1);
 	
 		//module code field
 		JTextField score2 = new JTextField("Score");
-		score2.setBounds(330,345,150,50);
+		score2.setBounds(330,230,150,50);
 		panel.add(score2);
 	
 		//add grade button
 		JButton updateButton1 = new JButton("Update Grade");
-		updateButton1.setBounds(490,345,130,49);
+		updateButton1.setBounds(490,230,130,49);
 		panel.add(updateButton1);
 		//action for Search
 		updateButton1.addActionListener(new ActionListener() {
@@ -214,23 +149,23 @@ public class teacherpage extends JFrame {
 				//refresh page
 				window.dispose();
 				teacherpage t3 = new teacherpage();
-				window.setVisible(true);
+				t3.setVisible(true);
 				}
 		});
 		
 		//resit grade field
 		JLabel aveLabel = new JLabel("Calculate average Grade:");
-		aveLabel.setBounds(10,400,260,60);
+		aveLabel.setBounds(10,290,300,60);
 		aveLabel.setFont(new Font("", Font.PLAIN, 20));
 		panel.add(aveLabel);
 		
 		//module code field
 		JTextField reg4 = new JTextField("PoS Code");
-		reg4.setBounds(10,450,150,50);
+		reg4.setBounds(10,345,150,50);
 		panel.add(reg4);
 		
 		JButton aveButton1 = new JButton("Calculate average");
-		aveButton1.setBounds(170,450,150,49);
+		aveButton1.setBounds(170,345,150,49);
 		panel.add(aveButton1);
 		//action for Search
 		aveButton1.addActionListener(new ActionListener() {
@@ -253,13 +188,17 @@ public class teacherpage extends JFrame {
 					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
 							"Operation Failed", JOptionPane.ERROR_MESSAGE);
 				}
+				//refresh page
+				window.dispose();
+				teacherpage t4 = new teacherpage();
+				t4.setVisible(true);
 			}
 		});
 	
 			
 		
 		JButton aveButton2 = new JButton("Calculate Degree average");
-		aveButton2.setBounds(330,450,200,49);
+		aveButton2.setBounds(330,345,200,49);
 		panel.add(aveButton2);
 		//action for Search
 		aveButton2.addActionListener(new ActionListener() {
@@ -285,7 +224,7 @@ public class teacherpage extends JFrame {
 		
 		 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(0, 592, 1021, 368);
+		tabbedPane.setBounds(0, 450, 1021, 510);
 		panel.add(tabbedPane);
 		
 		JScrollPane scrollPane = new JScrollPane();
