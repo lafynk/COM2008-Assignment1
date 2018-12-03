@@ -77,10 +77,12 @@ public class teacherpage extends JFrame {
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					//gets required info from text fields
 					Integer n1Reg = Integer.parseInt(reg1.getText());
 					String n1Mod =  modCode.getText();
 					double n1Score = Double.parseDouble(score1.getText());
 					try {
+						//runs function update the grade and calc new average
 						s.updateModuleGrade(n1Score, n1Reg, n1Mod);
 						double newAve = s.calcPosAverage(n1Reg);
 						s.updateGrade(n1Reg, newAve);
@@ -134,10 +136,12 @@ public class teacherpage extends JFrame {
 		updateButton1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					//gets required info from text fields
 					Integer n2Reg = Integer.parseInt(reg2.getText());
 					String n2Mod =  modCode1.getText();
 					double n2Score = Double.parseDouble(score2.getText());
 					try {
+						//runs function update the grade and calc new average
 						s.updateModuleResit(n2Reg, n2Mod, n2Score);
 						double newAve = s.calcPosAverage(n2Reg);
 						s.updateGrade(n2Reg, newAve);
@@ -159,17 +163,18 @@ public class teacherpage extends JFrame {
 				}
 		});
 		
-		//resit grade field
+		//calculate average field and position
 		JLabel aveLabel = new JLabel("Calculate average Grade:");
 		aveLabel.setBounds(10,290,300,60);
 		aveLabel.setFont(new Font("", Font.PLAIN, 20));
 		panel.add(aveLabel);
 		
-		//module code field
+		//Pos field and position
 		JTextField reg4 = new JTextField("PoS Code");
 		reg4.setBounds(10,345,150,50);
 		panel.add(reg4);
 		
+		//calc average button and position
 		JButton aveButton1 = new JButton("Calculate average");
 		aveButton1.setBounds(170,345,150,49);
 		panel.add(aveButton1);
@@ -177,8 +182,10 @@ public class teacherpage extends JFrame {
 		aveButton1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					//gets required info from text fields
 					Integer nreg4 = Integer.parseInt(reg4.getText());
 					try {
+						//runs function update the grade and calc new average
 						double average = s.calcPosAverage(nreg4);
 						s.updateGrade(nreg4, average);
 						progress(nreg4, average);
@@ -201,20 +208,23 @@ public class teacherpage extends JFrame {
 			}
 		});
 		
+		//calc degree label and position
 		JLabel ave1Label = new JLabel("Calculate degree average Grade:");
 		ave1Label.setBounds(340,290,300,60);
 		ave1Label.setFont(new Font("", Font.PLAIN, 20));
 		panel.add(ave1Label);
 		
-		//module code field
+		//Pos field and position
 		JTextField reg5 = new JTextField("Enter PoS Code");
 		reg5.setBounds(340,345,150,50);
 		panel.add(reg5);
 		
+		//degree field and position
 		JTextField degree = new JTextField("Enter Degree");
 		degree.setBounds(500,345,150,50);
 		panel.add(degree);
- 
+		
+		//calc degree average buttton and position
 		JButton aveButton2 = new JButton("Calculate Degree average");
 		aveButton2.setBounds(660,345,200,49);
 		panel.add(aveButton2);
@@ -222,6 +232,8 @@ public class teacherpage extends JFrame {
 		aveButton2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					//gets required info from text fields
+					//runs functions to return the score and awarded class
 					Integer nreg5 = Integer.parseInt(reg5.getText());
 					String lvl1 = degree.getText();
 					double average = s.calcDegreeAverage(nreg5);
@@ -239,7 +251,8 @@ public class teacherpage extends JFrame {
 			}
 		});
 		
-		 
+		
+		//tabbed pane for database info to be added
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 450, 1021, 510);
 		panel.add(tabbedPane);
@@ -251,6 +264,7 @@ public class teacherpage extends JFrame {
 		DefaultTableModel model = new DefaultTableModel();
 		JTable table = new JTable(model);
 	
+		//making columns to match the database
 		model.addColumn("PoS Code");
 		model.addColumn("Student RegNo");
 		model.addColumn("Period Of Study");
@@ -263,6 +277,7 @@ public class teacherpage extends JFrame {
 		PreparedStatement pstmt = null;
 		Connection con = null;
 		try {
+			//setting up connection and query statement to get information required
 			con = s.setUpConnection();
 			pstmt = con.prepareStatement("SELECT * FROM PeriodsOfStudy");
 			ResultSet res = pstmt.executeQuery();
@@ -282,7 +297,7 @@ public class teacherpage extends JFrame {
 				} else {
 					progressstring = "Yes";
 				}
-	
+				//add the information in rows under the correct columns
 				model.addRow(new Object[] { poscode, regP, pos1, start, end, lvl1, grade, progressstring });
 			}
 		} catch (SQLException ex) {
@@ -292,6 +307,7 @@ public class teacherpage extends JFrame {
 		}
 		scrollPane.setViewportView(table);
 		
+		//second page on the tabbedpane to get module taken information
 		JScrollPane scrollPane_1 = new JScrollPane();
 		tabbedPane.addTab("Modules Taken", null, scrollPane_1, null);
 		DefaultTableModel model_1 = new DefaultTableModel();
@@ -318,7 +334,8 @@ public class teacherpage extends JFrame {
 		
 	    window.repaint();
 	}
-	
+
+	//method to return awarded class
 	public String getClass(char num, double score) {
 		if(num == '1') {
 			if (score > 69.4) {
@@ -372,6 +389,7 @@ public class teacherpage extends JFrame {
 		
 	}
 	
+	//method to up date the progree
 	public void progress(int posRegNo, double value) throws SQLException {
 		Sql s = new Sql();
 		int r = Integer.parseInt(String.valueOf(posRegNo).substring(1));

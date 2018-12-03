@@ -81,20 +81,23 @@ public studentpage() throws HeadlessException {
 	welcomelabel.setFont(new Font("", Font.PLAIN, 20));
 	panel.add(welcomelabel);
 	
+	//pos reg text
 	JTextField eReg = new JTextField("Enter PosReg Number");
 	eReg.setBounds(10,130,200,50);
 	panel.add(eReg);
 	
+	//button to view status
 	JButton addmodulebutton = new JButton("View Status");
 	addmodulebutton.setBounds(220,130,130,49);
 	panel.add(addmodulebutton);
 	addmodulebutton.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
-			  //getModules	
+			  //sets up tabbed pane which will be displayed
 			  JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 			  tabbedPane.setBounds(10, 190, 955, 750);
 			  panel.add(tabbedPane);
-	
+			  
+			  //sets up
 			  JScrollPane scrollPane = new JScrollPane();
 			  tabbedPane.addTab("Period of Study", null, scrollPane, null);
 			  scrollPane.setViewportBorder(null);
@@ -102,6 +105,7 @@ public studentpage() throws HeadlessException {
 			  DefaultTableModel model1 = new DefaultTableModel();
 			  JTable table1 = new JTable(model1);
 			  
+			//making columns to match the database
 			  model1.addColumn("PosResCode");
 			  model1.addColumn("Module Code");
 			  model1.addColumn("Grade");
@@ -110,6 +114,7 @@ public studentpage() throws HeadlessException {
 			  PreparedStatement pstmt = null;
 			  Connection con = null;
 			  try {
+				//setting up connection and query statement to get information required
 				  con = s.setUpConnection();
 				  Integer nEReg = Integer.parseInt(eReg.getText());
 				  pstmt = con.prepareStatement("SELECT * FROM ModuleTaken WHERE PosRegCode = '"+nEReg+"'");
@@ -120,6 +125,7 @@ public studentpage() throws HeadlessException {
 						String regP = res.getString(2);
 						String grade = res.getString(3);
 						String rgrade = res.getString(4);
+						//add the information in rows under the correct columns
 						model1.addRow(new Object[] {poscode, regP, grade, rgrade});
 					}
 			  } catch (SQLException ex) {
@@ -143,6 +149,7 @@ public studentpage() throws HeadlessException {
 			   model_1.addColumn("Progress");
 				
 			   try {
+				 //setting up connection and query statement to get information required
 				   con = s.setUpConnection();
 				   Integer nEReg = Integer.parseInt(eReg.getText());
 				   pstmt = con.prepareStatement("SELECT * FROM PeriodsOfStudy WHERE PosRegCode = '"+nEReg+"'");
@@ -163,7 +170,7 @@ public studentpage() throws HeadlessException {
 						} else {
 							progressstring = "Yes";
 						}
-
+						//add the information in rows under the correct columns
 						model_1.addRow(new Object[] { poscode, regP, pos, start, end, lvl, grade, progressstring });
 					}
 				} catch (SQLException ex) {
