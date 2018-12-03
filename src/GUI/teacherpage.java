@@ -226,8 +226,8 @@ public class teacherpage extends JFrame {
 					String lvl1 = degree.getText();
 					double average = s.calcDegreeAverage(nreg5);
 					char lvl = s.getMaxLevel(lvl1);
-					//String destination = teacherpage.this.getClass(lvl, average);
-					JOptionPane.showMessageDialog(null, average,
+					String destination = teacherpage.this.getClass(lvl, average);
+					JOptionPane.showMessageDialog(null, average +" "+ destination,
 							"Students Degree Average", JOptionPane.INFORMATION_MESSAGE);
 				}catch(NumberFormatException ex) {
 					JOptionPane.showMessageDialog(null, "Operation Failed! Please check fields and try again.",
@@ -301,7 +301,6 @@ public class teacherpage extends JFrame {
 		model_1.addColumn("Grade");
 		model_1.addColumn("Resit Grade");
 		try {
-			con = s.setUpConnection();
 			pstmt = con.prepareStatement("SELECT * FROM ModuleTaken");
 			ResultSet res = pstmt.executeQuery();
 			ResultSetMetaData md = res.getMetaData();
@@ -320,40 +319,57 @@ public class teacherpage extends JFrame {
 	    window.repaint();
 	}
 	
-	public String getClass(char Number, double score) {
-		if(Number == '1' || Number == '4' && score < 49.5) {
-			return "Fail";
+	public String getClass(char num, double score) {
+		if(num == '1') {
+			if (score > 69.4) {
+				return "Distinction";
+			}
+			else if (score > 49.4 && score < 59.5) {
+				return "Pass";
+			}
+			else if (score > 59.4 && score < 69.5) {
+				return "Merit";
+			}
+			else {
+				return "Fail";
+			}
 		}
-		else if (Number == '3' || Number == '4'|| Number == '2' && score > 69.4) {
-			return "Distinction";
+		else if(num == '2' || num == '3') {
+			if (score > 69.4) {
+				return "Distinction";
+			}
+			else if (score > 39.4 && score < 44.5) {
+				return "Pass (Non-Honours)";
+			}
+			else if (score < 49.5 && score > 44.4) {
+				return "Third Class";
+			}
+			else if (score > 49.4 && score < 59.5) {
+				return "Lower Second";
+			}
+			else if (score > 59.4 && score < 69.5) {
+				return "Upper Second";
+			}
+			else {
+				return "Fail";
+			}
 		}
-		else if (Number == '1' && 49.4 < score && score > 59.5) {
-			return "Pass";
+		else if(num == 4){
+			if (score > 69.5) {
+				return "Distinction";
+			}
+			else if (score > 49.4 && score < 59.5) {
+				return "Lower Second";
+			}
+			else if (score > 59.4 && score < 69.5) {
+				return "Upper Second";
+			}
+			else {
+				return "Fail";
+			}
 		}
-		else if (Number == '1' && 59.4 < score && score > 69.5) {
-			return "Merit";
-		}
-		else if (Number == '1' && score > 69.5) {
-			return "Distinction";
-		} 
-		else if (Number == '3' || Number == '4' || Number == '2' && 49.4 < score && score > 59.5) {
-			return "Lower Second";
-		}
-		else if (Number == '3' || Number == '4' || Number =='2' && 59.4 < score && score > 69.5) {
-			return "Upper Second";
-		}
-		else if (Number == '3' || Number == '4' || Number == '2' && score > 69.5) {
-			return "First Class";
-		}
-		else if (Number == '3' || Number == '2' && score < 39.6) {
-			return "Fail";
-		}
-		else if (Number == '3' || Number == '2' && score > 39.5 && score < 44.5) {
-			return "Pass (Non-Honours)";
-		}
-		else {
-			return "Third Class";
-		}
+		return null;
+		
 	}
 	
 	public void progress(int posRegNo, double value) throws SQLException {
