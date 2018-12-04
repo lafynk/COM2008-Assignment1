@@ -1111,7 +1111,7 @@ public class Sql {
 	}
 	
 	public String getDegreeType(String deg) throws SQLException{
-		String type = "";;
+		String type = "";
 		Connection con = setUpConnection();
 		PreparedStatement pstmt = null;
 		try {
