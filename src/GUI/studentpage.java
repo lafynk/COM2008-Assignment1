@@ -68,7 +68,53 @@ public studentpage() throws HeadlessException {
 			}
 		}
 	});
+	//pos reg text
+	JTextField Regg = new JTextField("Enter Registration Number");
+	Regg.setBounds(10,130,200,50);
+	panel.add(Regg);
 	
+	JButton getPosbutton = new JButton("Get PoS");
+	getPosbutton.setBounds(220,130,130,49);
+	panel.add(getPosbutton);
+	getPosbutton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			JTabbedPane tabbedPane11 = new JTabbedPane(JTabbedPane.TOP);
+			  tabbedPane11.setBounds(10, 260, 955, 320);
+			  panel.add(tabbedPane11);
+			  
+			  //sets up
+			  JScrollPane scrollPane11 = new JScrollPane();
+			  tabbedPane11.addTab("All Period of Study", null, scrollPane11, null);
+			  scrollPane11.setViewportBorder(null);
+			  
+			  DefaultTableModel model12 = new DefaultTableModel();
+			  JTable table12 = new JTable(model12);
+			  
+			//making columns to match the database
+			  model12.addColumn("PosResCode"); 
+			  
+			  PreparedStatement pstmt = null;
+			  Connection con = null;
+		  try {
+				//setting up connection and query statement to get information required
+				  con = s.setUpConnection();
+				  Integer nEReg1 = Integer.parseInt(Regg.getText());
+				  pstmt = con.prepareStatement("SELECT * FROM PeriodsOfStudy WHERE RegistrationNo = '"+nEReg1+"'");
+				  ResultSet res = pstmt.executeQuery();
+				  ResultSetMetaData md = res.getMetaData();
+				  while (res.next()) {
+						String poscode = res.getString(1);
+						//add the information in rows under the correct columns
+						model12.addRow(new Object[] {poscode});
+					}
+			  } catch (SQLException ex) {
+				  ex.printStackTrace();
+				  JOptionPane.showMessageDialog(null, "Registration not recognised try again","Error!", JOptionPane.ERROR_MESSAGE);
+			  }
+			   scrollPane11.setViewportView(table12);
+		}
+	});
+
 	 //student label
 	JLabel studentlabel = new JLabel("Student Dashboard");
 	studentlabel.setBounds(10,10,300,50);
@@ -82,19 +128,19 @@ public studentpage() throws HeadlessException {
 	panel.add(welcomelabel);
 	
 	//pos reg text
-	JTextField eReg = new JTextField("Enter PosReg Number");
-	eReg.setBounds(10,130,200,50);
+	JTextField eReg = new JTextField("Enter PoS Number");
+	eReg.setBounds(10,200,200,50);
 	panel.add(eReg);
 	
 	//button to view status
-	JButton addmodulebutton = new JButton("View Status");
-	addmodulebutton.setBounds(220,130,130,49);
-	panel.add(addmodulebutton);
-	addmodulebutton.addActionListener(new ActionListener() {
+	JButton viewButton = new JButton("View Status");
+	viewButton.setBounds(220,200,130,49);
+	panel.add(viewButton);
+	viewButton.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
 			  //sets up tabbed pane which will be displayed
 			  JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-			  tabbedPane.setBounds(10, 190, 955, 750);
+			  tabbedPane.setBounds(10, 580, 955, 360);
 			  panel.add(tabbedPane);
 			  
 			  //sets up
