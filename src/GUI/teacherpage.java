@@ -102,7 +102,6 @@ public class teacherpage extends JFrame {
 						s.updateModuleGrade(n1Score, n1Reg, n1Mod);
 						double newAve = s.calcPosAverage(n1Reg);
 						s.updateGrade(n1Reg, newAve);
-						progress(n1Reg, newAve);
 						JOptionPane.showMessageDialog(null, "Grade Added." , "Operation Succesful",
 								JOptionPane.INFORMATION_MESSAGE);
 						} catch(SQLException e1) {
@@ -161,7 +160,6 @@ public class teacherpage extends JFrame {
 						s.updateModuleResit(n2Reg, n2Mod, n2Score);
 						double newAve = s.calcPosAverage(n2Reg);
 						s.updateGrade(n2Reg, newAve);
-						progress(n2Reg, newAve);
 						JOptionPane.showMessageDialog(null, "Grade Added." , "Operation Succesful",
 								JOptionPane.INFORMATION_MESSAGE);
 						} catch(SQLException e1) {
