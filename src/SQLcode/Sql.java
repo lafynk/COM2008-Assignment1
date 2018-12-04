@@ -985,7 +985,6 @@ public class Sql {
 	public double calcPosAverage(int posRegNo) throws SQLException {
 		double totalPercent = 0;
 		double posAverage = 0;
-		int modCount = 0;
 		StuInfo s = null;
 		PeriodOfStudy[] p = null;
 		PeriodOfStudy i = null;
@@ -1017,18 +1016,13 @@ public class Sql {
 					}
 					
 					totalPercent += modPercent;
-					modCount ++;
 				}
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
 	
-		if (modCount == 0) {
-			posAverage = 0;
-		} else {
-			posAverage = totalPercent / modCount;
-		}
+			posAverage = totalPercent;
 		
 		return posAverage;
 	}
