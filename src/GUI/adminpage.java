@@ -29,6 +29,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import SQLcode.Sql;
+import classPkg.UserInfo;
 
 public class adminpage {
 
@@ -125,6 +126,14 @@ public class adminpage {
 						JOptionPane.showMessageDialog(null, "This username is already in use.", "Operation Failed",
 								JOptionPane.ERROR_MESSAGE);
 					} else {
+						UserInfo u = null;
+						while (u == null) {
+							s.addUser(useraccount.getText(), useraccountpwd.getText(),
+									accttype.getSelectedItem().toString());
+							u = s.checkLogIn(useraccount.getText(), useraccountpwd.getText());
+							if (u == null)
+								s.removeUserByUsername(useraccount.getText());
+						}
 						s.addUser(useraccount.getText(), useraccountpwd.getText(),
 								accttype.getSelectedItem().toString());
 						frmSystemsDesign.dispose();
