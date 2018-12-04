@@ -46,6 +46,22 @@ public class teacherpage extends JFrame {
 		teacherlabel.setBounds(10,10,300,50);
 		teacherlabel.setFont(new Font("", Font.PLAIN, 30));
 		panel.add(teacherlabel);
+		
+		//Log out button and position
+		JButton logButton = new JButton("Log out");
+		logButton.setBounds(845,10,130,49);
+		panel.add(logButton);
+		logButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					window.dispose();
+					login window = new login();
+					window.frmSystemsDesign.setVisible(true);
+				} catch (HeadlessException e1) {
+						
+				}
+			}
+		});
 	
 		//update module grade label and position
 		JLabel updateLabel = new JLabel("Update Module Grade:");

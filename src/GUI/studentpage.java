@@ -176,7 +176,7 @@ public studentpage() throws HeadlessException {
 					}
 			  } catch (SQLException ex) {
 				  ex.printStackTrace();
-				  JOptionPane.showMessageDialog(null, "Registration not recognised try again","Error!", JOptionPane.ERROR_MESSAGE);
+				  JOptionPane.showMessageDialog(null, "Periodd of study not recognised try again","Error!", JOptionPane.ERROR_MESSAGE);
 			  }
 			   scrollPane.setViewportView(table1);
 			   
