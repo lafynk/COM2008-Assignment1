@@ -21,12 +21,12 @@ public class teacherpage extends JFrame {
 	 */
 	private static final long serialVersionUID = 4540369166472097474L;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws HeadlessException, SQLException {
 		 // launching code goes in here
 			 new teacherpage();
 	}
 	 
-	public teacherpage() throws HeadlessException {
+	public teacherpage() throws HeadlessException, SQLException {
 		//establish new sql connection
 		Sql s = new Sql(); 
 		//setting the size of the window and some attributes
@@ -94,7 +94,7 @@ public class teacherpage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					//gets required info from text fields
-					Integer n1Reg = Integer.parseInt(reg1.getText());
+					int n1Reg = Integer.parseInt(reg1.getText());
 					String n1Mod =  modCode.getText();
 					double n1Score = Double.parseDouble(score1.getText());
 					try {
@@ -114,8 +114,15 @@ public class teacherpage extends JFrame {
 			}
 				//refresh the page
 				window.dispose();
-				teacherpage t2 = new teacherpage();
-				t2.setVisible(true);
+				teacherpage t2;
+				try {
+					t2 = new teacherpage();
+					t2.setVisible(true);
+				} catch (HeadlessException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 					
 				}
 			});
@@ -152,7 +159,7 @@ public class teacherpage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					//gets required info from text fields
-					Integer n2Reg = Integer.parseInt(reg2.getText());
+					int n2Reg = Integer.parseInt(reg2.getText());
 					String n2Mod =  modCode1.getText();
 					double n2Score = Double.parseDouble(score2.getText());
 					try {
@@ -172,8 +179,15 @@ public class teacherpage extends JFrame {
 			}
 				//refresh page
 				window.dispose();
-				teacherpage t3 = new teacherpage();
-				t3.setVisible(true);
+				teacherpage t3;
+				try {
+					t3 = new teacherpage();
+					t3.setVisible(true);
+				} catch (HeadlessException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 				}
 		});
 		
@@ -194,15 +208,27 @@ public class teacherpage extends JFrame {
 		panel.add(aveButton1);
 		//action for Search
 		aveButton1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e){
 				try {
 					//gets required info from text fields
-					Integer nreg4 = Integer.parseInt(reg4.getText());
+					int nreg4 = Integer.parseInt(reg4.getText());
 					try {
+						int regNo = Integer.parseInt(reg4.getText().substring(4));
+						PeriodOfStudy[] p1 = s.getPeriodsOfStudy(regNo);
 						//runs function update the grade and calc new average
 						double average = s.calcPosAverage(nreg4);
 						s.updateGrade(nreg4, average);
 						progress(nreg4, average);
+						int failCount = 0;
+						for (PeriodOfStudy p:p1) {
+							if (p != null) {
+								if (p.getProgress() == false)
+									failCount ++;
+							}
+						}
+						if (failCount > 1) {
+							s.updateAwardedClass(regNo, "fail");
+						} else s.updateAwardedClass(regNo, null);
 						window.dispose();
 						teacherpage t4 = new teacherpage();
 						window.setVisible(true);
@@ -217,8 +243,15 @@ public class teacherpage extends JFrame {
 				}
 				//refresh page
 				window.dispose();
-				teacherpage t4 = new teacherpage();
-				t4.setVisible(true);
+				teacherpage t4;
+				try {
+					t4 = new teacherpage();
+					t4.setVisible(true);
+				} catch (HeadlessException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		
@@ -248,7 +281,7 @@ public class teacherpage extends JFrame {
 				try {
 					//gets required info from text fields
 					//runs functions to return the score and awarded class
-					Integer nreg5 = Integer.parseInt(reg5.getText());
+					int nreg5 = Integer.parseInt(reg5.getText());
 					String lvl1 = degree.getText();
 					double average = s.calcDegreeAverage(nreg5);
 					char lvl = s.getMaxLevel(lvl1);
