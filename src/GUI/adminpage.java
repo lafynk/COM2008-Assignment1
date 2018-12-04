@@ -500,6 +500,10 @@ public class adminpage {
 									"Operation Failed", JOptionPane.ERROR_MESSAGE);
 						}
 						else {
+							if (modulelvl.getSelectedItem().equals("P") && Integer.parseInt(credits.getText()) != 120 && coreornot == false) {
+								JOptionPane.showMessageDialog(null, "Operation Failed! Placement module must be 120 core credits exactly.",
+										"Operation Failed", JOptionPane.ERROR_MESSAGE);
+							}else {
 						
 						
 							s.assignModuleToDegree(degreetoaddmodule.getText(), moduletoadd.getText(), coreornot,
@@ -509,6 +513,7 @@ public class adminpage {
 							window.frmSystemsDesign.setVisible(true);
 							JOptionPane.showMessageDialog(null, "Module Assigned To Degree.", "Operation Successful",
 									JOptionPane.INFORMATION_MESSAGE);
+							}
 						}
 					}
 				} catch (NumberFormatException | SQLException e1) {
