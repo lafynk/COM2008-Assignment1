@@ -764,6 +764,22 @@ public class Sql {
 		}
 	}
 
+	public void removeAssignedMod(String deg) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM ModuleAssignment WHERE DegreeCode = ?");
+			pstmt.setString(1, deg);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
 	// drop taken module
 	public void removeTakenMod(int regCode, String modCode) throws SQLException {
 		Connection con = setUpConnection();
@@ -985,6 +1001,7 @@ public class Sql {
 	public double calcPosAverage(int posRegNo) throws SQLException {
 		double totalPercent = 0;
 		double posAverage = 0;
+		int totalCredits = 0;
 		StuInfo s = null;
 		PeriodOfStudy[] p = null;
 		PeriodOfStudy i = null;
@@ -1010,20 +1027,22 @@ public class Sql {
 					
 					if (resitGrade == 0) {
 						double modMarks = x.getGrade();
-						modPercent = modMarks * (modCredit/120);
+						modPercent = modMarks * (modCredit);
 					} else {
-						modPercent = resitGrade * (modCredit/120);
+						modPercent = resitGrade * (modCredit);
 					}
 					
 					totalPercent += modPercent;
+					totalCredits += modCredit;
 				}
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
 	
-			posAverage = totalPercent;
-		
+		if (totalCredits !=0) {	
+			posAverage = totalPercent/totalCredits;
+		}
 		return posAverage;
 	}
 

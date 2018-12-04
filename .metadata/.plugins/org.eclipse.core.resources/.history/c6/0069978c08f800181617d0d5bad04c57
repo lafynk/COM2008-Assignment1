@@ -359,7 +359,6 @@ public class adminpage {
 		btnDeleteDegree.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					s.removeAssignedMod(degreecode.getText());
 					s.removeCourse(degreecode.getText());
 					frmSystemsDesign.dispose();
 					adminpage window = new adminpage();
