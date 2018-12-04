@@ -1109,6 +1109,28 @@ public class Sql {
 		}
 		return lvl;
 	}
+	
+	public String getDegreeType(String deg) throws SQLException{
+		String type = "";;
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("SELECT DegreeType FROM Degrees WHERE DegreeCode = ?");
+			pstmt.setString(1, deg);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				type = rs.getString(1);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+		return type;
+	}
 	// other than getting all PoS grades)
 	// pass or fail (same as above, we just need a fn to return PoSmodulesinfo like
 	// find module)
