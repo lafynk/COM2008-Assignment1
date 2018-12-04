@@ -488,13 +488,29 @@ public class adminpage {
 					} else {
 						coreornot = false;
 					}
-					s.assignModuleToDegree(degreetoaddmodule.getText(), moduletoadd.getText(), coreornot,
-							Integer.parseInt(credits.getText()), modulelvl.getSelectedItem().toString());
-					frmSystemsDesign.dispose();
-					adminpage window = new adminpage();
-					window.frmSystemsDesign.setVisible(true);
-					JOptionPane.showMessageDialog(null, "Module Assigned To Degree.", "Operation Successful",
-							JOptionPane.INFORMATION_MESSAGE);
+					
+					if (modulelvl.getSelectedItem().equals("2") && coreornot == false) {
+						JOptionPane.showMessageDialog(null, "Operation Failed! Modules at this level must be core.",
+								"Operation Failed", JOptionPane.ERROR_MESSAGE);
+					}else {
+						
+					
+						if (s.getDegreeType(degreetoaddmodule.getText()).contentEquals("P")&& coreornot == false) {
+							JOptionPane.showMessageDialog(null, "Operation Failed! Modules at this level must be core.",
+									"Operation Failed", JOptionPane.ERROR_MESSAGE);
+						}
+						else {
+						
+						
+							s.assignModuleToDegree(degreetoaddmodule.getText(), moduletoadd.getText(), coreornot,
+									Integer.parseInt(credits.getText()), modulelvl.getSelectedItem().toString());
+							frmSystemsDesign.dispose();
+							adminpage window = new adminpage();
+							window.frmSystemsDesign.setVisible(true);
+							JOptionPane.showMessageDialog(null, "Module Assigned To Degree.", "Operation Successful",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
 				} catch (NumberFormatException | SQLException e1) {
 					// TODO Auto-generated catch block
 					// e1.printStackTrace();
