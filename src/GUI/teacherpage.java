@@ -403,6 +403,8 @@ public class teacherpage extends JFrame {
 		
 	}
 	
+	//public int failed()
+	
 	//method to up date the progree
 	public void progress(int posRegNo, double value) throws SQLException {
 		Sql s = new Sql();
