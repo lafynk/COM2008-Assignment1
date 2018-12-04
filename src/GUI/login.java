@@ -104,7 +104,15 @@ public class login {
 					new studentpage();
 				}
 				else if (u.getPermission().contentEquals("Teachers")){
-					new teacherpage();
+					try {
+						new teacherpage();
+					} catch (HeadlessException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 				else if (u.getPermission().contentEquals("Admin")){
 					adminpage window = null;
