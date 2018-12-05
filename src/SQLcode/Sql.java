@@ -877,6 +877,7 @@ public class Sql {
 			pstmt.setString(1, awardedClass);
 			pstmt.setInt(2, regNo);
 			pstmt.executeUpdate();
+			System.out.println(awardedClass);
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
@@ -1117,7 +1118,7 @@ public class Sql {
 			p = getPeriodsOfStudy(r);
 			for (PeriodOfStudy pos:p) {
 				if (pos!= null) {
-					switch (lvl) {
+					switch (pos.getLevel()) {
 					case '1':
 						if (getMaxLevel(s.getDegree()) == '1') {
 							return pos.getGrade();
@@ -1132,8 +1133,6 @@ public class Sql {
 						count += 2;
 						break;
 					case '4':
-						totalPercent += 2 * pos.getGrade();
-						count += 2;
 						break;
 					}
 				}

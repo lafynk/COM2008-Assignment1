@@ -389,50 +389,50 @@ public class teacherpage extends JFrame {
 	public String getClass(char num, double score) {
 		if(num == '1') {
 			if (score > 69.4) {
-				return "Distinction";
+				return "distinction";
 			}
 			else if (score > 49.4 && score < 59.5) {
-				return "Pass";
+				return "pass";
 			}
 			else if (score > 59.4 && score < 69.5) {
-				return "Merit";
+				return "merit";
 			}
 			else {
-				return "Fail";
+				return "fail";
 			}
 		}
 		else if(num == '2' || num == '3') {
 			if (score > 69.4) {
-				return "Distinction";
+				return "1st";
 			}
 			else if (score > 39.4 && score < 44.5) {
-				return "Pass (Non-Honours)";
+				return "pass(non-honours)";
 			}
 			else if (score < 49.5 && score > 44.4) {
-				return "Third Class";
+				return "3rd";
 			}
 			else if (score > 49.4 && score < 59.5) {
-				return "Lower Second";
+				return "2.2";
 			}
 			else if (score > 59.4 && score < 69.5) {
-				return "Upper Second";
+				return "2.1";
 			}
 			else {
-				return "Fail";
+				return "fail";
 			}
 		}
 		else if(num == '4'){
 			if (score > 69.5) {
-				return "Distinction";
+				return "1st";
 			}
 			else if (score > 49.4 && score < 59.5) {
-				return "Lower Second";
+				return "2.2";
 			}
 			else if (score > 59.4 && score < 69.5) {
-				return "Upper Second";
+				return "2.1";
 			}
 			else {
-				return "Fail";
+				return "fail";
 			}
 		}
 		return null;
@@ -455,23 +455,20 @@ public class teacherpage extends JFrame {
 			}
 		}
 		char lvl = i.getLevel();
-		System.out.println(lvl);
-		if ((lvl != 'P') && (!progress1(posRegNo))) {
-			s.updateProgress(posRegNo, false);
-		}else if (lvl == '4') {
-			if (value > 50) {
+		if (lvl == '4') {
+			if ((value > 50) && (progress1(posRegNo))) {
 				s.updateProgress(posRegNo, true);
 			} else {
 				double degX = s.calcDegreeAverage2(r, '3');
-				String cla = getClass('3',degX);
-				s.updateAwardedClass(r, cla);
+				System.out.println(degX);
+				s.updateAwardedClass(r,getClass('3',degX));
 			}
 			
 		} else if((lvl == '3') || (lvl == '2') || (lvl == '1')) {
-			if (value > 40) {
+			if ((value > 40) && (progress1(posRegNo))) {
 				s.updateProgress(posRegNo, true);
 			} else s.updateProgress(posRegNo, false);
-		} else {
+		}else {
 			s.updateProgress(posRegNo, true);	
 		}
 	}
@@ -492,7 +489,6 @@ public class teacherpage extends JFrame {
     	StuInfo stu = s.getStudentInfo(r);
     	String deg = stu.getDegree();
     	char t = s.getMaxLevel(deg);
-    	System.out.println(t);
     	double threshold = 0.00;
     	switch (t) {
     	case '1':
@@ -505,7 +501,6 @@ public class teacherpage extends JFrame {
     		threshold = 49.5;
     		break;
     	}
-    	System.out.println(threshold);
     	Module[] m1 = s.getModules(i, stu);
     	int failCount = 0;
     	for(Module m : m1) {
