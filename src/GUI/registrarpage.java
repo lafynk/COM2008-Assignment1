@@ -571,6 +571,8 @@ public class registrarpage {
 				String awardedclassstring = null;
 				if (awardedclass == null) {
 					awardedclassstring = "In Progress";
+				}else {
+					awardedclassstring = res.getString(9);
 				}
 				model.addRow(new Object[] { regno, title, sname, fname, email, tutor, dcode, currentlvlos,
 						awardedclassstring });
