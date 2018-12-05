@@ -421,7 +421,7 @@ public class teacherpage extends JFrame {
 				return "Fail";
 			}
 		}
-		else if(num == 4){
+		else if(num == '4'){
 			if (score > 69.5) {
 				return "Distinction";
 			}
@@ -455,7 +455,8 @@ public class teacherpage extends JFrame {
 			}
 		}
 		char lvl = i.getLevel();
-		if (!progress1(posRegNo)) { 
+		System.out.println(lvl);
+		if ((lvl != 'P') && (!progress1(posRegNo))) {
 			s.updateProgress(posRegNo, false);
 		}else if (lvl == '4') {
 			if (value > 50) {
@@ -468,13 +469,11 @@ public class teacherpage extends JFrame {
 			
 		} else if((lvl == '3') || (lvl == '2') || (lvl == '1')) {
 			if (value > 40) {
-			s.updateProgress(posRegNo, true);	
-		} else if (lvl == 'P') {
-				s.updateProgress(posRegNo, true);	
+				s.updateProgress(posRegNo, true);
+			} else s.updateProgress(posRegNo, false);
 		} else {
-			s.updateProgress(posRegNo, false);	
+			s.updateProgress(posRegNo, true);	
 		}
-	}
 	}
 	
     public boolean progress1(int posRegNo) throws SQLException {
