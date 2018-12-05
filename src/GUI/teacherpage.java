@@ -205,7 +205,7 @@ public class teacherpage extends JFrame {
 		panel.add(reg4);
 		
 		//calc average button and position
-		JButton aveButton1 = new JButton("Calculate average");
+		JButton aveButton1 = new JButton("End of Year");
 		aveButton1.setBounds(170,345,150,49);
 		panel.add(aveButton1);
 		//action for Search
@@ -258,13 +258,13 @@ public class teacherpage extends JFrame {
 		});
 		
 		//calc degree label and position
-		JLabel ave1Label = new JLabel("Calculate degree average Grade:");
+		JLabel ave1Label = new JLabel("Calculate End Degree");
 		ave1Label.setBounds(340,290,300,60);
 		ave1Label.setFont(new Font("", Font.PLAIN, 20));
 		panel.add(ave1Label);
 		
 		//Pos field and position
-		JTextField reg5 = new JTextField("Enter PoS Code");
+		JTextField reg5 = new JTextField("Enter Registration No");
 		reg5.setBounds(340,345,150,50);
 		panel.add(reg5);
 		
@@ -274,7 +274,7 @@ public class teacherpage extends JFrame {
 		panel.add(degree);
 		
 		//calc degree average buttton and position
-		JButton aveButton2 = new JButton("Calculate Degree average");
+		JButton aveButton2 = new JButton("End of Degree");
 		aveButton2.setBounds(660,345,200,49);
 		panel.add(aveButton2);
 		//action for Search
@@ -288,7 +288,7 @@ public class teacherpage extends JFrame {
 					double average = s.calcDegreeAverage(nreg5);
 					char lvl = s.getMaxLevel(lvl1);
 					String destination = teacherpage.this.getClass(lvl, average);
-					
+					s.updateAwardedClass(nreg5, destination);
 					JOptionPane.showMessageDialog(null, average +" "+ destination,
 							"Students Degree Average", JOptionPane.INFORMATION_MESSAGE);
 				}catch(NumberFormatException ex) {
