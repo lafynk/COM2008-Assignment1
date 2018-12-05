@@ -691,7 +691,7 @@ public class adminpage {
 		btnDeleteModule.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					s.removeAssignedMod(modulecode.getText());
+					s.removeAssignedModByMod(modulecode.getText());
 					s.removeMod(modulecode.getText());
 					frmSystemsDesign.dispose();
 					adminpage window = new adminpage();
