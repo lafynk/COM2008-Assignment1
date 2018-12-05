@@ -447,7 +447,7 @@ public class registrarpage {
 					Module mod = null;
 					StuInfo stu = s.getStudentInfo(Integer.parseInt(studentidmodule.getText()));
 					System.out.println(stu.getPoS());
-					if (!stu.getAwardedClass().contentEquals("fail")) {
+					if (stu.getAwardedClass() == null) {
 						s.addPoS(Integer.parseInt(studentidmodule.getText()), stu.getPoS(), startdate.getText(),
 								enddate.getText(), currentlvl.getSelectedItem().toString().charAt(0));
 						Module[] modulearray = s.getCoreModules(stu.getDegree(),
@@ -467,8 +467,9 @@ public class registrarpage {
 								s.addTakenModule(i, x.getModule(), 0.00, 0.00);
 							}
 						}
-					} else JOptionPane.showMessageDialog(null, "This student has failed their degree.", "Operation Failed",
-							JOptionPane.ERROR_MESSAGE);
+					} else if (stu.getAwardedClass().contentEquals("fail")) {
+						JOptionPane.showMessageDialog(null, "This student has failed their degree.", "Operation Failed",JOptionPane.ERROR_MESSAGE);
+					}
 					frmSystemsDesign.dispose();
 					registrarpage window = new registrarpage();
 					window.frmSystemsDesign.setVisible(true);

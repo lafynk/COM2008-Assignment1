@@ -5,6 +5,8 @@ import javax.swing.table.DefaultTableModel;
 
 import SQLcode.Sql;
 import classPkg.PeriodOfStudy;
+import classPkg.Module;
+import classPkg.StuInfo;
 
 import java.awt.event.ActionListener;
 import java.io.Reader;
@@ -286,6 +288,7 @@ public class teacherpage extends JFrame {
 					double average = s.calcDegreeAverage(nreg5);
 					char lvl = s.getMaxLevel(lvl1);
 					String destination = teacherpage.this.getClass(lvl, average);
+					
 					JOptionPane.showMessageDialog(null, average +" "+ destination,
 							"Students Degree Average", JOptionPane.INFORMATION_MESSAGE);
 				}catch(NumberFormatException ex) {
@@ -438,7 +441,7 @@ public class teacherpage extends JFrame {
 	
 	//public int failed()
 	
-	//method to up date the progree
+	//method to up date the progress
 	public void progress(int posRegNo, double value) throws SQLException {
 		Sql s = new Sql();
 		int r = Integer.parseInt(String.valueOf(posRegNo).substring(1));
@@ -452,17 +455,80 @@ public class teacherpage extends JFrame {
 			}
 		}
 		char lvl = i.getLevel();
-		if (lvl == '4') {
-			if (value > 50)
-			s.updateProgress(posRegNo, true);
+		if (!progress1(posRegNo)) { 
+			s.updateProgress(posRegNo, false);
+		}else if (lvl == '4') {
+			if (value > 50) {
+				s.updateProgress(posRegNo, true);
+			} else {
+				double degX = s.calcDegreeAverage2(r, '3');
+				String cla = getClass('3',degX);
+				s.updateAwardedClass(r, cla);
+			}
+			
 		} else if((lvl == '3') || (lvl == '2') || (lvl == '1')) {
 			if (value > 40) {
 			s.updateProgress(posRegNo, true);	
 		} else if (lvl == 'P') {
 				s.updateProgress(posRegNo, true);	
-		} else s.updateProgress(posRegNo, false);	
+		} else {
+			s.updateProgress(posRegNo, false);	
+		}
 	}
-}
+	}
+	
+    public boolean progress1(int posRegNo) throws SQLException {
+    	Sql s = new Sql();
+    	int r = Integer.parseInt(String.valueOf(posRegNo).substring(1));
+    	PeriodOfStudy[] pos = s.getPeriodsOfStudy(r);
+    	PeriodOfStudy i = null;
+    	for (PeriodOfStudy p:pos) {
+			if (p!=null) {
+				if (posRegNo == p.getPosRegCode()) {
+					i = p;
+				}
+			}
+		}
+   
+    	StuInfo stu = s.getStudentInfo(r);
+    	String deg = stu.getDegree();
+    	char t = s.getMaxLevel(deg);
+    	System.out.println(t);
+    	double threshold = 0.00;
+    	switch (t) {
+    	case '1':
+    		threshold = 49.5;
+    		break;
+    	case '3':
+    		threshold = 39.5;
+    		break;
+    	case '4':
+    		threshold = 49.5;
+    		break;
+    	}
+    	System.out.println(threshold);
+    	Module[] m1 = s.getModules(i, stu);
+    	int failCount = 0;
+    	for(Module m : m1) {
+    		if (m != null) {
+    			if (m.getResit() == 0.00) {
+    				if ((m.getGrade() < threshold) && (m.getGrade() >= threshold-10)) {
+    					failCount ++;
+    				}else if (m.getGrade() < threshold-10) {
+    					return false;
+    				}
+    			} else if ((m.getResit() < threshold)  && (m.getGrade() >= threshold-10)) {
+    				failCount++;
+    			}else if (m.getGrade() < threshold-10) {
+					return false;
+    			}
+    		}
+    	}
+    	if (failCount > 1) {
+    		return false;
+    	} else return true;
+    		
+    }
 }
 	    
   

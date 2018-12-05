@@ -1088,6 +1088,47 @@ public class Sql {
 		return degreeAvg;
 	}
 	
+	public double calcDegreeAverage2(int r,char lvl) {
+		double degreeAvg = 0;
+		StuInfo s;
+		double totalPercent = 0;
+		PeriodOfStudy[] p = null;
+		int count = 0;
+		
+		try {
+			s = getStudentInfo(r);
+			p = getPeriodsOfStudy(r);
+			for (PeriodOfStudy pos:p) {
+				if (pos!= null) {
+					switch (lvl) {
+					case '1':
+						if (getMaxLevel(s.getDegree()) == '1') {
+							return pos.getGrade();
+						}
+						break;
+					case '2':
+						totalPercent += pos.getGrade();
+						count ++;
+						break;
+					case '3':
+						totalPercent += 2 * pos.getGrade();
+						count += 2;
+						break;
+					case '4':
+						totalPercent += 2 * pos.getGrade();
+						count += 2;
+						break;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		degreeAvg = totalPercent/count;
+		return degreeAvg;
+	}
+	
 	public char getMaxLevel(String deg) throws SQLException{
 		char lvl = '0';
 		Connection con = setUpConnection();
