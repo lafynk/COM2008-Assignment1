@@ -215,7 +215,7 @@ public class teacherpage extends JFrame {
 					//gets required info from text fields
 					int nreg4 = Integer.parseInt(reg4.getText());
 					try {
-						int regNo = Integer.parseInt(reg4.getText().substring(4));
+						int regNo = Integer.parseInt(reg4.getText().substring(1));
 						PeriodOfStudy[] p1 = s.getPeriodsOfStudy(regNo);
 						//runs function update the grade and calc new average
 						double average = s.calcPosAverage(nreg4);
