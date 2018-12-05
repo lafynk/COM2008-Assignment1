@@ -780,6 +780,23 @@ public class Sql {
 				con.close();
 		}
 	}
+	
+	public void removeAssignedModByMod(String mod) throws SQLException {
+		Connection con = setUpConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("DELETE FROM ModuleAssignment WHERE ModuleCode = ?");
+			pstmt.setString(1, mod);
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		}
+	}
 	// drop taken module
 	public void removeTakenMod(int regCode, String modCode) throws SQLException {
 		Connection con = setUpConnection();
